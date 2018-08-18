@@ -9,7 +9,7 @@ To enforce style, we use `pylint`, which can be installed with
 
 ```pip install pylint```
 
-To test your code, use `pylint server-2018-recode`. If you changed the name of your repository folder or if you are not located in your repository folder, replace `server-2018-recode` with the path to your repository folder.
+To test your code, use `pylint ./*.py`. If you are not located in your repository folder, replace `.` with the path to your repository folder.
 
 ### Commit Messages
 
