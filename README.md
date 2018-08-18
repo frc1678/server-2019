@@ -15,6 +15,14 @@ To test your code, use `pylint server-2018-recode`. If you changed the name of y
 
 Write good commit messages!  See [here](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html) and [here](https://chris.beams.io/posts/git-commit/) for helpful articles.
 
+* Commit messages should have an extended description unless the change is very simple (e.g. a couple lines or small fixes).
+* Subject lines should be 50 characters or less
+* Each line on the extended description should be 72 characters or less
+
+To help enforce these guidelines, commit messages can be edited in sublime.
+1. `git config --global core.editor "subl -w"`
+2. The next time you run `git commit`, navigate to `Preferences > Settings - Syntax Specific` and add `"rulers": [50, 72]`.
+
 ## Contributing
 
 Here's how to get your code into the main repository:
