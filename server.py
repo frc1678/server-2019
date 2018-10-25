@@ -40,6 +40,23 @@ def delete_temp_timd_data_folder():
         shutil.rmtree(create_file_path('data'))
     os.makedirs(create_file_path('data'))
 
+def register_modified_temp_timd(temp_timd_name):
+    """Removes a modified tempTIMD from LATEST_CALCULATIONS_BY_TIMD.
+
+    This is called when a tempTIMD is removed or edited.  This function
+    will cause the relevant data to be recalculated to reflect the new
+    data."""
+    timd_name = temp_timd_name.split('-')[0]
+    if LATEST_CALCULATIONS_BY_TIMD.get(timd_name) is not None:
+        LATEST_CALCULATIONS_BY_TIMD[timd_name] = (
+            LATEST_CALCULATIONS_BY_TIMD[timd_name].pop(
+                temp_timd_name))
+        # TODO: If there is only one tempTIMD in the list, and it is
+        # removed, the TIMD data will not be recalculated or deleted.
+        # Need to delete TIMD data + recalculate team + match data if
+        # this happens.
+
+
 def match_num_stream_handler(snapshot):
     """Runs when 'currentMatchNumber' is updated on firebase"""
     # Validates that data was correctly received and is in its expected format
@@ -90,10 +107,17 @@ def temp_timd_stream_handler(snapshot):
         # and we should delete it from our local copy.
         if temp_timd_value is None:
             os.remove(create_file_path('data/' + temp_timd_name + '.txt'))
+            # Causes the corresponding TIMD to be recalculated
+            register_modified_temp_timd(temp_timd_name)
         else:
             with open(create_file_path('data/' + temp_timd_name +
                                        '.txt'), 'w') as file:
                 file.write(temp_timd_value)
+            timd_name = temp_timd_name.split('-')[0]
+            # This means an already existing tempTIMD has been modified
+            # and needs to be recalculated.
+            if temp_timd_name in LATEST_CALCULATIONS_BY_TIMD[timd_name]:
+                register_modified_temp_timd(temp_timd_name)
 
 
 
@@ -147,6 +171,10 @@ signal.signal(signal.SIGINT, handle_ctrl_c)
 # Creates all the database streams and stores them in global dict.
 STREAMS = create_streams()
 
+# Stores the tempTIMDs that have already been calculated in order to
+# prevent them from being recalculated if the data has not changed.
+LATEST_CALCULATIONS_BY_TIMD = {}
+
 while True:
     # Goes through each of the streams to check if it is still active
     for streamName, stream in STREAMS.items():
@@ -157,9 +185,34 @@ while True:
             # a dict, which is why '.update' is called.
             STREAMS.update(create_streams([streamName]))
 
-    # Checks list of tempTIMDs from file to determine what calculations
+    # Checks list of tempTIMDs from files to determine what calculations
     # are needed.
-    #TODO: Implement tempTIMD needed calculation checking
+
+    # List of files (tempTIMDs) in the 'data' directory.
+    TEMP_TIMD_FILES = os.listdir(create_file_path('data'))
+    # Stores groups of matching tempTIMDs under a single key (which is
+    # the corresponding TIMD).  Used to consolidate tempTIMDs.
+    # (Matching tempTIMDs are tempTIMDs for the same TIMD)
+    FILES_BY_TIMD = {}
+    for tempTIMD in TEMP_TIMD_FILES:
+        # Removes '.txt' ending.
+        TEMP_TIMD_NAME = tempTIMD.split('.')[0]
+        # Removes scout ID to find the corresponding TIMD for the
+        # tempTIMD.
+        TIMD_NAME = TEMP_TIMD_NAME.split('-')[0]
+        FILES_BY_TIMD[TIMD_NAME] = FILES_BY_TIMD.get(TIMD_NAME, []) + [
+            TEMP_TIMD_NAME]
+
+    # Runs calculations for each TIMD that has new data since the last
+    # time it ran.
+    # The calculation of TIMDs causes the corresponding match and team
+    # data to be recalculated. #TODO: Update this comment w/future development
+    for timd in FILES_BY_TIMD:
+        if LATEST_CALCULATIONS_BY_TIMD.get(timd) != FILES_BY_TIMD[timd]:
+            # TODO: add call for calculation process for a single TIMD
+            print(f"Did calculations for {timd}") # TODO: remove me
+            LATEST_CALCULATIONS_BY_TIMD[timd] = FILES_BY_TIMD[timd]
+
 
     # Updates 'lastServerRun' on firebase with epoch time that the
     # server last ran.  Used to monitor if the server is offline by
