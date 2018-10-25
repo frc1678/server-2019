@@ -7,9 +7,10 @@ made."""
 #!/usr/bin/python3.7
 import os
 import time
-import signal
-import sys
 import shutil
+import signal
+import subprocess
+import sys
 import firebase_communicator
 
 # The directory this script is located in
@@ -40,7 +41,7 @@ def delete_temp_timd_data_folder():
     os.makedirs(create_file_path('data'))
 
 def match_num_stream_handler(snapshot):
-    """Runs when 'currentMatchNum' is updated on firebase"""
+    """Runs when 'currentMatchNumber' is updated on firebase"""
     # Validates that data was correctly received and is in its expected format
     if (snapshot['event'] == 'put' and snapshot['path'] == '/' and
             isinstance(snapshot['data'], int)):
@@ -48,12 +49,14 @@ def match_num_stream_handler(snapshot):
         print(snapshot['data'])
 
 def cycle_num_stream_handler(snapshot):
-    """Runs when 'cycleCounter' is updated on firebase"""
+    """Runs when 'cycleNumber' is updated on firebase"""
     # Validates that data was correctly received and is in its expected format
-    if (snapshot['event'] == 'put' and snapshot['path'] == '/' and
-            isinstance(snapshot['data'], int)):
-        #TODO
-        print(snapshot['data'])
+    if (snapshot['event'] == 'put' and snapshot['path'] == '/'):
+        cycle_number = snapshot['data']
+        if cycle_number is None:
+            cycle_number = 0
+        subprocess.call('python3 updateAssignments.py ' +
+                        str(cycle_number), shell=True)
 
 def temp_timd_stream_handler(snapshot):
     """Runs when any new tempTIMDs are uploaded"""
