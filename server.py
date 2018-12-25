@@ -30,15 +30,15 @@ def create_file_path(path_after_main):
     return os.path.join(MAIN_DIRECTORY, path_after_main)
 
 def delete_temp_timd_data_folder():
-    """Deletes the 'data' folder and its contents, then recreates it.
+    """Deletes the 'temp_timds' folder and its contents, then recreates it.
 
     This is to remove any outdated data, since all data is re-downloaded
     when the TEMP_TIMD_STREAM is restarted."""
     # Checks if the directory exists before trying to delete it to avoid
     # causing an error.
-    if os.path.isdir(create_file_path('data')):
-        shutil.rmtree(create_file_path('data'))
-    os.makedirs(create_file_path('data'))
+    if os.path.isdir(create_file_path('data/cache/temp_timds')):
+        shutil.rmtree(create_file_path('data/cache/temp_timds'))
+    os.makedirs(create_file_path('data/cache/temp_timds'))
 
 def register_modified_temp_timd(temp_timd_name):
     """Removes a modified tempTIMD from LATEST_CALCULATIONS_BY_TIMD.
