@@ -1,5 +1,7 @@
 """Used to configure and setup firebase databases given a database URL."""
+# External imports
 import pyrebase
+# No internal imports
 
 def configure_firebase(url=None):
     """Returns a firebase database instance based on a database URL.
