@@ -5,12 +5,14 @@ startup and has automatic restart.  This script runs all the database
 listeners and the while loop that checks if calculations need to be
 made."""
 #!/usr/bin/python3.7
+# External imports
 import os
-import time
 import shutil
 import signal
 import subprocess
 import sys
+import time
+# Internal imports
 import firebase_communicator
 
 # The directory this script is located in

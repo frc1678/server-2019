@@ -1,9 +1,10 @@
 """Updates assignments when the cycle number is changed."""
 #!/usr/bin/python3.7
-
+# External imports
 import json
 import os
 import sys
+# Internal imports
 import firebase_communicator
 
 # The directory this script is located in
