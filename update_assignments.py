@@ -11,7 +11,7 @@ import utils
 # DB stands for database
 DB = firebase_communicator.configure_firebase()
 
-if len(sys.argv) > 1:
+if len(sys.argv) == 2:
     CYCLE_NUMBER = sys.argv[1]
 else:
     print('Error: Cycle number not being passed as an argument. Exiting...')
