@@ -177,13 +177,13 @@ LATEST_CALCULATIONS_BY_TIMD = {}
 
 while True:
     # Goes through each of the streams to check if it is still active
-    for streamName, stream in STREAMS.items():
+    for stream_name, stream in STREAMS.items():
         if not stream.thread.is_alive():
-            print(f"Stream '{streamName}' is dead. Restarting...")
+            print(f"Stream '{stream_name}' is dead. Restarting...")
             # This creates a new stream and then updates the 'STREAMS'
             # dict to contain the new stream. 'create_streams' returns
             # a dict, which is why '.update' is called.
-            STREAMS.update(create_streams([streamName]))
+            STREAMS.update(create_streams([stream_name]))
 
     # Checks list of tempTIMDs from files to determine what calculations
     # are needed.
@@ -194,9 +194,9 @@ while True:
     # the corresponding TIMD).  Used to consolidate tempTIMDs.
     # (Matching tempTIMDs are tempTIMDs for the same TIMD)
     FILES_BY_TIMD = {}
-    for tempTIMD in TEMP_TIMD_FILES:
+    for temp_timd in TEMP_TIMD_FILES:
         # Removes '.txt' ending.
-        TEMP_TIMD_NAME = tempTIMD.split('.')[0]
+        TEMP_TIMD_NAME = temp_timd.split('.')[0]
         # Removes scout ID to find the corresponding TIMD for the
         # tempTIMD.
         TIMD_NAME = TEMP_TIMD_NAME.split('-')[0]
