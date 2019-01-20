@@ -30,7 +30,7 @@ def collect_file_data(queue_path):
 
         # Assigns a variable to the data from the file.
         file_path = create_file_path(os.path.join(queue_path, data_file))
-        with open(file_path, 'r+') as file_data:
+        with open(file_path, 'r') as file_data:
             file_data = json.load(file_data)
 
         # If the name of the file doesn't match with the initial key of the
