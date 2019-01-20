@@ -1,3 +1,4 @@
+#!/usr/bin/python3.7
 """Calculations for a single TIMD.
 
 TIMD stands for Team In Match Data.  TIMD calculations include
@@ -14,7 +15,6 @@ number of tempTIMDs per TIMD may be less than 3, depending on scout
 availability, incorrect scout distribution, or missing data.
 
 Called by server.py with the name of the TIMD to be calculated."""
-#!/usr/bin/python3.7
 # External imports
 import json
 import sys
