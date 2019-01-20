@@ -125,3 +125,4 @@ dmypy.json
 
 ### Repository-specific ###
 data/
+*.csv
