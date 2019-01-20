@@ -122,3 +122,6 @@ dmypy.json
 .venv/
 
 # End of https://www.gitignore.io/api/python
+
+### Repository-specific ###
+data/
