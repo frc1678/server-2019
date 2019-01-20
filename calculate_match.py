@@ -1,10 +1,10 @@
+#!/usr/bin/python3.7
 """Calculations for a single Match.
 
 Match calculations include predictions of the outcome (i.e. score and
 ranking points by alliance) of a match.
 
 Called by server.py with the number of the Match to be calculated."""
-#!/usr/bin/python3.7
 # External imports
 import json
 import sys
