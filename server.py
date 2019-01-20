@@ -5,29 +5,20 @@ startup and has automatic restart.  This script runs all the database
 listeners and the while loop that checks if calculations need to be
 made."""
 #!/usr/bin/python3.7
+# External imports
 import os
-import time
 import shutil
 import signal
 import subprocess
 import sys
+import time
+# Internal imports
 import firebase_communicator
-
-# The directory this script is located in
-MAIN_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
+import utils
 
 # Uses default firebase URL
 # DB stands for database
 DB = firebase_communicator.configure_firebase()
-
-def create_file_path(path_after_main):
-    """Joins the path of the directory this script is in with the path
-    that is passed to this function.
-
-    path_after_main is the path from inside the main directory.  For
-    example, the path_after_main for server.py would be 'server.py'
-    because it is located directly in the main directory."""
-    return os.path.join(MAIN_DIRECTORY, path_after_main)
 
 def delete_temp_timd_data_folder():
     """Deletes the 'temp_timds' folder and its contents, then recreates it.
@@ -36,9 +27,9 @@ def delete_temp_timd_data_folder():
     when the TEMP_TIMD_STREAM is restarted."""
     # Checks if the directory exists before trying to delete it to avoid
     # causing an error.
-    if os.path.isdir(create_file_path('data/cache/temp_timds')):
-        shutil.rmtree(create_file_path('data/cache/temp_timds'))
-    os.makedirs(create_file_path('data/cache/temp_timds'))
+    if os.path.isdir(utils.create_file_path('data/cache/temp_timds')):
+        shutil.rmtree(utils.create_file_path('data/cache/temp_timds'))
+    os.makedirs(utils.create_file_path('data/cache/temp_timds'))
 
 def register_modified_temp_timd(temp_timd_name):
     """Removes a modified tempTIMD from LATEST_CALCULATIONS_BY_TIMD.
@@ -106,12 +97,13 @@ def temp_timd_stream_handler(snapshot):
         # This means that this tempTIMD has been deleted from Firebase
         # and we should delete it from our local copy.
         if temp_timd_value is None:
-            os.remove(create_file_path('data/' + temp_timd_name + '.txt'))
+            os.remove(utils.create_file_path('data/' + temp_timd_name +
+                                             '.txt'))
             # Causes the corresponding TIMD to be recalculated
             register_modified_temp_timd(temp_timd_name)
         else:
-            with open(create_file_path('data/' + temp_timd_name +
-                                       '.txt'), 'w') as file:
+            with open(utils.create_file_path('data/' + temp_timd_name +
+                                             '.txt'), 'w') as file:
                 file.write(temp_timd_value)
             timd_name = temp_timd_name.split('-')[0]
             # This means an already existing tempTIMD has been modified
@@ -177,26 +169,26 @@ LATEST_CALCULATIONS_BY_TIMD = {}
 
 while True:
     # Goes through each of the streams to check if it is still active
-    for streamName, stream in STREAMS.items():
+    for stream_name, stream in STREAMS.items():
         if not stream.thread.is_alive():
-            print(f"Stream '{streamName}' is dead. Restarting...")
+            print(f"Stream '{stream_name}' is dead. Restarting...")
             # This creates a new stream and then updates the 'STREAMS'
             # dict to contain the new stream. 'create_streams' returns
             # a dict, which is why '.update' is called.
-            STREAMS.update(create_streams([streamName]))
+            STREAMS.update(create_streams([stream_name]))
 
     # Checks list of tempTIMDs from files to determine what calculations
     # are needed.
 
     # List of files (tempTIMDs) in the 'data' directory.
-    TEMP_TIMD_FILES = os.listdir(create_file_path('data'))
+    TEMP_TIMD_FILES = os.listdir(utils.create_file_path('data'))
     # Stores groups of matching tempTIMDs under a single key (which is
     # the corresponding TIMD).  Used to consolidate tempTIMDs.
     # (Matching tempTIMDs are tempTIMDs for the same TIMD)
     FILES_BY_TIMD = {}
-    for tempTIMD in TEMP_TIMD_FILES:
+    for temp_timd in TEMP_TIMD_FILES:
         # Removes '.txt' ending.
-        TEMP_TIMD_NAME = tempTIMD.split('.')[0]
+        TEMP_TIMD_NAME = temp_timd.split('.')[0]
         # Removes scout ID to find the corresponding TIMD for the
         # tempTIMD.
         TIMD_NAME = TEMP_TIMD_NAME.split('-')[0]
