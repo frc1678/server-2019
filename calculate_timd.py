@@ -42,3 +42,8 @@ FINAL_TIMD = {}
 with open(utils.create_file_path('data/timds/' + TIMD_NAME + '.json'),
           'w') as file:
     json.dump(FINAL_TIMD, file)
+
+# Save data in Firebase upload queue
+with open(utils.create_file_path('data/upload_queue/timds' + TIMD_NAME +
+                                 '.json'), 'w') as file:
+    json.dump(FINAL_TIMD, file)
