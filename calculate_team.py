@@ -7,7 +7,6 @@ Called by server.py with the number of the Team to be calculated."""
 #!/usr/bin/python3.7
 # External imports
 import json
-import os
 import sys
 # Internal imports
 import utils
