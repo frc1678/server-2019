@@ -17,7 +17,6 @@ Called by server.py with the name of the TIMD to be calculated."""
 #!/usr/bin/python3.7
 # External imports
 import json
-import os
 import sys
 # Internal imports
 import utils
