@@ -1,10 +1,10 @@
+#!/usr/bin/python3.7
 """Calculations for a single Team.
 
 Team calculations include the calculation of data points that are
 reflective of a team's performance across all of their matches.
 
 Called by server.py with the number of the Team to be calculated."""
-#!/usr/bin/python3.7
 # External imports
 import json
 import sys
