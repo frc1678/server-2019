@@ -26,7 +26,7 @@ import utils
 MAIN_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
 # Check to ensure TIMD name is being passed as an argument
-if len(sys.argv) == 1:
+if len(sys.argv) == 2:
     # Extract TIMD name from system argument
     TIMD_NAME = sys.argv[1]
 else:
