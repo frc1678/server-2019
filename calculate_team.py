@@ -31,6 +31,6 @@ with open(utils.create_file_path('data/teams/' + TEAM_NUMBER + '.json'),
     json.dump(FINAL_TEAM_DATA, file)
 
 # Save data in Firebase upload queue
-with open(utils.create_file_path('data/upload_queue/teams' + TEAM_NUMBER
+with open(utils.create_file_path('data/upload_queue/teams/' + TEAM_NUMBER
                                  + '.json'), 'w') as file:
     json.dump(FINAL_TEAM_DATA, file)
