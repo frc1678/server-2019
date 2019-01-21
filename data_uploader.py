@@ -5,46 +5,48 @@ Searches through /upload_queue for data that needs to be uploaded
 since its last calculation, and sends it to firebase.
 """
 
-# External Imports
-import os
+# External imports
 import json
-# Internal Imports
+import os
+# Internal imports
 import firebase_communicator
-from utils import create_file_path
+import utils
 
-# Setting up firebase to be dealt with later
+# Uses default firebase URL
 DB = firebase_communicator.configure_firebase()
 
 # Creating three variables assigned to each of the directories in the
 # /server-2019/data/upload_queue pathway, which are later iterated upon
 # to find all the files needed to upload.
-TIMD_UPLOAD_QUEUE = create_file_path('data/upload_queue/timds/')
-MATCH_UPLOAD_QUEUE = create_file_path('data/upload_queue/matches/')
-TEAM_UPLOAD_QUEUE = create_file_path('data/upload_queue/teams/')
+TIMD_UPLOAD_QUEUE = utils.create_file_path('data/upload_queue/timds/')
+MATCH_UPLOAD_QUEUE = utils.create_file_path('data/upload_queue/matches/')
+TEAM_UPLOAD_QUEUE = utils.create_file_path('data/upload_queue/teams/')
 
 def collect_file_data(queue_path):
-    """Iterates through the data that need to be sent, and collecting them
-    in a dictionary."""
+    """Iterates through the data that need to be sent from the queue path
+    provided as an argument, then collects them in a dictionary."""
     final_dict = {}
     for data_file in os.listdir(queue_path):
 
         # Assigns a variable to the data from the file.
-        file_path = create_file_path(os.path.join(queue_path, data_file))
+        file_path = os.path.join(queue_path, data_file)
         with open(file_path, 'r') as file_data:
             file_data = json.load(file_data)
 
-        # If the name of the file doesn't match with the initial key of the
-        # file, it throws an error and continues on to process other files.
+        # If the name of the file doesn't match with the initial key
+        # (The key inside the file whose value is the timd) of the file,
+        # it throws an error and continues on to process other files.
+        # This would occur when the mechanism that sends to the cache
+        # files fails and sends the wrong timd name. However, if the
+        # name does match, it puts the data in a large dictionary with
+        # the form of /Teams/teamnumber/datapoint to export later.
         if data_file.split('.')[0] != list(file_data)[0]:
-            print('Error: Data cannot be uploaded to firebase - Mismatching key and name')
+            print(f"Error: File name '{data_file.split('.')[0]}' does not match top-level key '{list(file_data)[0]}'.  Exiting...")
         else:
-
-        	# Otherwise, it puts the data in a large dictionary with the form
-        	# of /Teams/1678/datapoint to export later.
             file_name = data_file.split('.')[0]
             path_data = {}
-            for key, value in file_data[file_name].items():
-                path_data[os.path.join(file_name, key)] = value
+            for data_field, data_value in file_data[file_name].items():
+                path_data[os.path.join(file_name, data_field)] = data_value
             final_dict.update(path_data)
     return final_dict
 
