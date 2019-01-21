@@ -1,10 +1,10 @@
+#!/usr/bin/python3.7
 """Main server file.  Runs based on listeners + infinite while loop.
 
 Called directly by a systemctl service that automatically runs on
 startup and has automatic restart.  This script runs all the database
 listeners and the while loop that checks if calculations need to be
 made."""
-#!/usr/bin/python3.7
 # External imports
 import os
 import shutil
