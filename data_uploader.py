@@ -22,9 +22,14 @@ TIMD_UPLOAD_QUEUE = utils.create_file_path('data/upload_queue/timds/')
 MATCH_UPLOAD_QUEUE = utils.create_file_path('data/upload_queue/matches/')
 TEAM_UPLOAD_QUEUE = utils.create_file_path('data/upload_queue/teams/')
 
-def collect_file_data(queue_path):
+# Creates the final dictionary that is sent to firebase in one large
+# pyrebase request.
+FINAL_DATA = {}
+
+def collect_file_data(queue_path, root_key):
     """Iterates through the data that need to be sent from the queue path
-    provided as an argument, then collects them in a dictionary."""
+    provided as an argument, then collects them in a dictionary. This
+    dictionary is then added to the final dictionary."""
     final_dict = {}
     for data_file in os.listdir(queue_path):
 
@@ -33,30 +38,30 @@ def collect_file_data(queue_path):
         with open(file_path, 'r') as file_data:
             file_data = json.load(file_data)
 
+        # Defines the file name for later use.
+        file_name = data_file.split('.')[0]
+
         # If the name of the file doesn't match with the initial key
         # (The key inside the file whose value is the timd) of the file,
         # it throws an error and continues on to process other files.
         # This would occur when the mechanism that sends to the cache
-        # files fails and sends the wrong timd name. However, if the
-        # name does match, it puts the data in a large dictionary with
-        # the form of /Teams/teamnumber/datapoint to export later.
-        if data_file.split('.')[0] != list(file_data)[0]:
+        # files fails and sends the wrong timd name.
+        if file_name != list(file_data)[0]:
             print(f"Error: File name '{data_file.split('.')[0]}' does not match top-level key '{list(file_data)[0]}'.  Exiting...")
+        # If the name does match, it puts the data in a large dictionary
+        # with the form of /Teams/teamnumber/datapoint to export later.
         else:
-            file_name = data_file.split('.')[0]
             path_data = {}
             for data_field, data_value in file_data[file_name].items():
-                path_data[os.path.join(file_name, data_field)] = data_value
+                path_data[os.path.join(root_key, file_name, data_field)] = data_value
             final_dict.update(path_data)
-    return final_dict
+    FINAL_DATA.update(final_dict)
 
-# Collects all the data into three seperate dictionaries to be sent to
-# firebase.
-FINAL_TIMDS = collect_file_data(TIMD_UPLOAD_QUEUE)
-FINAL_MATCHES = collect_file_data(MATCH_UPLOAD_QUEUE)
-FINAL_TEAMS = collect_file_data(TEAM_UPLOAD_QUEUE)
+# Collects all the data from the three seperate queues into the
+# FINAL_DATA dictionary in order to be sent.
+collect_file_data(TIMD_UPLOAD_QUEUE, 'TeamInMatchDatas')
+collect_file_data(MATCH_UPLOAD_QUEUE, 'Matches')
+collect_file_data(TEAM_UPLOAD_QUEUE, 'Teams')
 
 # Sends the data to firebase.
-DB.child('TeamInMatchDatas').update(FINAL_TIMDS)
-DB.child('Matches').update(FINAL_MATCHES)
-DB.child('Teams').update(FINAL_TEAMS)
+DB.update(FINAL_DATA)
