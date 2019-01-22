@@ -276,8 +276,8 @@ for data_field in list(TEMP_TIMDS[SPRKING]):
         # point is missing,
         # Creates a dictionary with how many times an item appeared in
         # the comparison list.
-        occurence_list = {data_field : data_field_comparison_list.count(data_field)
-                          for data_field in set(data_field_comparison_list)}
+        occurence_list = {data_field : data_field_comparison_list.values().count(data_field)
+                          for data_field in set(data_field_comparison_list.values())}
 
         # If the highest occurence on the occurence list is the same as
         # the lowest occurence, the correct value for the datapoint is
@@ -302,13 +302,13 @@ for data_field in list(TEMP_TIMDS[SPRKING]):
     else:
         # In order to compute the timeline properly, it is split into
         # a list of the timelines.
-        timelines = [temp_timd['timeline'] for temp_timd in TEMP_TIMDS]
+        timelines = {scout : temp_timd['timeline'] for scout, temp_timd in TEMP_TIMDS.items()}
 
         # If the list of timelines only includes one timeline, that
         # timeline is taken as the correct one and put into the final
         # TIMD.
-        if len(timelines) == 1:
-            FINAL_TIMD['timeline'] = timelines[0]
+        if len(timelines.values()) == 1:
+            FINAL_TIMD['timeline'] = timelines[SPRKING]
         #TODO: Program case of 2 tempTIMDs
         
         # If the list has three tempTIMDs, the process for computation
