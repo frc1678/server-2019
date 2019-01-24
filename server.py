@@ -21,15 +21,15 @@ import utils
 DB = firebase_communicator.configure_firebase()
 
 def delete_temp_timd_data_folder():
-    """Deletes the 'data' folder and its contents, then recreates it.
+    """Deletes the 'temp_timds' folder and its contents, then recreates it.
 
     This is to remove any outdated data, since all data is re-downloaded
     when the TEMP_TIMD_STREAM is restarted."""
     # Checks if the directory exists before trying to delete it to avoid
     # causing an error.
-    if os.path.isdir(utils.create_file_path('data')):
-        shutil.rmtree(utils.create_file_path('data'))
-    os.makedirs(utils.create_file_path('data'))
+    if os.path.isdir(utils.create_file_path('data/cache/temp_timds')):
+        shutil.rmtree(utils.create_file_path('data/cache/temp_timds'))
+    os.makedirs(utils.create_file_path('data/cache/temp_timds'))
 
 def register_modified_temp_timd(temp_timd_name):
     """Removes a modified tempTIMD from LATEST_CALCULATIONS_BY_TIMD.
@@ -97,13 +97,13 @@ def temp_timd_stream_handler(snapshot):
         # This means that this tempTIMD has been deleted from Firebase
         # and we should delete it from our local copy.
         if temp_timd_value is None:
-            os.remove(utils.create_file_path('data/' + temp_timd_name +
-                                             '.txt'))
+            os.remove(utils.create_file_path('data/cache/temp_timds' +
+                                             temp_timd_name + '.txt'))
             # Causes the corresponding TIMD to be recalculated
             register_modified_temp_timd(temp_timd_name)
         else:
-            with open(utils.create_file_path('data/' + temp_timd_name +
-                                             '.txt'), 'w') as file:
+            with open(utils.create_file_path('data/cache/temp_timds' + \
+                      temp_timd_name + '.txt'), 'w') as file:
                 file.write(temp_timd_value)
             timd_name = temp_timd_name.split('-')[0]
             # This means an already existing tempTIMD has been modified
@@ -181,7 +181,8 @@ while True:
     # are needed.
 
     # List of files (tempTIMDs) in the 'data' directory.
-    TEMP_TIMD_FILES = os.listdir(utils.create_file_path('data'))
+    TEMP_TIMD_FILES = os.listdir(utils.create_file_path(
+        'data/cache/temp_timds'))
     # Stores groups of matching tempTIMDs under a single key (which is
     # the corresponding TIMD).  Used to consolidate tempTIMDs.
     # (Matching tempTIMDs are tempTIMDs for the same TIMD)
