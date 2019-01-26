@@ -244,6 +244,15 @@ TEMP_TIMDS = {'h' : {
     ],
 }}
 
+def basic_timeline_consolidation(timelines, *types):
+    """Takes certain action types out of the timeline and consolidates
+    them seperately. Types is an *argv argument which can take in as
+    many action types that need to be consolidated together. Returns
+    a timeline only made up of action types that were passed as args.
+    """
+
+
+
 FINAL_TIMD = {}
 
 # When consolidating non-timed keys, it is easy to consolidate them,
@@ -310,13 +319,27 @@ for data_field in list(TEMP_TIMDS[SPRKING]):
         if len(timelines.values()) == 1:
             FINAL_TIMD['timeline'] = timelines[SPRKING]
         #TODO: Program case of 2 tempTIMDs
-        
+
         # If the list has three tempTIMDs, the process for computation
         # is more complicated.
         else:
-             
+            # Creates the final timeline which is passed as the
+            # timeline for the final timd at the end of consolidation.
+            final_timeline = []
 
-print(FINAL_TIMD)
+            # Before the hard part of consolidating intakes and
+            # placements comes in, it seperates other types of actions
+            # that aren't necessary to be consolidated with them and
+            # passes them as arguments to the basic consolidation
+            # function.
+
+
+
+
+
+if 
+:
+	passprint(FINAL_TIMD)
 
 
 
