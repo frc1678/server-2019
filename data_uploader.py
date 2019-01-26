@@ -22,10 +22,6 @@ TIMD_UPLOAD_QUEUE = utils.create_file_path('data/upload_queue/timds/')
 MATCH_UPLOAD_QUEUE = utils.create_file_path('data/upload_queue/matches/')
 TEAM_UPLOAD_QUEUE = utils.create_file_path('data/upload_queue/teams/')
 
-# Creates the final dictionary that is sent to firebase in one large
-# pyrebase request.
-FINAL_DATA = {}
-
 def collect_file_data(queue_path, root_key):
     """Iterates through the data that need to be sent from the queue path
     provided as an argument, then collects them in a dictionary. This
@@ -54,6 +50,11 @@ def collect_file_data(queue_path, root_key):
             for data_field, data_value in file_data[file_name].items():
                 path_data[os.path.join(root_key, file_name, data_field)] = data_value
             FINAL_DATA.update(path_data)
+
+
+# Creates the final dictionary that is sent to firebase in one large
+# pyrebase request.
+FINAL_DATA = {}
 
 # Collects all the data from the three seperate queues into the
 # FINAL_DATA dictionary in order to be sent.
