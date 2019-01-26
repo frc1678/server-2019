@@ -30,7 +30,6 @@ def collect_file_data(queue_path, root_key):
     """Iterates through the data that need to be sent from the queue path
     provided as an argument, then collects them in a dictionary. This
     dictionary is then added to the final dictionary."""
-    final_dict = {}
     for data_file in os.listdir(queue_path):
 
         # Assigns a variable to the data from the file.
@@ -54,8 +53,7 @@ def collect_file_data(queue_path, root_key):
             path_data = {}
             for data_field, data_value in file_data[file_name].items():
                 path_data[os.path.join(root_key, file_name, data_field)] = data_value
-            final_dict.update(path_data)
-    FINAL_DATA.update(final_dict)
+            FINAL_DATA.update(path_data)
 
 # Collects all the data from the three seperate queues into the
 # FINAL_DATA dictionary in order to be sent.
