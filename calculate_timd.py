@@ -244,6 +244,11 @@ TEMP_TIMDS = {'h' : {
     ],
 }}
 
+def time_consolidation(times):
+    """Takes a certain amount of time options and consolidates them
+    using facts and logic. Returns the correct time."""
+    
+
 def basic_timeline_consolidation(input_timelines, *types):
     """Takes certain action types out of the timeline and consolidates
     them seperately. Types is an *argv argument which can take in as
@@ -280,6 +285,9 @@ def climb_consolidation(input_timelines):
         for action in timeline:
             if action.get('type') == 'climb':
                 simplified_timelines[scout] = action
+
+    #TODO: Create more complex system to consolidate
+    return [simplified_timelines[SPRKING]]
 
 FINAL_TIMD = {}
 
@@ -369,6 +377,7 @@ for data_field in list(TEMP_TIMDS[SPRKING]):
             # Also consolidates climb seperately in order to seperate it
             # from intakes and placements.
             final_timeline.append(climb_consolidation(timelines))
+            print(final_timeline)
 
 
 
