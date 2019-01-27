@@ -18,7 +18,7 @@ DB = firebase_communicator.configure_firebase()
 def collect_file_data(data_file, root_key):
     """Collects data from the data_file and returns it."""
     # Assigns a variable to the data from the file.
-    with open(file_path, 'r') as file_data:
+    with open(data_file, 'r') as file_data:
         file_data = json.load(file_data)
 
     # Defines the file name for later use.
