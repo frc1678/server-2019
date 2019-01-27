@@ -18,7 +18,6 @@ DB = firebase_communicator.configure_firebase()
 def collect_file_data(data_file, root_key):
     """Collects data from the data_file and returns it."""
     # Assigns a variable to the data from the file.
-    file_path = utils.create_file_path(data_file)
     with open(file_path, 'r') as file_data:
         file_data = json.load(file_data)
 
@@ -53,7 +52,8 @@ FIREBASE_TO_CACHE_KEY = {
 for firebase_key, cache_key in FIREBASE_TO_CACHE_KEY.items():
     for file in os.listdir(utils.create_file_path(
             'data/upload_queue/' + cache_key)):
-        queue_file_path = os.path.join('data/upload_queue/', cache_key, file)
+        queue_file_path = utils.create_file_path('data/upload_queue/' +
+                                                 cache_key + '/' + file)
 
         # After the path is determined, collects data and uses it to
         # update the FINAL_DATA dictionary.
