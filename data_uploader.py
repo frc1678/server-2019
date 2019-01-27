@@ -15,52 +15,49 @@ import utils
 # Uses default firebase URL
 DB = firebase_communicator.configure_firebase()
 
-# Creating three variables assigned to each of the directories in the
-# /server-2019/data/upload_queue pathway, which are later iterated upon
-# to find all the files needed to upload.
-TIMD_UPLOAD_QUEUE = utils.create_file_path('data/upload_queue/timds/')
-MATCH_UPLOAD_QUEUE = utils.create_file_path('data/upload_queue/matches/')
-TEAM_UPLOAD_QUEUE = utils.create_file_path('data/upload_queue/teams/')
+def collect_file_data(data_file, root_key):
+    """Collects data from the data_file and returns it."""
+    # Assigns a variable to the data from the file.
+    file_path = utils.create_file_path(data_file)
+    with open(file_path, 'r') as file_data:
+        file_data = json.load(file_data)
 
-def collect_file_data(queue_path, root_key):
-    """Iterates through the data that need to be sent from the queue path
-    provided as an argument, then collects them in a dictionary. This
-    dictionary is then added to the final dictionary."""
-    for data_file in os.listdir(queue_path):
+    # Defines the file name for later use.
+    file_name = data_file.split('.')[0].split('/')[-1]
 
-        # Assigns a variable to the data from the file.
-        file_path = os.path.join(queue_path, data_file)
-        with open(file_path, 'r') as file_data:
-            file_data = json.load(file_data)
-
-        # Defines the file name for later use.
-        file_name = data_file.split('.')[0]
-
-        # If the name of the file doesn't match with the initial key
-        # (The key inside the file whose value is the timd) of the file,
-        # it throws an error and continues on to process other files.
-        # This would occur when the mechanism that sends to the cache
-        # files fails and sends the wrong timd name.
-        if file_name != list(file_data)[0]:
-            print(f"Error: File name '{data_file.split('.')[0]}' does not match top-level key '{list(file_data)[0]}'.  Exiting...")
-        # If the name does match, it puts the data in a large dictionary
-        # with the form of /Teams/teamnumber/datapoint to export later.
-        else:
-            path_data = {}
-            for data_field, data_value in file_data[file_name].items():
-                path_data[os.path.join(root_key, file_name, data_field)] = data_value
-            FINAL_DATA.update(path_data)
-
+    # Iterates through all the data points inside the file and
+    # creates keys on the FINAL_DATA dictionary with keys in the
+    # format of /root firebase key/key/datapoint to export later.
+    path_data = {}
+    for data_field, data_value in file_data.items():
+        path_data[os.path.join(root_key, file_name, data_field)] = data_value
+    return path_data
 
 # Creates the final dictionary that is sent to firebase in one large
 # pyrebase request.
 FINAL_DATA = {}
 
-# Collects all the data from the three seperate queues into the
-# FINAL_DATA dictionary in order to be sent.
-collect_file_data(TIMD_UPLOAD_QUEUE, 'TeamInMatchDatas')
-collect_file_data(MATCH_UPLOAD_QUEUE, 'Matches')
-collect_file_data(TEAM_UPLOAD_QUEUE, 'Teams')
+# Creates a dictionary mapping all the firebase keys to the cache
+# directory keys.
+FIREBASE_TO_CACHE_KEY = {
+    'TeamInMatchDatas': 'timds',
+    'Matches': 'matches',
+    'Teams': 'teams'
+}
+
+# Adds all the files to the UPLOAD_QUEUES dictionary. Does this by
+# first iterating through the three upload queues, then iterating
+# through all the files in the queue. Then, it adds each file path
+# to the list inside the UPLOAD_QUEUES dictionary in the format of
+# data/upload_queue/directory/file_name.
+for firebase_key, cache_key in FIREBASE_TO_CACHE_KEY.items():
+    for file in os.listdir(utils.create_file_path(
+            'data/upload_queue/' + cache_key)):
+        queue_file_path = os.path.join('data/upload_queue/', cache_key, file)
+
+        # After the path is determined, collects data and uses it to
+        # update the FINAL_DATA dictionary.
+        FINAL_DATA.update(collect_file_data(queue_file_path, firebase_key))
 
 # Sends the data to firebase.
 DB.update(FINAL_DATA)
