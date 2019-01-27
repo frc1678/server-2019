@@ -262,13 +262,9 @@ def basic_timeline_consolidation(input_timelines, *types):
             if action.get('type') in types:
                 simplified_timelines[scout].append(action)
 
-    # Makes a list of all the 
-
-    
-
-
-
-
+    #TODO: Create more complex system to consolidate
+    # Trusts the simplified timeline of the scout with the best spr
+    return simplified_timelines[SPRKING]
 
 FINAL_TIMD = {}
 
