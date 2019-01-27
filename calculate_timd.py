@@ -324,7 +324,9 @@ for data_field in list(TEMP_TIMDS[SPRKING]):
     else:
         # In order to compute the timeline properly, it is split into
         # a list of the timelines.
-        timelines = {scout : temp_timd.get('timeline') for scout, temp_timd in TEMP_TIMDS.items() if temp_timd.get('timeline') is not None}
+        timelines = {scout : temp_timd.get('timeline') for
+                     scout, temp_timd in TEMP_TIMDS.items()
+                     if temp_timd.get('timeline') is not None}
 
         # If the list of timelines only includes one timeline, that
         # timeline is taken as the correct one and put into the final
