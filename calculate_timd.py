@@ -37,7 +37,7 @@ TIMD_NAME = 't'
 # CONSOLIDATION OF TEMPTIMDS
 
 #TODO: Add implementation for TEMP_TIMDS and sprking
-SPRKING = 0
+SPRKING = 'h'
 TEMP_TIMDS = {'h' : {
     'startingLevel': 2,
     'crossedHabLine': True,
@@ -244,12 +244,29 @@ TEMP_TIMDS = {'h' : {
     ],
 }}
 
-def basic_timeline_consolidation(timelines, *types):
+def basic_timeline_consolidation(input_timelines, *types):
     """Takes certain action types out of the timeline and consolidates
     them seperately. Types is an *argv argument which can take in as
     many action types that need to be consolidated together. Returns
     a timeline only made up of action types that were passed as args.
     """
+
+    # The list of three timelines with only the types specified in the
+    # function.
+    simplified_timelines = {scout : [] for scout in input_timelines.keys()}
+
+    # Takes the three different timelines and cuts out any types of
+    # data points which are not the specified types.
+    for scout, timeline in input_timelines.items():
+        for action in timeline:
+            if action.get('type') in types:
+                simplified_timelines[scout].append(action)
+
+    # Makes a list of all the 
+
+    
+
+
 
 
 
@@ -285,7 +302,7 @@ for data_field in list(TEMP_TIMDS[SPRKING]):
         # point is missing,
         # Creates a dictionary with how many times an item appeared in
         # the comparison list.
-        occurence_list = {data_field : data_field_comparison_list.values().count(data_field)
+        occurence_list = {data_field : list(data_field_comparison_list.values()).count(data_field)
                           for data_field in set(data_field_comparison_list.values())}
 
         # If the highest occurence on the occurence list is the same as
@@ -311,7 +328,7 @@ for data_field in list(TEMP_TIMDS[SPRKING]):
     else:
         # In order to compute the timeline properly, it is split into
         # a list of the timelines.
-        timelines = {scout : temp_timd['timeline'] for scout, temp_timd in TEMP_TIMDS.items()}
+        timelines = {scout : temp_timd.get('timeline') for scout, temp_timd in TEMP_TIMDS.items() if temp_timd.get('timeline') is not None}
 
         # If the list of timelines only includes one timeline, that
         # timeline is taken as the correct one and put into the final
@@ -332,16 +349,7 @@ for data_field in list(TEMP_TIMDS[SPRKING]):
             # that aren't necessary to be consolidated with them and
             # passes them as arguments to the basic consolidation
             # function.
-
-
-
-
-
-if 
-:
-	passprint(FINAL_TIMD)
-
-
+            basic_timeline_consolidation(timelines, 'spill')
 
 
 
