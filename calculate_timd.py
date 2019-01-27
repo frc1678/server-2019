@@ -251,8 +251,8 @@ def basic_timeline_consolidation(input_timelines, *types):
     a timeline only made up of action types that were passed as args.
     """
 
-    # The list of three timelines with only the types specified in the
-    # function.
+    # The dictionary of three timelines with only the types specified
+    # in the function.
     simplified_timelines = {scout : [] for scout in input_timelines.keys()}
 
     # Takes the three different timelines and cuts out any types of
@@ -265,6 +265,21 @@ def basic_timeline_consolidation(input_timelines, *types):
     #TODO: Create more complex system to consolidate
     # Trusts the simplified timeline of the scout with the best spr
     return simplified_timelines[SPRKING]
+
+def climb_consolidation(input_timelines):
+    """Takes climb out of the timelines of the tempTIMDs and
+    consolidates it. Returns a timeline only with climb inside it
+    to add to the final timeline for the timd."""
+
+    # The dictionary of scout name to climb dictionary.
+    simplified_timelines = {}
+
+    # Fills in the simplified timelines dictionary with the scout and
+    # the climb dictionary from the three tempTIMDs.
+    for scout, timeline in input_timelines.items():
+        for action in timeline:
+            if action.get('type') == 'climb':
+                simplified_timelines[scout] = action
 
 FINAL_TIMD = {}
 
@@ -347,7 +362,13 @@ for data_field in list(TEMP_TIMDS[SPRKING]):
             # that aren't necessary to be consolidated with them and
             # passes them as arguments to the basic consolidation
             # function.
-            basic_timeline_consolidation(timelines, 'spill')
+            final_timeline.append(basic_timeline_consolidation(timelines, 'spill'))
+            final_timeline.append(basic_timeline_consolidation(timelines, 'incap', 'unincap'))
+            final_timeline.append(basic_timeline_consolidation(timelines, 'drop'))
+
+            # Also consolidates climb seperately in order to seperate it
+            # from intakes and placements.
+            final_timeline.append(climb_consolidation(timelines))
 
 
 
