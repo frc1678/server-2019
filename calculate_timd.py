@@ -269,7 +269,7 @@ def basic_timeline_consolidation(input_timelines, *types):
 
     #TODO: Create more complex system to consolidate
     # Trusts the simplified timeline of the scout with the best spr
-    return simplified_timelines[SPRKING]
+    return simplified_timelines[SPRKING][0]
 
 def climb_consolidation(input_timelines):
     """Takes climb out of the timelines of the tempTIMDs and
@@ -287,7 +287,7 @@ def climb_consolidation(input_timelines):
                 simplified_timelines[scout] = action
 
     #TODO: Create more complex system to consolidate
-    return [simplified_timelines[SPRKING]]
+    return simplified_timelines[SPRKING]
 
 FINAL_TIMD = {}
 
