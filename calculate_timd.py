@@ -272,6 +272,30 @@ def time_consolidation(times):
     """Takes a certain amount of time options and consolidates them
     using facts and logic. Returns the correct time."""
 
+def max_occurences(comparison_list):
+    """Takes in a dictionary of scouts to their input on a certain
+    data point. Returns the majority rule, or None if there is no
+    clear winner."""
+
+    # If there are NoneTypes in the list, truncnate them, they mess
+    # up later calculation. However, if they all are None, the data
+    # point is missing,
+    # Creates a dictionary with how many times an item appeared in
+    # the comparison list.
+    occurence_list = {data_field : list(comparison_list.values()).count(data_field)
+                      for data_field in set(comparison_list.values())}
+
+    # If the highest occurence on the occurence list is the same as
+    # the lowest occurence, the correct value for the datapoint is
+    # the value output by the scout with the best spr. This triggers
+    # both when all the scout values are the same (The max and min
+    # would both be three) and when all the scout values are
+    # different (The max and min are both 1). In the case of any
+    # other scenario, the max is trusted because it would suggest
+    # the max is the 2 in a 2 scout versus 1 split decision.
+    if max(occurence_list.values()) == min(occurence_list.values()):
+        return None
+    return max(occurence_list, key=occurence_list.get)
 
 def basic_timeline_consolidation(input_timelines, *types):
     """Takes certain action types out of the timeline and consolidates
@@ -291,6 +315,12 @@ def basic_timeline_consolidation(input_timelines, *types):
             if action.get('type') in types:
                 simplified_timelines[scout].append(action)
 
+    # Creates a dictionary of scouts to the amount of actions of the
+    # specified type are in the timeline.
+    count_timelines = {scout : len(timeline) for scout, timeline in simplified_timelines.items()}
+
+    # Finds the majority amount of actions in the timeline to see
+    # which 
     #TODO: Create more complex system to consolidate
     # Trusts the simplified timeline of the scout with the best spr
     return simplified_timelines[SPRKING]
@@ -361,26 +391,14 @@ for data_field in list(TEMP_TIMDS[SPRKING]):
         data_field_comparison_list = {scout : dicti.get(data_field) for scout, dicti in
                                       TEMP_TIMDS.items() if dicti.get(data_field) is not None}
 
-        # If there are NoneTypes in the list, truncnate them, they mess
-        # up later calculation. However, if they all are None, the data
-        # point is missing,
-        # Creates a dictionary with how many times an item appeared in
-        # the comparison list.
-        occurence_list = {data_field : list(data_field_comparison_list.values()).count(data_field)
-                          for data_field in set(data_field_comparison_list.values())}
+        # Uses the max_occurences function to find the correct value 
+        # for the data field.
+        data_occurence_max = max_occurences(data_field_comparison_list)
 
-        # If the highest occurence on the occurence list is the same as
-        # the lowest occurence, the correct value for the datapoint is
-        # the value output by the scout with the best spr. This triggers
-        # both when all the scout values are the same (The max and min
-        # would both be three) and when all the scout values are
-        # different (The max and min are both 1). In the case of any
-        # other scenario, the max is trusted because it would suggest
-        # the max is the 2 in a 2 scout versus 1 split decision.
-        if max(occurence_list.values()) == min(occurence_list.values()):
+        if data_occurence_max is None:
             FINAL_TIMD[data_field] = TEMP_TIMDS[SPRKING][data_field]
         else:
-            FINAL_TIMD[data_field] = max(occurence_list, key=occurence_list.get)
+            FINAL_TIMD[data_field] = data_occurence_max
     # If the data field name is not any of the non-timed data keys or
     # the timeline (Which is computed later) it shouldn't be
     # consolidated. This group of data fields in the tempTIMDs is
