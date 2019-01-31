@@ -264,12 +264,14 @@ def basic_timeline_consolidation(input_timelines, *types):
     # data points which are not the specified types.
     for scout, timeline in input_timelines.items():
         for action in timeline:
+            print(action.get('type'))
             if action.get('type') in types:
+                print('     Passed')
                 simplified_timelines[scout].append(action)
 
     #TODO: Create more complex system to consolidate
     # Trusts the simplified timeline of the scout with the best spr
-    return simplified_timelines[SPRKING][0]
+    return simplified_timelines[SPRKING]
 
 def climb_consolidation(input_timelines):
     """Takes climb out of the timelines of the tempTIMDs and
@@ -370,9 +372,9 @@ for data_field in list(TEMP_TIMDS[SPRKING]):
             # that aren't necessary to be consolidated with them and
             # passes them as arguments to the basic consolidation
             # function.
-            final_timeline.append(basic_timeline_consolidation(timelines, 'spill'))
-            final_timeline.append(basic_timeline_consolidation(timelines, 'incap', 'unincap'))
-            final_timeline.append(basic_timeline_consolidation(timelines, 'drop'))
+            final_timeline += basic_timeline_consolidation(timelines, 'spill')
+            final_timeline += basic_timeline_consolidation(timelines, 'incap', 'unincap')
+            final_timeline += basic_timeline_consolidation(timelines, 'drop')
 
             # Also consolidates climb seperately in order to seperate it
             # from intakes and placements.
