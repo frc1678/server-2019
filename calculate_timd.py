@@ -72,6 +72,14 @@ TEMP_TIMDS = {'h' : {
             'time': '111.1',
         },
         {
+            'type': 'startDefense',
+            'time': '111.3'
+        },
+        {
+            'type': 'endDefense',
+            'time': '111.5'
+        },
+        {
             'type': 'drop',
             'time': '112.1',
             'piece': 'orange',
@@ -138,6 +146,14 @@ TEMP_TIMDS = {'h' : {
         {
             'type': 'unincap',
             'time': '111.1',
+        },
+        {
+            'type': 'startDefense',
+            'time': '111.3'
+        },
+        {
+            'type': 'endDefense',
+            'time': '111.5'
         },
         {
             'type': 'drop',
@@ -208,6 +224,14 @@ TEMP_TIMDS = {'h' : {
             'time': '111.1',
         },
         {
+            'type': 'startDefense',
+            'time': '111.3'
+        },
+        {
+            'type': 'endDefense',
+            'time': '111.5'
+        },
+        {
             'type': 'drop',
             'time': '112.1',
             'piece': 'orange',
@@ -247,7 +271,7 @@ TEMP_TIMDS = {'h' : {
 def time_consolidation(times):
     """Takes a certain amount of time options and consolidates them
     using facts and logic. Returns the correct time."""
-    
+
 
 def basic_timeline_consolidation(input_timelines, *types):
     """Takes certain action types out of the timeline and consolidates
@@ -264,9 +288,28 @@ def basic_timeline_consolidation(input_timelines, *types):
     # data points which are not the specified types.
     for scout, timeline in input_timelines.items():
         for action in timeline:
-            print(action.get('type'))
             if action.get('type') in types:
-                print('     Passed')
+                simplified_timelines[scout].append(action)
+
+    #TODO: Create more complex system to consolidate
+    # Trusts the simplified timeline of the scout with the best spr
+    return simplified_timelines[SPRKING]
+
+def cycle_consolidation(input_timelines):
+    """Takes intakes and placements out of the timelines in the
+    tempTIMDs and consolidates them. Returns a timeline only with
+    only intakes and placements inside it to add to the final
+    timeline for the timd."""
+
+    # The dictionary of three timelines with only intakes and
+    # placements.
+    simplified_timelines = {scout : [] for scout in input_timelines.keys()}
+
+    # Takes the three different timelines and cuts out any types of
+    # data points which are not intakes and placements
+    for scout, timeline in input_timelines.items():
+        for action in timeline:
+            if action.get('type') in ['intake', 'placement', 'drop']:
                 simplified_timelines[scout].append(action)
 
     #TODO: Create more complex system to consolidate
@@ -374,12 +417,23 @@ for data_field in list(TEMP_TIMDS[SPRKING]):
             # function.
             final_timeline += basic_timeline_consolidation(timelines, 'spill')
             final_timeline += basic_timeline_consolidation(timelines, 'incap', 'unincap')
-            final_timeline += basic_timeline_consolidation(timelines, 'drop')
+            final_timeline += basic_timeline_consolidation(timelines, 'startDefense', 'endDefense')
 
             # Also consolidates climb seperately in order to seperate it
             # from intakes and placements.
             final_timeline.append(climb_consolidation(timelines))
-            print(final_timeline)
+
+            # Consolidates intakes and placements seperately, because
+            # these are the main cycles of the game.
+            final_timeline += cycle_consolidation(timelines)
+
+            # Once the timeline is finally completed, it is sorted by
+            # time, and added to the final timd.
+            FINAL_TIMD['timeline'] = sorted(final_timeline, key=lambda action:
+            	                        float(action.get('time')))
+
+
+
 
 
 
