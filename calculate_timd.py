@@ -296,7 +296,7 @@ def max_occurences(comparison_list):
     # other scenario, the max is trusted because it would suggest
     # the max is the 2 in a 2 scout versus 1 split decision.
     if max(occurence_list.values()) == min(occurence_list.values()):
-        return None
+        return comparison_list[SPRKING]
     return max(occurence_list, key=occurence_list.get)
 
 def basic_timeline_consolidation(input_timelines, *types):
@@ -392,8 +392,10 @@ for data_field in list(TEMP_TIMDS[SPRKING]):
         # is using .get and not simply referencing the key out of the
         # dictionary because .get doesn't error out when the key doesn't
         # exist. It instead returns NoneType).
-        data_field_comparison_list = {scout : dicti.get(data_field) for scout, dicti in
-                                      TEMP_TIMDS.items() if dicti.get(data_field) is not None}
+        data_field_comparison_list = {scout : dicti.get(data_field) for
+                                      scout, dicti in TEMP_TIMDS.items()
+                                      if dicti.get(data_field) is not
+                                      None}
 
         # Uses the max_occurences function to find the correct value 
         # for the data field.
