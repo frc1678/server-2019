@@ -1,7 +1,7 @@
 """Uploads data to the firebase from the cached data files
 inside the server-2019 folder.
 
-Searches through /upload_queue for data that needs to be uploaded
+Searches through '/upload_queue/' for data that needs to be uploaded
 since its last calculation, and sends it to firebase.
 """
 
@@ -20,7 +20,7 @@ def collect_file_data(data_file, root_key):
 
     Takes data from the file passed as an argument, and forms
     each of the data points inside the file into a pathway added
-    to a dictionary which is returned. The passed argument 
+    to a dictionary which is returned. The passed argument
     data_file is the path of the specific file that data is
     taken from. root_key is the basic key on the firebase in
     which the data is eventually sent, limited to only 'Teams',
