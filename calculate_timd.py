@@ -320,7 +320,9 @@ def basic_timeline_consolidation(input_timelines, *types):
     count_timelines = {scout : len(timeline) for scout, timeline in simplified_timelines.items()}
 
     # Finds the majority amount of actions in the timeline to see
-    # which 
+    # which amount of actions is the correct amount.
+    
+
     #TODO: Create more complex system to consolidate
     # Trusts the simplified timeline of the scout with the best spr
     return simplified_timelines[SPRKING]
