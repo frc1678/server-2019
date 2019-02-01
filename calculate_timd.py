@@ -285,6 +285,8 @@ def max_occurences(comparison_list):
     occurence_list = {data_field : list(comparison_list.values()).count(data_field)
                       for data_field in set(comparison_list.values())}
 
+    print(comparison_list)
+    print(occurence_list)
     # If the highest occurence on the occurence list is the same as
     # the lowest occurence, the correct value for the datapoint is
     # the value output by the scout with the best spr. This triggers
@@ -321,7 +323,7 @@ def basic_timeline_consolidation(input_timelines, *types):
 
     # Finds the majority amount of actions in the timeline to see
     # which amount of actions is the correct amount.
-    
+    majority = max_occurences(count_timelines)
 
     #TODO: Create more complex system to consolidate
     # Trusts the simplified timeline of the scout with the best spr
