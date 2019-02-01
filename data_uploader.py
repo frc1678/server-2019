@@ -1,4 +1,4 @@
-"""File to upload data to the firebase from the cached data files
+"""Uploads data to the firebase from the cached data files
 inside the server-2019 folder.
 
 Searches through /upload_queue for data that needs to be uploaded
@@ -16,12 +16,20 @@ import utils
 DB = firebase_communicator.configure_firebase()
 
 def collect_file_data(data_file, root_key):
-    """Collects data from the data_file and returns it."""
-    # Assigns a variable to the data from the file.
+    """Collects data from the data_file and returns it.
+
+    Takes data from the file passed as an argument, and forms
+    each of the data points inside the file into a pathway added
+    to a dictionary which is returned. The passed argument 
+    data_file is the path of the specific file that data is
+    taken from. root_key is the basic key on the firebase in
+    which the data is eventually sent, limited to only 'Teams',
+    'Matches', and 'TeamInMatchDatas'. """
     with open(data_file, 'r') as file_data:
         file_data = json.load(file_data)
 
-    # Defines the file name for later use.
+    # Defines the file name for to use when defining keys in the
+    # path_data dictionary.
     file_name = data_file.split('.')[0].split('/')[-1]
 
     # Iterates through all the data points inside the file and
