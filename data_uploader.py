@@ -1,8 +1,8 @@
 """Uploads data to the firebase from the cached data files inside the
 server-2019 folder.
 
-Searches through the 'upload_queue' directory for data that needs to be uploaded
-since its last calculation, and sends it to firebase.
+Searches through the 'upload_queue' directory for data that needs to be
+uploaded since its last calculation, and sends it to firebase.
 """
 
 # External imports
