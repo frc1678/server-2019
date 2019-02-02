@@ -48,8 +48,8 @@ FINAL_DATA = {}
 # Firebase key names to the equivilent local cache key names
 FIREBASE_TO_CACHE_KEY = {
     'TIMDs': 'timds',
+    'Teams': 'teams',
     'Matches': 'matches',
-    'Teams': 'teams'
 }
 
 for firebase_key, cache_key in FIREBASE_TO_CACHE_KEY.items():
