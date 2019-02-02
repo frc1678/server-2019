@@ -31,12 +31,14 @@ def collect_file_data(data_file, root_key):
     # Extracts file name (removes '.json' ending and parent directories)
     file_name = data_file.split('.')[0].split('/')[-1]
 
-    # Iterates through all the data points inside the file and creates
-    # keys on the FINAL_DATA dictionary with keys in the format of
-    # /root firebase key/key/datapoint to export later.
     path_data = {}
+    # Converts data from local format to the Pyrebase multi-location
+    # update format.
+    # Pyrebase multi-location update format:
+    # "/<firebase-collection>/<file-name>/<data-field>": <data-value>
     for data_field, data_value in file_data.items():
         path_data[os.path.join(root_key, file_name, data_field)] = data_value
+
     return path_data
 
 FINAL_DATA = {}
@@ -54,8 +56,7 @@ for firebase_key, cache_key in FIREBASE_TO_CACHE_KEY.items():
         file_path = utils.create_file_path('data/upload_queue/' +
                                            cache_key + '/' + file)
 
-        # After the path is determined, collects data and uses it to
-        # update the FINAL_DATA dictionary.
+        # Collects and adds the data from a single file to 'FINAL_DATA'
         FINAL_DATA.update(collect_file_data(file_path, firebase_key))
 
 # Sends the data to firebase.
