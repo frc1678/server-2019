@@ -32,16 +32,16 @@ def collect_file_data(data_file, firebase_collection):
     # (e.g. "1678Q3" [TIMD] or "1" [Match])
     document_name = data_file.split('.')[0].split('/')[-1]
 
-    path_data = {}
+    multi_location_data = {}
     # Converts data from local format to the Pyrebase multi-location
     # update format.
     # Pyrebase multi-location update key:value format:
     # "/<firebase-collection>/<document-name>/<data-field>": <data-value>
     # (e.g. /TIMDs/1678Q3/startingLocation": "left")
     for data_field, data_value in file_data.items():
-        path_data[os.path.join(firebase_collection, document_name, data_field)] = data_value
+        multi_location_data[os.path.join(firebase_collection, document_name, data_field)] = data_value
 
-    return path_data
+    return multi_location_data
 
 FINAL_DATA = {}
 
