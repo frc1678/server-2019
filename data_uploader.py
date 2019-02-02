@@ -61,7 +61,7 @@ for firebase_key, cache_key in FIREBASE_TO_CACHE_KEY.items():
         # Collects and adds the data from a single file to 'FINAL_DATA'
         FINAL_DATA.update(collect_file_data(file_path, firebase_key))
 
-        # Removes the file so that the same data isn't uploaded more than once.
+        # Removes the file from the upload queue to prevent re-upload
         os.remove(file_path)
 
 # Sends the data to firebase.
