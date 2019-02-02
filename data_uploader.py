@@ -25,8 +25,8 @@ def collect_file_data(data_file, root_key):
     file that data is taken from. root_key is one of the main
     collections on the firebase in which the data is eventually sent,
     limited to only 'Teams', Matches', and 'TeamInMatchDatas'. """
-    with open(data_file, 'r') as file:
-        file_data = json.load(file)
+    with open(data_file, 'r') as file_:
+        file_data = json.load(file_)
 
     # Defines the file name for to use when defining keys in the
     # path_data dictionary.
