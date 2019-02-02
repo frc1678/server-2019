@@ -39,7 +39,8 @@ def collect_file_data(data_file, firebase_collection):
     # "/<firebase-collection>/<document-name>/<data-field>": <data-value>
     # (e.g. /TIMDs/1678Q3/startingLocation": "left")
     for data_field, data_value in file_data.items():
-        multi_location_data[os.path.join(firebase_collection, document_name, data_field)] = data_value
+        multi_location_data[os.path.join(firebase_collection, \
+            document_name, data_field)] = data_value
 
     return multi_location_data
 
