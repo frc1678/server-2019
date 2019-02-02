@@ -51,12 +51,12 @@ FIREBASE_TO_CACHE_KEY = {
 for firebase_key, cache_key in FIREBASE_TO_CACHE_KEY.items():
     for file in os.listdir(utils.create_file_path(
             'data/upload_queue/' + cache_key)):
-        queue_file_path = utils.create_file_path('data/upload_queue/' +
-                                                 cache_key + '/' + file)
+        file_path = utils.create_file_path('data/upload_queue/' +
+                                           cache_key + '/' + file)
 
         # After the path is determined, collects data and uses it to
         # update the FINAL_DATA dictionary.
-        FINAL_DATA.update(collect_file_data(queue_file_path, firebase_key))
+        FINAL_DATA.update(collect_file_data(file_path, firebase_key))
 
 # Sends the data to firebase.
 DB.update(FINAL_DATA)
