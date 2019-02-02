@@ -327,8 +327,20 @@ def basic_timeline_consolidation(input_timelines, action_type):
     # which amount of actions is the correct amount.
     majority = max_occurences(count_timelines)
 
-    # Creates a list of timelines which follow the majority length of
-    # timeline, and chooses one randomly to be the time-baser
+    # Creates a dictionary of scouts to their timelines which follow the
+    # majority length of timeline.
+    correct_length_timelines = {scout : simplified_timelines[scout] for
+                                scout, timeline_length in
+                                count_timelines.items() if
+                                timeline_length == majority}
+
+    # If there are scouts that don't agree with the majority timeline
+    time_reference = {scout : [action['time'] for action in timeline]
+                      for scout, timeline in
+                      correct_length_timelines.items() if scout ==
+                      list(correct_length_timelines.keys())[-1]}
+    print(time_reference)
+    
     #TODO: Create more complex system to consolidate
     # Trusts the simplified timeline of the scout with the best spr
     return simplified_timelines[SPRKING]
