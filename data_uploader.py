@@ -14,7 +14,7 @@ import utils
 # DB stands for database
 DB = firebase_communicator.configure_firebase()
 
-def collect_file_data(data_file, root_key):
+def collect_file_data(data_file, firebase_collection):
     """Organizes and returns each data point from data_file as a firebase path.
 
     Takes data from the file passed as an argument, and forms each of
@@ -22,14 +22,14 @@ def collect_file_data(data_file, root_key):
     dictionary which is returned. The pathway is the path to a specific
     data point on firebase where the data point is eventually sent to.
     The passed argument data_file is the absolute path of the specific
-    file that data is taken from. root_key is one of the main
+    file that data is taken from. firebase_collection is one of the main
     collections on the firebase in which the data is eventually sent,
     limited to only 'Teams', Matches', and 'TeamInMatchDatas'. """
     with open(data_file, 'r') as file_:
         file_data = json.load(file_)
 
     # Extracts file name (removes '.json' ending and parent directories)
-    file_name = data_file.split('.')[0].split('/')[-1]
+    document_name = data_file.split('.')[0].split('/')[-1]
 
     path_data = {}
     # Converts data from local format to the Pyrebase multi-location
@@ -37,7 +37,7 @@ def collect_file_data(data_file, root_key):
     # Pyrebase multi-location update format:
     # "/<firebase-collection>/<file-name>/<data-field>": <data-value>
     for data_field, data_value in file_data.items():
-        path_data[os.path.join(root_key, file_name, data_field)] = data_value
+        path_data[os.path.join(firebase_collection, document_name, data_field)] = data_value
 
     return path_data
 
