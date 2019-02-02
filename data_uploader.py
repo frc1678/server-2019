@@ -1,12 +1,8 @@
 """Uploads data from files in the 'upload_queue' directory to firebase.
 
-The 'upload_queue' directory is split into three directories - 'teams',
-'timds', and 'matches'. This file collects data from each of these using
-the collect_file_data function into the large dictionary FINAL_DATA. In
-FINAL_DATA, the keys are the firebase path to each of the data points,
-with their values being the value of the data point.
-"""
-
+The 'upload_queue' directory contains three directories: 'timds',
+'teams', and 'matches'.  Collects data from each of these three
+directories and sends it to firebase in a single request."""
 # External imports
 import json
 import os
