@@ -1,7 +1,10 @@
 """Uploads data from files in the 'upload_queue' directory to firebase.
 
-Searches through the 'upload_queue' directory for data that needs to be
-uploaded and sends it to firebase.
+The 'upload_queue' directory is split into three directories - 'teams',
+'timds', and 'matches'. This file collects data from each of these using
+the collect_file_data function into the large dictionary FINAL_DATA. In
+FINAL_DATA, the keys are the firebase path to each of the data points,
+with their values being the value of the data point.
 """
 
 # External imports
@@ -16,15 +19,16 @@ import utils
 DB = firebase_communicator.configure_firebase()
 
 def collect_file_data(data_file, root_key):
-    """Organizes each data point from the data_file as a firebase path.
+    """Organizes and returns each data point from data_file as a firebase path.
 
     Takes data from the file passed as an argument, and forms each of
-    the data points inside the file into a pathway added to a dictionary
-    which is returned.
-    The passed argument data_file is the path of the specific file that
-    data is taken from. root_key is the basic key on the firebase in
-    which the data is eventually sent, limited to only
-    'Teams', Matches', and 'TeamInMatchDatas'. """
+    the data points inside the file into a pathway added as a key to a
+    dictionary which is returned. The pathway is the path to a specific
+    data point on firebase where the data point is eventually sent to.
+    The passed argument data_file is the absolute path of the specific
+    file that data is taken from. root_key is one of the main
+    collections on the firebase in which the data is eventually sent,
+    limited to only 'Teams', Matches', and 'TeamInMatchDatas'. """
     with open(data_file, 'r') as upload_queue_file_data:
         file_data = json.load(upload_queue_file_data)
 
@@ -40,8 +44,6 @@ def collect_file_data(data_file, root_key):
         path_data[os.path.join(root_key, file_name, data_field)] = data_value
     return path_data
 
-# Creates the final dictionary that is sent to firebase in one large
-# pyrebase request.
 FINAL_DATA = {}
 
 # Creates a dictionary mapping all the firebase keys to the cache
@@ -52,11 +54,10 @@ FIREBASE_TO_CACHE_KEY = {
     'Teams': 'teams'
 }
 
-# Adds all the files to the UPLOAD_QUEUES dictionary. Does this by first
-# iterating through the three upload queues, then iterating through all
-# the files in the queue. Then, it adds each file path to the list
-# inside the UPLOAD_QUEUES dictionary in the format of
-# data/upload_queue/directory/file_name.
+# Iterates through the different directories inside the 'upload_queue'
+# directory, then iterates through each of the files in each directory
+# and runs collect_file_data on each file and adds the returned data to
+# the FINAL_DATA dictionary.
 for firebase_key, cache_key in FIREBASE_TO_CACHE_KEY.items():
     for file in os.listdir(utils.create_file_path(
             'data/upload_queue/' + cache_key)):
