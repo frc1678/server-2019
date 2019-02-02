@@ -14,22 +14,22 @@ import utils
 # DB stands for database
 DB = firebase_communicator.configure_firebase()
 
-def collect_file_data(data_file, firebase_collection):
+def collect_file_data(file_path_, firebase_collection):
     """Converts local format to multi-location format for a single file.
 
-    file_path is the absolute path to the file
+    file_path_ is the absolute path to the file
     firebase_collection refers to a collection on Firebase (must be
     'TIMDs', 'Teams', or 'Matches')"""
     if firebase_collection not in ['TIMDs', 'Teams', 'Matches']:
         print(f"Error: '{firebase_collection}' is not a Firebase collection")
         return
 
-    with open(data_file, 'r') as file_:
+    with open(file_path_, 'r') as file_:
         file_data = json.load(file_)
 
     # Extracts document name (removes '.json' ending and parent directories)
     # (e.g. "1678Q3" [TIMD] or "1" [Match])
-    document_name = data_file.split('.')[0].split('/')[-1]
+    document_name = file_path_.split('.')[0].split('/')[-1]
 
     multi_location_data = {}
     # Converts data from local format to the Pyrebase multi-location
