@@ -15,16 +15,15 @@ import utils
 DB = firebase_communicator.configure_firebase()
 
 def collect_file_data(data_file, firebase_collection):
-    """Organizes and returns each data point from data_file as a firebase path.
+    """Converts local format to multi-location format for a single file.
 
-    Takes data from the file passed as an argument, and forms each of
-    the data points inside the file into a pathway added as a key to a
-    dictionary which is returned. The pathway is the path to a specific
-    data point on firebase where the data point is eventually sent to.
-    The passed argument data_file is the absolute path of the specific
-    file that data is taken from. firebase_collection is one of the main
-    collections on the firebase in which the data is eventually sent,
-    limited to only 'Teams', Matches', and 'TeamInMatchDatas'. """
+    file_path is the absolute path to the file
+    firebase_collection refers to a collection on Firebase (must be
+    'TIMDs', 'Teams', or 'Matches')"""
+    if firebase_collection not in ['TIMDs', 'Teams', 'Matches']:
+        print(f"Error: '{firebase_collection}' is not a Firebase collection")
+        return
+
     with open(data_file, 'r') as file_:
         file_data = json.load(file_)
 
