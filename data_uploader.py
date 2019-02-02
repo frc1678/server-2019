@@ -28,8 +28,7 @@ def collect_file_data(data_file, root_key):
     with open(data_file, 'r') as file_:
         file_data = json.load(file_)
 
-    # Defines the file name for to use when defining keys in the
-    # path_data dictionary.
+    # Extracts file name (removes '.json' ending and parent directories)
     file_name = data_file.split('.')[0].split('/')[-1]
 
     # Iterates through all the data points inside the file and creates
@@ -42,18 +41,13 @@ def collect_file_data(data_file, root_key):
 
 FINAL_DATA = {}
 
-# Creates a dictionary mapping all the firebase keys to the cache
-# directory keys.
+# Firebase key names to the equivilent local cache key names
 FIREBASE_TO_CACHE_KEY = {
     'TeamInMatchDatas': 'timds',
     'Matches': 'matches',
     'Teams': 'teams'
 }
 
-# Iterates through the different directories inside the 'upload_queue'
-# directory, then iterates through each of the files in each directory
-# and runs collect_file_data on each file and adds the returned data to
-# the FINAL_DATA dictionary.
 for firebase_key, cache_key in FIREBASE_TO_CACHE_KEY.items():
     for file in os.listdir(utils.create_file_path(
             'data/upload_queue/' + cache_key)):
