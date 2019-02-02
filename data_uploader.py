@@ -22,7 +22,7 @@ def collect_file_data(file_path_, firebase_collection):
     'TIMDs', 'Teams', or 'Matches')"""
     if firebase_collection not in ['TIMDs', 'Teams', 'Matches']:
         print(f"Error: '{firebase_collection}' is not a Firebase collection")
-        return
+        return {}
 
     with open(file_path_, 'r') as file_:
         file_data = json.load(file_)
