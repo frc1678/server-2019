@@ -49,8 +49,8 @@ FIREBASE_TO_CACHE_KEY = {
 }
 
 for firebase_key, cache_key in FIREBASE_TO_CACHE_KEY.items():
-    for file in os.listdir(utils.create_file_path(
-            'data/upload_queue/' + cache_key)):
+    for file in os.listdir(utils.create_file_path('data/upload_queue/'
+                                                  + cache_key)):
         file_path = utils.create_file_path('data/upload_queue/' +
                                            cache_key + '/' + file)
 
