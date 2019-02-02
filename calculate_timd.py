@@ -282,11 +282,10 @@ def max_occurences(comparison_list):
     # point is missing,
     # Creates a dictionary with how many times an item appeared in
     # the comparison list.
-    occurence_list = {data_field : list(comparison_list.values()).count(data_field)
+    occurence_list = {data_field :
+                      list(comparison_list.values()).count(data_field)
                       for data_field in set(comparison_list.values())}
 
-    print(comparison_list)
-    print(occurence_list)
     # If the highest occurence on the occurence list is the same as
     # the lowest occurence, the correct value for the datapoint is
     # the value output by the scout with the best spr. This triggers
@@ -299,11 +298,13 @@ def max_occurences(comparison_list):
         return comparison_list[SPRKING]
     return max(occurence_list, key=occurence_list.get)
 
-def basic_timeline_consolidation(input_timelines, *types):
-    """Takes certain action types out of the timeline and consolidates
-    them seperately. Types is an *argv argument which can take in as
-    many action types that need to be consolidated together. Returns
-    a timeline only made up of action types that were passed as args.
+def basic_timeline_consolidation(input_timelines, action_type):
+    """Takes an action type out of timelines and consolidates it seperately.
+
+    input_timelines is the dictionary of the scouts to their specific
+    timelines. action_type is the action type that the function is
+    consolidating. Returns a consolidated timeline only made up of the
+    action type that was passed as action_type.
     """
 
     # The dictionary of three timelines with only the types specified
@@ -314,17 +315,20 @@ def basic_timeline_consolidation(input_timelines, *types):
     # data points which are not the specified types.
     for scout, timeline in input_timelines.items():
         for action in timeline:
-            if action.get('type') in types:
+            if action.get('type') == action_type:
                 simplified_timelines[scout].append(action)
 
     # Creates a dictionary of scouts to the amount of actions of the
     # specified type are in the timeline.
-    count_timelines = {scout : len(timeline) for scout, timeline in simplified_timelines.items()}
+    count_timelines = {scout : len(timeline) for
+                       scout, timeline in simplified_timelines.items()}
 
     # Finds the majority amount of actions in the timeline to see
     # which amount of actions is the correct amount.
     majority = max_occurences(count_timelines)
 
+    # Creates a list of timelines which follow the majority length of
+    # timeline, and chooses one randomly to be the time-baser
     #TODO: Create more complex system to consolidate
     # Trusts the simplified timeline of the scout with the best spr
     return simplified_timelines[SPRKING]
@@ -440,8 +444,10 @@ for data_field in list(TEMP_TIMDS[SPRKING]):
             # passes them as arguments to the basic consolidation
             # function.
             final_timeline += basic_timeline_consolidation(timelines, 'spill')
-            final_timeline += basic_timeline_consolidation(timelines, 'incap', 'unincap')
-            final_timeline += basic_timeline_consolidation(timelines, 'startDefense', 'endDefense')
+            final_timeline += basic_timeline_consolidation(timelines, 'incap')
+            final_timeline += basic_timeline_consolidation(timelines, 'unincap')
+            final_timeline += basic_timeline_consolidation(timelines, 'startDefense')
+            final_timeline += basic_timeline_consolidation(timelines, 'endDefense')
 
             # Also consolidates climb seperately in order to seperate it
             # from intakes and placements.
