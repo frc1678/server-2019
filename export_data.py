@@ -33,3 +33,36 @@ if TEAM_DATA is None:
     print('Warning: Team data does not exist on Firebase')
 else:
     print('Team data successfully retrieved')
+
+# Extracts TIMD data field keys by adding the keys of all TIMDs to a set
+TIMD_KEYS = set()
+for timd_value in TIMD_DATA.values():
+    for key in timd_value:
+        if key == 'calculatedData':
+            # Adds data fields that are nested in 'calculatedData'
+            TIMD_KEYS = TIMD_KEYS.union(timd_value['calculatedData'].keys())
+        else:
+            TIMD_KEYS.add(key)
+
+# Converts 'TIMD_KEYS' to a list since 'matchNumber' needs to be the
+# first item and 'teamNumber' needs to be the second item (for the
+# spreadsheet)
+TIMD_KEYS = ['matchNumber', 'teamNumber'] + list(TIMD_KEYS)
+
+# Extracts Team data field keys by adding the keys of all Teams to a set
+TEAM_KEYS = set()
+for team_value in TEAM_DATA.values():
+    for key in team_value:
+        if key == 'calculatedData':
+            # Adds data fields that are nested in 'calculatedData'
+            TEAM_KEYS = TEAM_KEYS.union(team_value['calculatedData'].keys())
+        else:
+            TEAM_KEYS.add(key)
+
+# Converts 'TEAM_KEYS' to a list since 'teamNumber' needs to be the
+# first item (for the spreadsheet)
+TEAM_KEYS = ['teamNumber'] + list(TEAM_KEYS)
+
+print(TIMD_KEYS)
+print("")
+print(TEAM_KEYS)
