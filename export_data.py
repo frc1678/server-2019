@@ -84,3 +84,5 @@ with open(utils.create_file_path('data/exports/export-TEAM.csv'), 'w') as file:
         # 'calculatedData' key
         team_value.update(team_value.pop('calculatedData', {}))
         CSV_WRITER.writerow(team_value)
+
+print("Data successfully exported to the 'data/exports' directory")
