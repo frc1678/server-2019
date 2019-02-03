@@ -30,59 +30,60 @@ if TIMD_DATA is None:
     print('Warning: TIMD data does not exist on Firebase')
 else:
     print('TIMD data successfully retrieved')
+
+    # Extracts TIMD data field keys by adding the keys of all TIMDs to a set
+    TIMD_KEYS = set()
+    for timd_value in TIMD_DATA.values():
+        for key in timd_value:
+            if key == 'calculatedData':
+                # Adds data fields that are nested in 'calculatedData'
+                TIMD_KEYS = TIMD_KEYS.union(timd_value['calculatedData'].keys())
+            else:
+                TIMD_KEYS.add(key)
+
+    # Converts 'TIMD_KEYS' to a list since 'matchNumber' needs to be the
+    # first item and 'teamNumber' needs to be the second item (for the
+    # spreadsheet)
+    TIMD_KEYS.discard('matchNumber')
+    TIMD_KEYS.discard('teamNumber')
+    TIMD_KEYS = ['matchNumber', 'teamNumber'] + list(TIMD_KEYS)
+
+    with open(utils.create_file_path('data/exports/export-TIMD.csv'), 'w') as file:
+        CSV_WRITER = csv.DictWriter(file, fieldnames=TIMD_KEYS)
+        CSV_WRITER.writeheader()
+        for timd_value in TIMD_DATA.values():
+            # Un-nests data fields nested in 'calculatedData', removes
+            # 'calculatedData' key
+            timd_value.update(timd_value.pop('calculatedData', {}))
+            CSV_WRITER.writerow(timd_value)
+    print("TIMD data exported to 'data/exports/export-TIMD.csv'")
+
 if TEAM_DATA is None:
     print('Warning: Team data does not exist on Firebase')
 else:
     print('Team data successfully retrieved')
 
-# Extracts TIMD data field keys by adding the keys of all TIMDs to a set
-TIMD_KEYS = set()
-for timd_value in TIMD_DATA.values():
-    for key in timd_value:
-        if key == 'calculatedData':
-            # Adds data fields that are nested in 'calculatedData'
-            TIMD_KEYS = TIMD_KEYS.union(timd_value['calculatedData'].keys())
-        else:
-            TIMD_KEYS.add(key)
-
-# Converts 'TIMD_KEYS' to a list since 'matchNumber' needs to be the
-# first item and 'teamNumber' needs to be the second item (for the
-# spreadsheet)
-TIMD_KEYS.discard('matchNumber')
-TIMD_KEYS.discard('teamNumber')
-TIMD_KEYS = ['matchNumber', 'teamNumber'] + list(TIMD_KEYS)
-
-# Extracts Team data field keys by adding the keys of all Teams to a set
-TEAM_KEYS = set()
-for team_value in TEAM_DATA.values():
-    for key in team_value:
-        if key == 'calculatedData':
-            # Adds data fields that are nested in 'calculatedData'
-            TEAM_KEYS = TEAM_KEYS.union(team_value['calculatedData'].keys())
-        else:
-            TEAM_KEYS.add(key)
-
-# Converts 'TEAM_KEYS' to a list since 'teamNumber' needs to be the
-# first item (for the spreadsheet)
-TEAM_KEYS.discard('teamNumber')
-TEAM_KEYS = ['teamNumber'] + list(TEAM_KEYS)
-
-with open(utils.create_file_path('data/exports/export-TIMD.csv'), 'w') as file:
-    CSV_WRITER = csv.DictWriter(file, fieldnames=TIMD_KEYS)
-    CSV_WRITER.writeheader()
-    for timd_value in TIMD_DATA.values():
-        # Un-nests data fields nested in 'calculatedData', removes
-        # 'calculatedData' key
-        timd_value.update(timd_value.pop('calculatedData', {}))
-        CSV_WRITER.writerow(timd_value)
-
-with open(utils.create_file_path('data/exports/export-TEAM.csv'), 'w') as file:
-    CSV_WRITER = csv.DictWriter(file, fieldnames=TEAM_KEYS)
-    CSV_WRITER.writeheader()
+    # Extracts Team data field keys by adding the keys of all Teams to a set
+    TEAM_KEYS = set()
     for team_value in TEAM_DATA.values():
-        # Un-nests data fields nested in 'calculatedData', removes
-        # 'calculatedData' key
-        team_value.update(team_value.pop('calculatedData', {}))
-        CSV_WRITER.writerow(team_value)
+        for key in team_value:
+            if key == 'calculatedData':
+                # Adds data fields that are nested in 'calculatedData'
+                TEAM_KEYS = TEAM_KEYS.union(team_value['calculatedData'].keys())
+            else:
+                TEAM_KEYS.add(key)
 
-print("Data successfully exported to the 'data/exports' directory")
+    # Converts 'TEAM_KEYS' to a list since 'teamNumber' needs to be the
+    # first item (for the spreadsheet)
+    TEAM_KEYS.discard('teamNumber')
+    TEAM_KEYS = ['teamNumber'] + list(TEAM_KEYS)
+
+    with open(utils.create_file_path('data/exports/export-TEAM.csv'), 'w') as file:
+        CSV_WRITER = csv.DictWriter(file, fieldnames=TEAM_KEYS)
+        CSV_WRITER.writeheader()
+        for team_value in TEAM_DATA.values():
+            # Un-nests data fields nested in 'calculatedData', removes
+            # 'calculatedData' key
+            team_value.update(team_value.pop('calculatedData', {}))
+            CSV_WRITER.writerow(team_value)
+    print("Team data exported to 'data/exports/export-TEAM.csv'")
