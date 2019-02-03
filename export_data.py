@@ -47,6 +47,8 @@ for timd_value in TIMD_DATA.values():
 # Converts 'TIMD_KEYS' to a list since 'matchNumber' needs to be the
 # first item and 'teamNumber' needs to be the second item (for the
 # spreadsheet)
+TIMD_KEYS.discard('matchNumber')
+TIMD_KEYS.discard('teamNumber')
 TIMD_KEYS = ['matchNumber', 'teamNumber'] + list(TIMD_KEYS)
 
 # Extracts Team data field keys by adding the keys of all Teams to a set
@@ -61,6 +63,7 @@ for team_value in TEAM_DATA.values():
 
 # Converts 'TEAM_KEYS' to a list since 'teamNumber' needs to be the
 # first item (for the spreadsheet)
+TEAM_KEYS.discard('teamNumber')
 TEAM_KEYS = ['teamNumber'] + list(TEAM_KEYS)
 
 print(TIMD_KEYS)
