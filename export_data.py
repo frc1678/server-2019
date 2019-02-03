@@ -66,7 +66,6 @@ if TIMD_DATA is None:
     print('Warning: TIMD data does not exist on Firebase')
 else:
     print('TIMD data successfully retrieved')
-
     export_collection_data(TIMD_DATA, ['matchNumber', 'teamNumber'],
                            'export-TIMD.csv')
 
@@ -74,5 +73,4 @@ if TEAM_DATA is None:
     print('Warning: Team data does not exist on Firebase')
 else:
     print('Team data successfully retrieved')
-
     export_collection_data(TEAM_DATA, ['teamNumber'], 'export-TEAM.csv')
