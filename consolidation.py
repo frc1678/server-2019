@@ -1,3 +1,5 @@
+import numpy as np
+
 # CONSOLIDATION OF TEMPTIMDS
 
 #TODO: Add implementation for TEMP_TIMDS and sprking
@@ -68,7 +70,12 @@ TEMP_TIMDS = {'h' : {
         },
         {
             'type': 'spill',
-            'time': '130',
+            'time': '131',
+            'piece': 'lemon',
+        },
+        {
+            'type': 'spill',
+            'time': '135',
             'piece': 'lemon',
         },
         {
@@ -144,7 +151,12 @@ TEMP_TIMDS = {'h' : {
         },
         {
             'type': 'spill',
-            'time': '130',
+            'time': '132',
+            'piece': 'lemon',
+        },
+        {
+            'type': 'spill',
+            'time': '135',
             'piece': 'lemon',
         },
         {
@@ -220,7 +232,17 @@ TEMP_TIMDS = {'h' : {
         },
         {
             'type': 'spill',
-            'time': '130',
+            'time': '129',
+            'piece': 'lemon',
+        },
+        {
+            'type': 'spill',
+            'time': '137',
+            'piece': 'lemon',
+        },
+        {
+            'type': 'spill',
+            'time': '135.2',
             'piece': 'lemon',
         },
         {
@@ -303,8 +325,48 @@ def basic_timeline_consolidation(input_timelines, action_type):
                       for scout, timeline in
                       correct_length_timelines.items() if scout ==
                       list(correct_length_timelines.keys())[-1]}
-    print(time_reference)
-    
+
+    # If there are scouts that do not agree with the correct timeline
+    # length, find out which of their action times agree with the time
+    # reference the best, and line it up against the reference in the
+    # correct_length_timelines dictionary.
+    if len(correct_length_timelines.keys()) != len(simplified_timelines.keys()):
+        for scout in simplified_timelines.keys():
+            if scout not in correct_length_timelines.keys():
+                correct_length_timelines[scout] = []
+                # In order to find the best option for timings, it sets
+                # up a matrix of time differences between each action in
+                # each tempTIMD.
+                timings = np.zeros((len(simplified_timelines[scout]),
+                                    majority))
+                for false_index, false_action in \
+                        enumerate(simplified_timelines[scout]):
+                    for comparison_index, comparison_action in \
+                            enumerate(list(time_reference.values())[0]):
+                        timings[false_index][comparison_index] = \
+                                abs(float(comparison_action) -
+                                    float(false_action['time']))
+
+                # Once the matrix of timing differences has been
+                # created, the lowest difference is targeted to line up
+                # against each other until the entire matrix is deleted.
+                while timings[0][0] is not None:
+                    print(timings)
+                    lowest_index = np.where(timings == timings.min())
+                    print(lowest_index)
+                    correct_length_timelines[scout] += \
+                        simplified_timelines[scout][lowest_index[0][0]]
+                    for timing_row in timings:
+                        timings = np.delete(timing_row, int(lowest_index[1][0]), 0)
+                    timings = np.delete(timings, int(lowest_index[0][0]), 2)
+                    print(timings)
+                    
+                    
+
+
+
+
+
     #TODO: Create more complex system to consolidate
     # Trusts the simplified timeline of the scout with the best spr
     return simplified_timelines[SPRKING]
