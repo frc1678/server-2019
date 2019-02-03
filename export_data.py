@@ -9,6 +9,7 @@ import csv
 import time
 # Internal imports
 import firebase_communicator
+import utils
 
 # Uses default firebase URL
 # DB stands for database
@@ -66,6 +67,20 @@ for team_value in TEAM_DATA.values():
 TEAM_KEYS.discard('teamNumber')
 TEAM_KEYS = ['teamNumber'] + list(TEAM_KEYS)
 
-print(TIMD_KEYS)
-print("")
-print(TEAM_KEYS)
+with open(utils.create_file_path('data/exports/export-TIMD.csv'), 'w') as file:
+    CSV_WRITER = csv.DictWriter(file, fieldnames=TIMD_KEYS)
+    CSV_WRITER.writeheader()
+    for timd_value in TIMD_DATA.values():
+        # Un-nests data fields nested in 'calculatedData', removes
+        # 'calculatedData' key
+        timd_value.update(timd_value.pop('calculatedData', {}))
+        CSV_WRITER.writerow(timd_value)
+
+with open(utils.create_file_path('data/exports/export-TEAM.csv'), 'w') as file:
+    CSV_WRITER = csv.DictWriter(file, fieldnames=TEAM_KEYS)
+    CSV_WRITER.writeheader()
+    for team_value in TEAM_DATA.values():
+        # Un-nests data fields nested in 'calculatedData', removes
+        # 'calculatedData' key
+        team_value.update(team_value.pop('calculatedData', {}))
+        CSV_WRITER.writerow(team_value)
