@@ -25,22 +25,26 @@ def make_request(api_url, last_modified_header=None):
     request_headers = {'X-TBA-Auth-Key': API_KEY}
     if last_modified_header is not None:
         request_headers['If-Modified-Since'] = last_modified_header
-    return requests.get(full_url, headers=request_headers)
 
-LAST_MATCH_SCHEDULE_REQUEST = {}
-def request_match_schedule():
-    """Requests the match schedule from the TBA API."""
     print('Retrieving data from TBA...')
     while True:
         try:
-            request = make_request(f'event/{EVENT_CODE}/matches/simple', \
-                LAST_MATCH_SCHEDULE_REQUEST.get('Last-Modified'))
+            request = requests.get(full_url, headers=request_headers)
         except requests.exceptions.ConnectionError:
             print('Error: No internet connection.  Trying again in 3 seconds...')
         else:
             print('TBA data successfully retrieved.')
             break
         time.sleep(3)
+
+    return request
+
+LAST_MATCH_SCHEDULE_REQUEST = {}
+def request_match_schedule():
+    """Requests the match schedule from the TBA API."""
+    print('Retrieving data from TBA...')
+    request = make_request(f'event/{EVENT_CODE}/matches/simple', \
+        LAST_MATCH_SCHEDULE_REQUEST.get('Last-Modified'))
 
     # A 304 status code means the data was not modified since our last
     # request, and we can pull it from the cache.
