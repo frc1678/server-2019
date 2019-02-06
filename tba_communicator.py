@@ -13,18 +13,25 @@ with open(utils.create_file_path('data/api_keys/tba_key.txt')) as file:
 # Many file editors will automatically add a newline at the end of files.
 API_KEY = API_KEY.rstrip('\n')
 
-def make_request(api_url, last_modified_header=None):
-    """Sends a single web request to the TBA v3 API.
+# This cache is used with TBA's 'Last-Modified' and 'If-Modified-Since'
+# headers to prevent duplicate data downloads.  If the data has not
+# changed since the last request, it will be pulled from the cache.
+# Documentation of the 'Last-Modified' and 'If-Modified-Since' headers:
+# https://www.thebluealliance.com/apidocs#apiv3
+CACHED_REQUESTS = {}
+def make_request(api_url):
+    """Sends a single web request to the TBA API v3 and caches result.
 
-    api_url is the url of the API request (the path after '/api/v3')
-    last_modified_header (optional) will allow the TBA API to respond
-    with a 304 status code if the data has not been modified since the
-    last time it was retrieved."""
+    api_url is the url of the API request (the path after '/api/v3')"""
     base_url = 'https://www.thebluealliance.com/api/v3/'
     full_url = base_url + api_url
     request_headers = {'X-TBA-Auth-Key': API_KEY}
-    if last_modified_header is not None:
-        request_headers['If-Modified-Since'] = last_modified_header
+
+    # 'cache_last_modified' is the time that the data in the cache was
+    # published to TBA's API.
+    cache_last_modified = CACHED_REQUESTS.get(api_url, {}).get('last_modified')
+    if cache_last_modified is not None:
+        request_headers['If-Modified-Since'] = cache_last_modified
 
     print('Retrieving data from TBA...')
     while True:
@@ -37,27 +44,22 @@ def make_request(api_url, last_modified_header=None):
             break
         time.sleep(3)
 
-    return request
-
-LAST_MATCH_SCHEDULE_REQUEST = {}
-def request_match_schedule():
-    """Requests the match schedule from the TBA API."""
-    print('Retrieving data from TBA...')
-    request = make_request(f'event/{EVENT_CODE}/matches/simple', \
-        LAST_MATCH_SCHEDULE_REQUEST.get('Last-Modified'))
-
     # A 304 status code means the data was not modified since our last
     # request, and we can pull it from the cache.
     if request.status_code == 304:
-        return LAST_MATCH_SCHEDULE_REQUEST['data']
+        return CACHED_REQUESTS[api_url]['data']
     # A 200 status code means the request was successful
     elif request.status_code == 200:
         # Updates local cache
-        LAST_MATCH_SCHEDULE_REQUEST['Last-Modified'] = \
-            request.headers['Last-Modified']
-        LAST_MATCH_SCHEDULE_REQUEST['data'] = request.json()
-
+        CACHED_REQUESTS[api_url] = {
+            'last_modified': request.headers['Last-Modified'],
+            'data': request.json(),
+        }
         return request.json()
     else:
-        print(f'Request failed with status code:{request.status_code}')
+        print(f'Request failed with status code {request.status_code}')
         return {}
+
+def request_match_schedule():
+    """Requests the match schedule from the TBA API."""
+    return make_request(f'event/{EVENT_CODE}/matches/simple')
