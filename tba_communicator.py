@@ -1,4 +1,6 @@
-"""Sends web requests to The Blue Alliance (TBA) API."""
+"""Sends web requests to The Blue Alliance (TBA) API.
+
+Caches data to prevent duplicate data retrevial from the TBA API."""
 # External imports
 import requests
 import time
