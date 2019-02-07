@@ -62,6 +62,6 @@ def make_request(api_url):
         print(f'Request failed with status code {request.status_code}')
         return {}
 
-def request_match_schedule():
+def request_matches():
     """Requests the match schedule from the TBA API."""
     return make_request(f'event/{EVENT_CODE}/matches/simple')
