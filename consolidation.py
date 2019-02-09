@@ -81,7 +81,7 @@ TEMP_TIMDS = {'h' : {
         },
         {
             'type': 'climb',
-            'time': '138',
+            'time': '138.5',
             'attempted': {'self': 3, 'robot1': 3, 'robot2': 2},
             'actual': {'self': 3, 'robot1': 2, 'robot2': 1},
         }
@@ -243,7 +243,7 @@ TEMP_TIMDS = {'h' : {
         },
         {
             'type': 'climb',
-            'time': '138',
+            'time': '140.9',
             'attempted': {'self': 3, 'robot1': 3, 'robot2': 2},
             'actual': {'self': 3, 'robot1': 2, 'robot2': 1},
         }
@@ -257,12 +257,15 @@ def time_consolidation(times):
     mean = np.mean(float_list)
     std = np.std(float_list)
     if std == 0:
-        return avg(float_list)
-        zscore_list = [(mean - number) / std for number in float_list]
-    print(float_list)
-    print(zscore_list)
+        return str(format(mean, '.1f'))
+    reciprocal_zscore_list = [abs(1 / ((mean - number) / std)) ** 2
+                              for number in float_list]
+    weighted_times = [float_list[number] *
+                      reciprocal_zscore_list[number]
+                      for number in range(len(float_list))]
 
-    return None
+    return str(format(sum(weighted_times) / sum(reciprocal_zscore_list),
+                      '.1f'))
 
 def max_occurences(comparison_list):
     """Takes in a dictionary of scouts to their input on a certain
@@ -352,7 +355,7 @@ def basic_timeline_consolidation(input_timelines, action_type):
                     timings[false_index][comparison_index] = \
                             abs(float(comparison_action) -
                                 float(false_action['time']))
-            print(timings)
+
             # Once the matrix of timing differences has been
             # created, the lowest difference is targeted to line up
             # against each other until the entire matrix is deleted.
@@ -363,7 +366,7 @@ def basic_timeline_consolidation(input_timelines, action_type):
                 timings = np.delete(timings, int(lowest_index[1][0]), axis=1)
                 timings = np.delete(timings, int(lowest_index[0][0]), 0)
 
-    FINAL_SIMPLIFIED_TIMD = [{} for action in range(majority)]
+    final_simplified_timd = [{} for action in range(majority)]
     # Iterates through the longest timeline to compare all
     # the actions.
     for action_index, action in enumerate(correct_length_timelines[
@@ -379,16 +382,16 @@ def basic_timeline_consolidation(input_timelines, action_type):
                              action in comparison_dict.items() if
                              action.get(key)}
             if key != 'time':
-                FINAL_SIMPLIFIED_TIMD[action_index][key] = \
+                final_simplified_timd[action_index][key] = \
                         max_occurences(scout_to_keys)
             else:
                 # Find the correct time using the time_consolidation
                 # algorithm.
-                FINAL_SIMPLIFIED_TIMD[action_index]['time'] = time_consolidation(scout_to_keys)
+                final_simplified_timd[action_index]['time'] = \
+                    time_consolidation(scout_to_keys)
 
-    #TODO: Create more complex system to consolidate
-    # Trusts the simplified timeline of the scout with the best spr
-    return simplified_timelines[SPRKING]
+    # Returns the final created timeline
+    return final_simplified_timd
 
 def cycle_consolidation(input_timelines):
     """Takes intakes and placements out of the timelines in the
@@ -426,8 +429,24 @@ def climb_consolidation(input_timelines):
             if action.get('type') == 'climb':
                 simplified_timelines[scout] = action
 
-    #TODO: Create more complex system to consolidate
-    return simplified_timelines[SPRKING]
+    final_simplified_timd = [{'type' : 'climb',
+                              'attempted' : {},
+                              'actual' : {}}]
+
+    # Consolidates time first
+    final_simplified_timd[0]['time'] = time_consolidation({
+        scout : climb['time'] for scout,
+        climb in simplified_timelines.items()})
+
+    for key in ['attempted', 'actual']:
+        for robot in ['self', 'robot1', 'robot2']:
+            final_simplified_timd[0][key][robot] = max_occurences({
+                scout : climb[key][robot] for scout, climb in
+                simplified_timelines.items()})
+
+    print(final_simplified_timd)
+    # Returns the final created timeline
+    return final_simplified_timd
 
 FINAL_TIMD = {}
 
@@ -508,7 +527,7 @@ for data_field in list(TEMP_TIMDS[SPRKING]):
 
             # Also consolidates climb seperately in order to seperate it
             # from intakes and placements.
-            final_timeline.append(climb_consolidation(timelines))
+            final_timeline += climb_consolidation(timelines)
 
             # Consolidates intakes and placements seperately, because
             # these are the main cycles of the game.
@@ -516,6 +535,8 @@ for data_field in list(TEMP_TIMDS[SPRKING]):
 
             # Once the timeline is finally completed, it is sorted by
             # time, and added to the final timd.
-            FINAL_TIMD['timeline'] = sorted(final_timeline, key=lambda action:
-                                        float(action.get('time')))
+            FINAL_TIMD['timeline'] = sorted(final_timeline,
+                                            key=lambda action:
+                                            float(action.get('time')))
 
+print(FINAL_TIMD)
