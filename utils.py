@@ -1,5 +1,7 @@
 """Holds variables + functions that are shared across server files."""
+# External imports
 import os
+# No internal imports
 
 # The directory this script is located in
 MAIN_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
