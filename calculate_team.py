@@ -26,11 +26,11 @@ else:
 FINAL_TEAM_DATA = {}
 
 # Save data in local cache
-with open(utils.create_file_path('data/teams/' + TEAM_NUMBER + '.json'),
+with open(utils.create_file_path(f'data/teams/{TEAM_NUMBER}.json'),
           'w') as file:
     json.dump(FINAL_TEAM_DATA, file)
 
 # Save data in Firebase upload queue
-with open(utils.create_file_path('data/upload_queue/teams/' + TEAM_NUMBER
-                                 + '.json'), 'w') as file:
+with open(utils.create_file_path(
+        f'data/upload_queue/teams/{TEAM_NUMBER}.json'), 'w') as file:
     json.dump(FINAL_TEAM_DATA, file)
