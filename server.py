@@ -206,6 +206,8 @@ while True:
             print(f"Did calculations for {timd}") # TODO: remove me
             LATEST_CALCULATIONS_BY_TIMD[timd] = FILES_BY_TIMD[timd]
 
+    # Forwards data from Cloud Firestore to Realtime Database.
+    subprocess.call('python3 forward_firestore_data.py', shell=True)
 
     # Updates 'lastServerRun' on firebase with epoch time that the
     # server last ran.  Used to monitor if the server is offline by
