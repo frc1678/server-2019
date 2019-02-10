@@ -20,5 +20,5 @@ for team in TEAMS:
     for key, value in team.to_dict().items():
         FINAL_DATA[f'Teams/{team.id}/{key}'] = value
 
-# Multi-location update (sends data all at once)
+# Multi-location update (sends data in a single request)
 REALTIME_DB.update(FINAL_DATA)
