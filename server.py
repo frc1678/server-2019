@@ -1,4 +1,4 @@
-#!/usr/bin/python3.7
+#!/usr/bin/python3.6
 """Main server file.  Runs based on listeners + infinite while loop.
 
 Called directly by a systemctl service that automatically runs on

@@ -1,4 +1,4 @@
-#!/usr/bin/python3.7
+#!/usr/bin/python3.6
 """Exports Team and TIMD data to CSV files for picklist spreadsheet.
 
 TIMD data is saved in 'data/exports/export-TIMD.csv'

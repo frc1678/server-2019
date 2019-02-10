@@ -1,5 +1,5 @@
+#!/usr/bin/python3.6
 """Updates assignments when the cycle number is changed."""
-#!/usr/bin/python3.7
 # External imports
 import json
 import sys
