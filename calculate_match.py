@@ -1,4 +1,4 @@
-#!/usr/bin/python3.7
+#!/usr/bin/python3.6
 """Calculations for a single Match.
 
 Match calculations include predictions of the outcome (i.e. score and
@@ -26,11 +26,11 @@ else:
 FINAL_MATCH_DATA = {}
 
 # Save data in local cache
-with open(utils.create_file_path('data/matches/' + MATCH_NUMBER + '.json'),
+with open(utils.create_file_path(f'data/matches/{MATCH_NUMBER}.json'),
           'w') as file:
     json.dump(FINAL_MATCH_DATA, file)
 
 # Save data in Firebase upload queue
-with open(utils.create_file_path('data/upload_queue/matches/' + MATCH_NUMBER +
-                                 '.json'), 'w') as file:
+with open(utils.create_file_path(
+        f'data/upload_queue/matches/{MATCH_NUMBER}.json'), 'w') as file:
     json.dump(FINAL_MATCH_DATA, file)
