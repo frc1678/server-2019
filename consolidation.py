@@ -31,7 +31,7 @@ def time_consolidation(times):
     # is weighted when calculating the final weighted average. The lower
     # the value on this list the time is, the farther away from the mean
     # it is, and the less it is weighted.
-    reciprocal_zscore_list = [abs(1 / ((mean - number) / std)) ** 2
+    reciprocal_zscore_list = [(1 / ((mean - number) / std)) ** 2
                               for number in float_list]
 
     # Multiplies each time by its corresponding reciprocal z-score
