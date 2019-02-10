@@ -6,7 +6,7 @@ import os
 # The directory this script is located in
 MAIN_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
-def create_file_path(path_after_main, create_directories=False):
+def create_file_path(path_after_main, create_directories=True):
     """Joins the path of the directory this script is in with the path
     that is passed to this function.
 
