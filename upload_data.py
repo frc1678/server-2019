@@ -1,3 +1,4 @@
+#!/usr/bin/python3.7
 """Uploads data from files in the 'upload_queue' directory to firebase.
 
 The 'upload_queue' directory contains three directories: 'timds',
