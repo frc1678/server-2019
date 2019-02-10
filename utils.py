@@ -21,6 +21,7 @@ def create_file_path(path_after_main, create_directories=False):
     if create_directories is True:
         # Checks if the last item in the path is a file
         if '.' in path_after_main.split('/')[-1]:
+            # Removes everyhing after the last '/' (including the '/')
             directories = '/'.join(path_after_main.split('/')[:-1])
         # The last item is a directory
         else:
