@@ -207,6 +207,9 @@ while True:
             LATEST_CALCULATIONS_BY_TIMD[timd] = FILES_BY_TIMD[timd]
 
 
+    # Uploads data in data queue.
+    subprocess.call('python3 upload_data.py', shell=True)
+
     # Updates 'lastServerRun' on firebase with epoch time that the
     # server last ran.  Used to monitor if the server is offline by
     # checking if an excess amount of time has passed since the last run
@@ -215,4 +218,4 @@ while True:
     except OSError:
         print('Warning: No internet connection')
 
-    time.sleep(1)
+    time.sleep(5)
