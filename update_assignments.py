@@ -23,7 +23,7 @@ else:
 with open(utils.create_file_path('letters.json'), 'r') as file:
     LETTERS = json.load(file)
 
-AVAILABILITY = DB.child('availability').get().val()
+AVAILABILITY = DB.child('scoutManagement/availability').get().val()
 
 AVAILABLE_SCOUTS = [scout for scout, availability in AVAILABILITY.items()
                     if availability == 1]
@@ -34,4 +34,4 @@ ASSIGNMENT_STRING = CYCLE_NUMBER + '|'
 for scout in AVAILABLE_SCOUTS:
     ASSIGNMENT_STRING += LETTERS[scout]
 
-DB.child('QRcode').set(ASSIGNMENT_STRING)
+DB.child('scoutManagement/QRcode').set(ASSIGNMENT_STRING)

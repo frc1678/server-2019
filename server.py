@@ -127,15 +127,16 @@ def create_streams(stream_names=None):
     # streams dict.
     for name in stream_names:
         if name == 'MATCH_NUM_STREAM':
-            streams[name] = DB.child('currentMatchNumber').stream(
-                match_num_stream_handler)
+            streams[name] = DB.child(
+                'scoutManagement/currentMatchNumber').stream(
+                    match_num_stream_handler)
         elif name == 'CYCLE_NUM_STREAM':
-            streams[name] = DB.child('cycleNumber').stream(
-                cycle_num_stream_handler)
+            streams[name] = DB.child('scoutManagement/cycleNumber'
+                                    ).stream(cycle_num_stream_handler)
         elif name == 'TEMP_TIMD_STREAM':
             # Used to remove any outdated data
             delete_temp_timd_data_folder()
-            streams[name] = DB.child('TempQRTeamInMatchDatas').stream(
+            streams[name] = DB.child('tempTIMDs').stream(
                 temp_timd_stream_handler)
     return streams
 
