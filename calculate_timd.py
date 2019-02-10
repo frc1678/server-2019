@@ -17,8 +17,11 @@ availability, incorrect scout distribution, or missing data.
 Called by server.py with the name of the TIMD to be calculated."""
 # External imports
 import json
+import os
 import sys
 # Internal imports
+import consolidation
+import decompress
 import utils
 
 # Check to ensure TIMD name is being passed as an argument
@@ -29,7 +32,32 @@ else:
     print('Error: TIMD name not being passed as an argument. Exiting...')
     sys.exit(0)
 
-#TODO: Open tempTIMD data
+COMPRESSED_TIMDS = []
+# Goes into the temp_timds folder to get the names of all the tempTIMDs
+# that correspond to the given TIMD.
+for temp_timd in os.listdir(utils.create_file_path('data/cache/temp_timds')):
+    if TIMD_NAME in temp_timd:
+        file_path = utils.create_file_path(
+            'data/cache/temp_timds/' + temp_timd)
+        with open(file_path, 'r') as compressed_temp_timd:
+            COMPRESSED_TIMDS.append(compressed_temp_timd.read())
+
+TEMP_TIMDS = {}
+# Iterates through all the compressed tempTIMDs and decompresses them.
+# After decompressing them, adds them to the TEMP_TIMDS dictionary with
+# the scout name as the key and their decompressed tempTIMD as a value.
+# Does this in order to have a proper input to the consolidation
+# function.
+for compressed_temp_timd in COMPRESSED_TIMDS:
+    decompressed_temp_timd = decompress.decompress_temp_timd(
+        compressed_temp_timd)
+    TEMP_TIMDS[decompressed_temp_timd.get(
+        'scoutName')] = decompressed_temp_timd
+
+print(TEMP_TIMDS)
+# Passes the TEMP_TIMDS through consolidation to create the one true
+# TIMD used for later calculation.
+
 
 #TODO: Do calculations
 
