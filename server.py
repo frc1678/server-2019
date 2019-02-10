@@ -209,6 +209,8 @@ while True:
             print(f"Did calculations for {timd}") # TODO: remove me
             LATEST_CALCULATIONS_BY_TIMD[timd] = FILES_BY_TIMD[timd]
 
+    # Forwards data from Cloud Firestore to Realtime Database.
+    subprocess.call('python3 forward_firestore_data.py', shell=True)
 
     # Uploads data in data queue.
     subprocess.call('python3 upload_data.py', shell=True)
