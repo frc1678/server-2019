@@ -27,9 +27,10 @@ def delete_temp_timd_data_folder():
     when the TEMP_TIMD_STREAM is restarted."""
     # Checks if the directory exists before trying to delete it to avoid
     # causing an error.
-    if os.path.isdir(utils.create_file_path('data/cache/temp_timds')):
-        shutil.rmtree(utils.create_file_path('data/cache/temp_timds'))
-    os.makedirs(utils.create_file_path('data/cache/temp_timds'))
+    if os.path.isdir(utils.create_file_path('data/cache/temp_timds',
+                                            False)):
+        shutil.rmtree(utils.create_file_path('data/cache/temp_timds',
+                                             False))
 
 def register_modified_temp_timd(temp_timd_name):
     """Removes a modified tempTIMD from LATEST_CALCULATIONS_BY_TIMD.
