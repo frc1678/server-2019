@@ -1,2 +1,4 @@
+google-cloud-firestore==0.31.0
+firebase-admin==2.15.1
 pylint==2.1.0
 Pyrebase==3.0.27

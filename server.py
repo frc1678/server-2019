@@ -27,9 +27,10 @@ def delete_temp_timd_data_folder():
     when the TEMP_TIMD_STREAM is restarted."""
     # Checks if the directory exists before trying to delete it to avoid
     # causing an error.
-    if os.path.isdir(utils.create_file_path('data/cache/temp_timds')):
-        shutil.rmtree(utils.create_file_path('data/cache/temp_timds'))
-    os.makedirs(utils.create_file_path('data/cache/temp_timds'))
+    if os.path.isdir(utils.create_file_path('data/cache/temp_timds',
+                                            False)):
+        shutil.rmtree(utils.create_file_path('data/cache/temp_timds',
+                                             False))
 
 def register_modified_temp_timd(temp_timd_name):
     """Removes a modified tempTIMD from LATEST_CALCULATIONS_BY_TIMD.
@@ -63,7 +64,7 @@ def cycle_num_stream_handler(snapshot):
         cycle_number = snapshot['data']
         if cycle_number is None:
             cycle_number = 0
-        subprocess.call('python3 updateAssignments.py ' +
+        subprocess.call('python3 update_assignments.py ' +
                         str(cycle_number), shell=True)
 
 def temp_timd_stream_handler(snapshot):
@@ -97,13 +98,14 @@ def temp_timd_stream_handler(snapshot):
         # This means that this tempTIMD has been deleted from Firebase
         # and we should delete it from our local copy.
         if temp_timd_value is None:
-            os.remove(utils.create_file_path('data/cache/temp_timds' +
-                                             temp_timd_name + '.txt'))
+            os.remove(utils.create_file_path(
+                f'data/cache/temp_timds{temp_timd_name}.txt'))
             # Causes the corresponding TIMD to be recalculated
             register_modified_temp_timd(temp_timd_name)
         else:
-            with open(utils.create_file_path('data/cache/temp_timds' + \
-                      temp_timd_name + '.txt'), 'w') as file:
+            with open(utils.create_file_path(
+                    f'data/cache/temp_timds{temp_timd_name}.txt'),
+                      'w') as file:
                 file.write(temp_timd_value)
             timd_name = temp_timd_name.split('-')[0]
             # This means an already existing tempTIMD has been modified
@@ -127,15 +129,16 @@ def create_streams(stream_names=None):
     # streams dict.
     for name in stream_names:
         if name == 'MATCH_NUM_STREAM':
-            streams[name] = DB.child('currentMatchNumber').stream(
-                match_num_stream_handler)
+            streams[name] = DB.child(
+                'scoutManagement/currentMatchNumber').stream(
+                    match_num_stream_handler)
         elif name == 'CYCLE_NUM_STREAM':
-            streams[name] = DB.child('cycleNumber').stream(
-                cycle_num_stream_handler)
+            streams[name] = DB.child('scoutManagement/cycleNumber'
+                                    ).stream(cycle_num_stream_handler)
         elif name == 'TEMP_TIMD_STREAM':
             # Used to remove any outdated data
             delete_temp_timd_data_folder()
-            streams[name] = DB.child('TempQRTeamInMatchDatas').stream(
+            streams[name] = DB.child('tempTIMDs').stream(
                 temp_timd_stream_handler)
     return streams
 
@@ -206,6 +209,11 @@ while True:
             print(f"Did calculations for {timd}") # TODO: remove me
             LATEST_CALCULATIONS_BY_TIMD[timd] = FILES_BY_TIMD[timd]
 
+    # Forwards data from Cloud Firestore to Realtime Database.
+    subprocess.call('python3 forward_firestore_data.py', shell=True)
+
+    # Uploads data in data queue.
+    subprocess.call('python3 upload_data.py', shell=True)
 
     # Updates 'lastServerRun' on firebase with epoch time that the
     # server last ran.  Used to monitor if the server is offline by
@@ -215,4 +223,4 @@ while True:
     except OSError:
         print('Warning: No internet connection')
 
-    time.sleep(1)
+    time.sleep(5)

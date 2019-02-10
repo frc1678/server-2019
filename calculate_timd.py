@@ -36,11 +36,11 @@ else:
 FINAL_TIMD = {}
 
 # Save data in local cache
-with open(utils.create_file_path('data/timds/' + TIMD_NAME + '.json'),
+with open(utils.create_file_path(f'data/timds/{TIMD_NAME}.json'),
           'w') as file:
     json.dump(FINAL_TIMD, file)
 
 # Save data in Firebase upload queue
-with open(utils.create_file_path('data/upload_queue/timds/' + TIMD_NAME +
-                                 '.json'), 'w') as file:
+with open(utils.create_file_path(
+        f'data/upload_queue/timds/{TIMD_NAME}.json'), 'w') as file:
     json.dump(FINAL_TIMD, file)
