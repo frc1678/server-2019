@@ -1,4 +1,4 @@
-#!/usr/bin/python3.7
+#!/usr/bin/python3.6
 """Calculations for a single TIMD.
 
 TIMD stands for Team In Match Data.  TIMD calculations include

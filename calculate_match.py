@@ -1,4 +1,4 @@
-#!/usr/bin/python3.7
+#!/usr/bin/python3.6
 """Calculations for a single Match.
 
 Match calculations include predictions of the outcome (i.e. score and
