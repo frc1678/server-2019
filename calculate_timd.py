@@ -230,7 +230,7 @@ def add_calculated_data_to_timd(timd):
              cycle[1].get('piece') == 'lemon' and
              cycle[1].get('level') == 3])
 
-    # Calculates if a team in incap throughout the entirety of the match
+    # Calculates if a team is incap throughout the entirety of the match
     # by checking if they have any actions in the match other than incap
     # and unincap. If they don't have any other actions, they were incap
     # the entire match.
