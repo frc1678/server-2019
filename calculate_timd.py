@@ -36,7 +36,7 @@ else:
 FINAL_TIMD = {}
 
 # Save data in local cache
-with open(utils.create_file_path(f'data/timds/{TIMD_NAME}.json'),
+with open(utils.create_file_path(f'data/cache/timds/{TIMD_NAME}.json'),
           'w') as file:
     json.dump(FINAL_TIMD, file)
 
