@@ -19,7 +19,6 @@ Called by server.py with the name of the TIMD to be calculated."""
 import json
 import os
 import sys
-import numpy as np
 # Internal imports
 import consolidation
 import decompress
@@ -35,76 +34,7 @@ else:
 
 COMPRESSED_TIMDS = []
 
-TEMP_TIMDS = {'CARL' : {
-    'startingLevel': 2,
-    'crossedHabLine': True,
-    'startingLocation': 'mid',
-    'preload' : 'lemon',
-    'driverStation': 1,
-    'isNoShow': False,
-    'timerStarted': 1547528330,
-    'currentCycle': 4,
-    'scoutID': 7,
-    'scoutName': 'Carl',
-    'appVersion': '1.2',
-    'assignmentMode': 'QR',
-    'assignmentFileTimestamp': 1547528290,
-    'matchesNotScouted': [1, 14, 28, 35],
-    'timeline': [
-        {
-            'type': 'intake',
-            'time' : '102.4',
-            'piece': 'orange',
-            'zone': 'rightLoadingStation',
-            'didSucceed': True,
-            'wasDefended': False,
-        },
-        {
-            'type': 'incap',
-            'time': '109.6',
-            'cause': 'brokenMechanism',
-        },
-        {
-            'type': 'unincap',
-            'time': '111.1',
-        },
-        {
-            'type': 'drop',
-            'time': '112.1',
-            'piece': 'orange',
-        },
-        {
-            'type': 'intake',
-            'time': '120',
-            'piece': 'lemon',
-            'zone': 'zone2Left',
-            'didSucceed': True,
-            'wasDefended': True,
-        },
-        {
-            'type': 'placement',
-            'time': '127.4',
-            'piece': 'lemon',
-            'didSucceed': True,
-            'wasDefended': True,
-            'shotOutOfField': True,
-            'structure': 'leftRocket',
-            'side': 'right',
-            'level': 2,
-        },
-        {
-            'type': 'spill',
-            'time': '130',
-            'piece': 'lemon',
-        },
-        {
-            'type': 'climb',
-            'time': '138',
-            'attempted': {'self': 3, 'robot1': 3, 'robot2': 2},
-            'actual': {'self': 3, 'robot1': 2, 'robot2': 1},
-        }
-    ],
-}}
+TEMP_TIMDS = {}
 
 def avg(lis, exception=0.0):
     """Calculates the average of a list.
@@ -128,9 +58,24 @@ def calculate_avg_cycle_time(cycles):
     """
     cycle_times = []
     for cycle in cycles:
-        cycle_times.append(float(cycle[1].get('time')) -
-                           float(cycle[0].get('time')))
-    return avg(cycle_times)
+        cycle_times.append(float(cycle[0].get('time')) -
+                           float(cycle[1].get('time')))
+    return avg(cycle_times, None)
+
+def calculate_total_cycle_time(cycles):
+    """Calculates the total time for an action based on start and end times.
+
+    Finds the time difference between each action pair passed and
+    returns the sum of the differences.
+    cycles is a list of tuples where the first action in the tuple is
+    the starting time for an action, and the second is the end time for
+    the action.
+    """
+    cycle_times = []
+    for cycle in cycles:
+        cycle_times.append(float(cycle[0].get('time')) -
+                           float(cycle[1].get('time')))
+    return sum(cycle_times)
 
 def add_calculated_data_to_timd(timd):
     """Calculates data in a timd and adds it to 'calculatedData' in the TIMD.
@@ -159,6 +104,10 @@ def add_calculated_data_to_timd(timd):
         1 for action in timd.get('timeline') if
         action.get('type') == 'spill'])
 
+    # The next set of calculated data points are the success
+    # percentages, these are the percentages (displayed as an integer)
+    # of didSucceed for certain actions, such as the percentage of
+    # success a team has loading lemons.
     calculated_data['lemonLoadSuccess'] = round(100 * avg([
         action['didSucceed'] for action in timd.get('timeline') if
         action.get('type') == 'intake' and
@@ -281,9 +230,57 @@ def add_calculated_data_to_timd(timd):
              cycle[1].get('piece') == 'lemon' and
              cycle[1].get('level') == 3])
 
+    # Calculates if a team in incap throughout the entirety of the match
+    # by checking if they have any actions in the match other than incap
+    # and unincap. If they don't have any other actions, they were incap
+    # the entire match.
+    calculated_data['isIncapEntireMatch'] = False if [
+        action for action in timd.get('timeline') if
+        action.get('type') != 'incap' and
+        action.get('type') != 'unIncap' and
+        float(action.get('time')) <= 135.0] else True
 
+    # Creates a list of the climb dictionary or nothing if there is no
+    # climb. If there is a climb, the time of the climb is the amount
+    # of time they spent climbing.
+    climb_list = [action for action in timd.get('timeline') if
+                  action.get('type') == 'climb']
+    if climb_list:
+        calculated_data['timeClimbing'] = climb_list[0].get('time')
+
+    # Creates a list of all the incap and unincap actions in the timeline.
+    incap_list = [action for action in timd.get('timeline') if
+                  action.get('type') == 'incap' or
+                  action.get('type') == 'unincap']
+    if incap_list != []:
+        # If the last action in the list is an incap, it means they
+        # finished the match incap, so it adds an unicap at the end of
+        # the timeline.
+        if incap_list[-1].get('type') == 'incap':
+            incap_list.append({'type': 'unIncap', 'time' : 0.0})
+        paired_incap_list = list(zip(*[iter(incap_list)]*2))
+
+        # Calculates the timeImpaired and timeIncap by calculating the
+        # total amount of time the robot spent incap for either causes
+        # that indicate the robot was impaired, or causes that indicate
+        # the robot is incapacitated.
+        calculated_data['timeImpaired'] = calculate_total_cycle_time(
+            [cycle for cycle in paired_incap_list if
+             cycle[0].get('cause') == 'brokenMechanism' or
+             cycle[0].get('cause') == 'twoGamePieces'])
+        calculated_data['timeIncap'] = calculate_total_cycle_time(
+            [cycle for cycle in paired_incap_list if
+             cycle[0].get('cause') != 'brokenMechanism' and
+             cycle[0].get('cause') != 'twoGamePieces'])
+    else:
+        # Otherwise, the time that the robot spent impaired and incap is
+        # naturally 0.
+        calculated_data['timeImpaired'] = 0.0
+        calculated_data['timeIncap'] = 0.0
+
+    # Adds the calculated_data calculated throughout this function to
+    # the final TIMD and returns it.
     timd['calculatedData'] = calculated_data
-
     return timd
 
 # Goes into the temp_timds folder to get the names of all the tempTIMDs
@@ -294,7 +291,7 @@ for temp_timd in os.listdir(utils.create_file_path('data/cache/temp_timds')):
             'data/cache/temp_timds/' + temp_timd)
         with open(file_path, 'r') as compressed_temp_timd:
             COMPRESSED_TIMDS.append(compressed_temp_timd.read())
-'''
+
 # Iterates through all the compressed tempTIMDs and decompresses them.
 # After decompressing them, adds them to the TEMP_TIMDS dictionary with
 # the scout name as the key and their decompressed tempTIMD as a value.
@@ -305,7 +302,6 @@ for compressed_temp_timd in COMPRESSED_TIMDS:
         compressed_temp_timd)
     TEMP_TIMDS[decompressed_temp_timd.get(
         'scoutName')] = decompressed_temp_timd
-'''
 
 # After the TEMP_TIMDS are decompressed, they are fed into the
 # consolidation script where they are returned as one final TIMD. This
@@ -317,11 +313,11 @@ UNCALCULATED_TIMD = consolidation.consolidate_temp_timds(TEMP_TIMDS)
 FINAL_TIMD = add_calculated_data_to_timd(UNCALCULATED_TIMD)
 
 # Save data in local cache
-with open(utils.create_file_path('data/timds/' + TIMD_NAME + '.json'),
-          'w') as file:
+with open(utils.create_file_path('data/cache/timds/' + TIMD_NAME +
+                                 '.json'), 'w') as file:
     json.dump(FINAL_TIMD, file)
 
 # Save data in Firebase upload queue
-with open(utils.create_file_path('data/upload_queue/timds/' + TIMD_NAME +
-                                 '.json'), 'w') as file:
+with open(utils.create_file_path('data/upload_queue/timds/' +
+                                 TIMD_NAME + '.json'), 'w') as file:
     json.dump(FINAL_TIMD, file)
