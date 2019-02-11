@@ -7,6 +7,7 @@ reflective of a team's performance across all of their matches.
 Called by server.py with the number of the Team to be calculated."""
 # External imports
 import json
+import os
 import sys
 # Internal imports
 import utils
@@ -19,7 +20,13 @@ else:
     print('Error: Team number not being passed as an argument. Exiting...')
     sys.exit(0)
 
-#TODO: Open TIMD data
+# Uses the team number to find all the TIMDs for the passed team.
+TIMDS = []
+for timd in os.listdir(utils.create_file_path('data/cache/timds')):
+    if TEAM_NUMBER in timd:
+        with open(utils.create_file_path(
+                f'data/cache/timds/{timd}')) as timd_file:
+            TIMDS.append(timd_file.read())
 
 #TODO: Do calculations
 
