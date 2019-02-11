@@ -1,8 +1,10 @@
 """Decompresses tempTIMD data.
 
 Called by calculate_timd.py."""
-# No external imports
-# No internal imports
+# External imports
+import json
+# Internal imports
+import utils
 
 # Compressed tempTIMD key to uncompressed tempTIMD key
 TEMP_TIMD_COMPRESSION_KEYS = {
@@ -19,7 +21,7 @@ TEMP_TIMD_COMPRESSION_KEYS = {
     'm': 'appVersion',
     'n': 'assignmentMode',
     'p': 'assignmentFileTimestamp',
-    'q': 'matchesNotScouted',
+    'G': 'sandstormEndPosition',
     'r': 'type',
     's': 'time',
     't': 'piece',
@@ -95,11 +97,48 @@ def decompress_timeline_value(compressed_value):
     elif compressed_value.isdigit():
         # 'compressed_value' is an integer
         return int(compressed_value)
-    # Otherwise, 'compressed_value' is a timestamp (which can contain
-    # '*' characters, and should be left as a string) or
-    # 'compressed_value' is a climb dictionary, which is handled later.
+    # Otherwise, 'compressed_value' should be left as a string, since it
+    # is a timestamp (which can contain '*' characters), an app version,
+    # or a climb dictionary (which is handled later).
     else:
         return compressed_value
+
+def decompress_temp_timd_headers(compressed_headers):
+    """Decompress headers for a single tempTIMD.
+
+    compressed_headers are non-timed data fields."""
+
+    with open(utils.create_file_path(
+            'data/assignments/assignments.json'), 'r') as file:
+        file_data = json.load(file)
+    # Decompressed scout name to compressed scout name
+    scout_name_compression_values = file_data['letters']
+
+    # Reverses key:value pairs to enable accessing decompressed scout
+    # name from compressed scout name
+    scout_name_compression_values = {letter: scout_name for \
+        scout_name, letter in scout_name_compression_values.items()}
+
+    if compressed_headers[-1] == ',':
+        # Removes trailing comma.
+        compressed_headers = compressed_headers[:-1]
+
+    compressed_headers = compressed_headers.split(',')
+
+    decompressed_headers = {}
+
+    for header in compressed_headers:
+        compressed_key = header[0]
+        compressed_value = header[1:]
+        decompressed_key = TEMP_TIMD_COMPRESSION_KEYS[compressed_key]
+        if decompressed_key == 'scoutName':
+            # Uses 'scout_name_compression_values' dictionary to decompress scout name
+            decompressed_value = scout_name_compression_values[compressed_value]
+        else:
+            decompressed_value = decompress_timeline_value(compressed_value)
+        decompressed_headers[decompressed_key] = decompressed_value
+
+    return decompressed_headers
 
 def decompress_temp_timd_timeline(compressed_temp_timd_timeline):
     """Decompresses a single tempTIMD timeline.
