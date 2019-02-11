@@ -20,6 +20,18 @@ else:
     print('Error: Team number not being passed as an argument. Exiting...')
     sys.exit(0)
 
+def team_calculations(timds):
+    """Calculates all the calculated data for one team.
+
+    Uses a team's timds to make many calculations and return them in a
+    dictionary of calculatedData, the same that is used when exporting
+    to the firebase later on.
+    timds is the list of timds that a team has participated in, this is
+    where the data comes from when making calculations."""
+    calculated_data = {}
+
+    return calculated_data
+
 # Uses the team number to find all the TIMDs for the passed team.
 TIMDS = []
 for timd in os.listdir(utils.create_file_path('data/cache/timds')):
@@ -28,9 +40,7 @@ for timd in os.listdir(utils.create_file_path('data/cache/timds')):
                 f'data/cache/timds/{timd}')) as timd_file:
             TIMDS.append(timd_file.read())
 
-#TODO: Do calculations
-
-FINAL_TEAM_DATA = {}
+FINAL_TEAM_DATA = team_calculations(TIMDS)
 
 # Save data in local cache
 with open(utils.create_file_path(f'data/teams/{TEAM_NUMBER}.json'),
