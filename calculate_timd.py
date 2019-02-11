@@ -19,6 +19,7 @@ Called by server.py with the name of the TIMD to be calculated."""
 import json
 import os
 import sys
+import numpy as np
 # Internal imports
 import consolidation
 import decompress
@@ -131,6 +132,76 @@ def add_calculated_data_to_timd(timd):
     calculated_data['lemonsSpilled'] = sum([
         1 for action in timd.get('timeline') if
         action.get('type') == 'spill'])
+
+    calculated_data['lemonLoadSuccess'] = round(100 * np.mean([
+        action['didSucceed'] for action in timd.get('timeline') if
+        action.get('type') == 'intake' and
+        action.get('piece') == 'lemon' and
+        (action.get('zone') == 'leftLoadingStation' or
+         action.get('zone') == 'leftLoadingStation')]))
+
+    calculated_data['orangeSuccessAll'] = round(100 * np.mean([
+        action['didSucceed'] for action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange']))
+    calculated_data['orangeSuccessDefended'] = round(100 * np.mean([
+        action['didSucceed'] for action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange' and
+        action.get('wasDefended') is True]))
+    calculated_data['orangeSuccessUndefended'] = round(100 * np.mean([
+        action['didSucceed'] for action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange' and
+        action.get('wasDefended') is False]))
+    calculated_data['orangeSuccessL1'] = round(100 * np.mean([
+        action['didSucceed'] for action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange' and
+        action.get('level') != 3 and
+        action.get('level') != 2]))
+    calculated_data['orangeSuccessL2'] = round(100 * np.mean([
+        action['didSucceed'] for action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange' and
+        action.get('level') == 2]))
+    calculated_data['orangeSuccessL3'] = round(100 * np.mean([
+        action['didSucceed'] for action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange' and
+        action.get('level') == 3]))
+
+    calculated_data['lemonSuccessAll'] = round(100 * np.mean([
+        action['didSucceed'] for action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon']))
+    calculated_data['lemonSuccessDefended'] = round(100 * np.mean([
+        action['didSucceed'] for action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('wasDefended') is True]))
+    calculated_data['lemonSuccessUndefended'] = round(100 * np.mean([
+        action['didSucceed'] for action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('wasDefended') is False]))
+    calculated_data['lemonSuccessL1'] = round(100 * np.mean([
+        action['didSucceed'] for action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('level') != 3 and
+        action.get('level') != 2]))
+    calculated_data['lemonSuccessL2'] = round(100 * np.mean([
+        action['didSucceed'] for action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('level') == 2]))
+    calculated_data['lemonSuccessL3'] = round(100 * np.mean([
+        action['didSucceed'] for action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('level') == 3]))
+
 
     timd['calculatedData'] = calculated_data
 
