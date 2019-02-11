@@ -87,21 +87,21 @@ def add_calculated_data_to_timd(timd):
     # the key to be the sum of a list of ones, one for each time the
     # given requirements are met. This creates the amount of times those
     # requirements were met in the timeline.
-    calculated_data['orangesScored'] = sum([
-        1 for action in timd.get('timeline') if
+    calculated_data['orangesScored'] = len([
+        action for action in timd.get('timeline') if
         action.get('type') == 'placement' and
         action.get('didSucceed') is True and
         action.get('piece') == 'orange'])
-    calculated_data['lemonsScored'] = sum([
-        1 for action in timd.get('timeline') if
+    calculated_data['lemonsScored'] = len([
+        action for action in timd.get('timeline') if
         action.get('type') == 'placement' and
         action.get('didSucceed') is True and
         action.get('piece') == 'lemon'])
-    calculated_data['orangeFouls'] = sum([
-        1 for action in timd.get('timeline') if
+    calculated_data['orangeFouls'] = len([
+        action for action in timd.get('timeline') if
         action.get('shotOutOfField') is True])
-    calculated_data['lemonsSpilled'] = sum([
-        1 for action in timd.get('timeline') if
+    calculated_data['lemonsSpilled'] = len([
+        action for action in timd.get('timeline') if
         action.get('type') == 'spill'])
 
     # The next set of calculated data points are the success
