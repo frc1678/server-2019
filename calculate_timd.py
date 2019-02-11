@@ -33,6 +33,109 @@ else:
     sys.exit(0)
 
 COMPRESSED_TIMDS = []
+
+TEMP_TIMDS = {'CARL' : {
+    'startingLevel': 2,
+    'crossedHabLine': True,
+    'startingLocation': 'mid',
+    'preload' : 'lemon',
+    'driverStation': 1,
+    'isNoShow': False,
+    'timerStarted': 1547528330,
+    'currentCycle': 4,
+    'scoutID': 7,
+    'scoutName': 'Carl',
+    'appVersion': '1.2',
+    'assignmentMode': 'QR',
+    'assignmentFileTimestamp': 1547528290,
+    'matchesNotScouted': [1, 14, 28, 35],
+    'timeline': [
+        {
+            'type': 'intake',
+            'time' : '102.4',
+            'piece': 'orange',
+            'zone': 'rightLoadingStation',
+            'didSucceed': True,
+            'wasDefended': False,
+        },
+        {
+            'type': 'incap',
+            'time': '109.6',
+            'cause': 'brokenMechanism',
+        },
+        {
+            'type': 'unincap',
+            'time': '111.1',
+        },
+        {
+            'type': 'drop',
+            'time': '112.1',
+            'piece': 'orange',
+        },
+        {
+            'type': 'intake',
+            'time': '120',
+            'piece': 'lemon',
+            'zone': 'zone2Left',
+            'didSucceed': True,
+            'wasDefended': True,
+        },
+        {
+            'type': 'placement',
+            'time': '127.4',
+            'piece': 'orange',
+            'didSucceed': False,
+            'wasDefended': False,
+            'shotOutOfField': True,
+            'structure': 'leftRocket',
+            'side': 'right',
+            'level': 2,
+        },
+        {
+            'type': 'spill',
+            'time': '130',
+            'piece': 'lemon',
+        },
+        {
+            'type': 'climb',
+            'time': '138',
+            'attempted': {'self': 3, 'robot1': 3, 'robot2': 2},
+            'actual': {'self': 3, 'robot1': 2, 'robot2': 1},
+        }
+    ],
+}}
+
+def add_calculated_data_to_timd(timd):
+    """Calculates data in a timd and adds it to 'calculatedData' in the TIMD.
+
+    timd is the TIMD that needs calculated data."""
+    calculated_data = {}
+
+    # Adds counting data points to calculated data, does this by setting
+    # the key to be the sum of a list of ones, one for each time the
+    # given requirements are met. This creates the amount of times those
+    # requirements were met in the timeline.
+    calculated_data['orangesScored'] = sum([
+        1 for action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('didSucceed') is True and
+        action.get('piece') == 'orange'])
+    calculated_data['lemonsScored'] = sum([
+        1 for action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('didSucceed') is True and
+        action.get('piece') == 'lemon'])
+    calculated_data['orangeFouls'] = sum([
+        1 for action in timd.get('timeline') if
+        action.get('shotOutOfField') is True])
+    calculated_data['lemonsSpilled'] = sum([
+        1 for action in timd.get('timeline') if
+        action.get('type') == 'spill'])
+
+    timd['calculatedData'] = calculated_data
+
+    return timd
+
 # Goes into the temp_timds folder to get the names of all the tempTIMDs
 # that correspond to the given TIMD.
 for temp_timd in os.listdir(utils.create_file_path('data/cache/temp_timds')):
@@ -41,8 +144,7 @@ for temp_timd in os.listdir(utils.create_file_path('data/cache/temp_timds')):
             'data/cache/temp_timds/' + temp_timd)
         with open(file_path, 'r') as compressed_temp_timd:
             COMPRESSED_TIMDS.append(compressed_temp_timd.read())
-
-TEMP_TIMDS = {}
+'''
 # Iterates through all the compressed tempTIMDs and decompresses them.
 # After decompressing them, adds them to the TEMP_TIMDS dictionary with
 # the scout name as the key and their decompressed tempTIMD as a value.
@@ -53,15 +155,16 @@ for compressed_temp_timd in COMPRESSED_TIMDS:
         compressed_temp_timd)
     TEMP_TIMDS[decompressed_temp_timd.get(
         'scoutName')] = decompressed_temp_timd
+'''
 
-print(TEMP_TIMDS)
-# Passes the TEMP_TIMDS through consolidation to create the one true
-# TIMD used for later calculation.
+# After the TEMP_TIMDS are decompressed, they are fed into the
+# consolidation script where they are returned as one final TIMD. This
+# final TIMD is set as the variable name UNCALCULATED_TIMD.
+UNCALCULATED_TIMD = consolidation.consolidate_temp_timds(TEMP_TIMDS)
 
-
-#TODO: Do calculations
-
-FINAL_TIMD = {}
+# Defines FINAL_TIMD as a version of the TIMD with calculated data
+# using the add_calculated_data_to_timd function at the top of the file.
+FINAL_TIMD = add_calculated_data_to_timd(UNCALCULATED_TIMD)
 
 # Save data in local cache
 with open(utils.create_file_path('data/timds/' + TIMD_NAME + '.json'),
