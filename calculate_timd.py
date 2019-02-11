@@ -246,7 +246,40 @@ def add_calculated_data_to_timd(timd):
         if cycle_list[-1].get('type') == 'intake':
             cycle_list.pop(-1)
         paired_cycle_list = list(zip(*[iter(cycle_list)]*2))
-        
+
+        calculated_data['orangeCycleAll'] = calculate_avg_cycle_time(
+            [cycle for cycle in paired_cycle_list if
+             cycle[1].get('piece') == 'orange'])
+        calculated_data['orangeCycleL1'] = calculate_avg_cycle_time(
+            [cycle for cycle in paired_cycle_list if
+             cycle[1].get('piece') == 'orange' and
+             cycle[1].get('level') != 2 and
+             cycle[1].get('level') != 3])
+        calculated_data['orangeCycleL2'] = calculate_avg_cycle_time(
+            [cycle for cycle in paired_cycle_list if
+             cycle[1].get('piece') == 'orange' and
+             cycle[1].get('level') == 2])
+        calculated_data['orangeCycleL3'] = calculate_avg_cycle_time(
+            [cycle for cycle in paired_cycle_list if
+             cycle[1].get('piece') == 'orange' and
+             cycle[1].get('level') == 3])
+
+        calculated_data['lemonCycleAll'] = calculate_avg_cycle_time(
+            [cycle for cycle in paired_cycle_list if
+             cycle[1].get('piece') == 'lemon'])
+        calculated_data['lemonCycleL1'] = calculate_avg_cycle_time(
+            [cycle for cycle in paired_cycle_list if
+             cycle[1].get('piece') == 'lemon' and
+             cycle[1].get('level') != 2 and
+             cycle[1].get('level') != 3])
+        calculated_data['lemonCycleL2'] = calculate_avg_cycle_time(
+            [cycle for cycle in paired_cycle_list if
+             cycle[1].get('piece') == 'lemon' and
+             cycle[1].get('level') == 2])
+        calculated_data['lemonCycleL3'] = calculate_avg_cycle_time(
+            [cycle for cycle in paired_cycle_list if
+             cycle[1].get('piece') == 'lemon' and
+             cycle[1].get('level') == 3])
 
 
     timd['calculatedData'] = calculated_data
