@@ -84,9 +84,9 @@ TEMP_TIMDS = {'CARL' : {
         {
             'type': 'placement',
             'time': '127.4',
-            'piece': 'orange',
-            'didSucceed': False,
-            'wasDefended': False,
+            'piece': 'lemon',
+            'didSucceed': True,
+            'wasDefended': True,
             'shotOutOfField': True,
             'structure': 'leftRocket',
             'side': 'right',
@@ -105,6 +105,32 @@ TEMP_TIMDS = {'CARL' : {
         }
     ],
 }}
+
+def avg(lis, exception=0.0):
+    """Calculates the average of a list.
+
+    lis is the list that is averaged.
+    exception is returned if there is a divide by zero error. The
+    default is 0.0 because the main usage in in percentage calculations.
+    """
+    try:
+        return sum(lis) / len(lis)
+    except ZeroDivisionError:
+        return exception
+
+def calculate_avg_cycle_time(cycles):
+    """Calculates the average time for an action based on start and end times.
+
+    Finds the time difference between each action pair passed and
+    returns the average of the differences.
+    cycles is a list of tuples where the first action in the tuple is
+    the intake, and the second item is the placement or drop.
+    """
+    cycle_times = []
+    for cycle in cycles:
+        cycle_times.append(float(cycle[1].get('time')) -
+                           float(cycle[0].get('time')))
+    return avg(cycle_times)
 
 def add_calculated_data_to_timd(timd):
     """Calculates data in a timd and adds it to 'calculatedData' in the TIMD.
@@ -133,74 +159,94 @@ def add_calculated_data_to_timd(timd):
         1 for action in timd.get('timeline') if
         action.get('type') == 'spill'])
 
-    calculated_data['lemonLoadSuccess'] = round(100 * np.mean([
+    calculated_data['lemonLoadSuccess'] = round(100 * avg([
         action['didSucceed'] for action in timd.get('timeline') if
         action.get('type') == 'intake' and
         action.get('piece') == 'lemon' and
         (action.get('zone') == 'leftLoadingStation' or
          action.get('zone') == 'leftLoadingStation')]))
 
-    calculated_data['orangeSuccessAll'] = round(100 * np.mean([
+    calculated_data['orangeSuccessAll'] = round(100 * avg([
         action['didSucceed'] for action in timd.get('timeline') if
         action.get('type') == 'placement' and
         action.get('piece') == 'orange']))
-    calculated_data['orangeSuccessDefended'] = round(100 * np.mean([
+    calculated_data['orangeSuccessDefended'] = round(100 * avg([
         action['didSucceed'] for action in timd.get('timeline') if
         action.get('type') == 'placement' and
         action.get('piece') == 'orange' and
         action.get('wasDefended') is True]))
-    calculated_data['orangeSuccessUndefended'] = round(100 * np.mean([
+    calculated_data['orangeSuccessUndefended'] = round(100 * avg([
         action['didSucceed'] for action in timd.get('timeline') if
         action.get('type') == 'placement' and
         action.get('piece') == 'orange' and
         action.get('wasDefended') is False]))
-    calculated_data['orangeSuccessL1'] = round(100 * np.mean([
+    calculated_data['orangeSuccessL1'] = round(100.0 * avg([
         action['didSucceed'] for action in timd.get('timeline') if
         action.get('type') == 'placement' and
         action.get('piece') == 'orange' and
         action.get('level') != 3 and
         action.get('level') != 2]))
-    calculated_data['orangeSuccessL2'] = round(100 * np.mean([
+    calculated_data['orangeSuccessL2'] = round(100 * avg([
         action['didSucceed'] for action in timd.get('timeline') if
         action.get('type') == 'placement' and
         action.get('piece') == 'orange' and
         action.get('level') == 2]))
-    calculated_data['orangeSuccessL3'] = round(100 * np.mean([
+    calculated_data['orangeSuccessL3'] = round(100 * avg([
         action['didSucceed'] for action in timd.get('timeline') if
         action.get('type') == 'placement' and
         action.get('piece') == 'orange' and
         action.get('level') == 3]))
 
-    calculated_data['lemonSuccessAll'] = round(100 * np.mean([
+    calculated_data['lemonSuccessAll'] = round(100 * avg([
         action['didSucceed'] for action in timd.get('timeline') if
         action.get('type') == 'placement' and
         action.get('piece') == 'lemon']))
-    calculated_data['lemonSuccessDefended'] = round(100 * np.mean([
+    calculated_data['lemonSuccessDefended'] = round(100 * avg([
         action['didSucceed'] for action in timd.get('timeline') if
         action.get('type') == 'placement' and
         action.get('piece') == 'lemon' and
         action.get('wasDefended') is True]))
-    calculated_data['lemonSuccessUndefended'] = round(100 * np.mean([
+    calculated_data['lemonSuccessUndefended'] = round(100 * avg([
         action['didSucceed'] for action in timd.get('timeline') if
         action.get('type') == 'placement' and
         action.get('piece') == 'lemon' and
         action.get('wasDefended') is False]))
-    calculated_data['lemonSuccessL1'] = round(100 * np.mean([
+    calculated_data['lemonSuccessL1'] = round(100 * avg([
         action['didSucceed'] for action in timd.get('timeline') if
         action.get('type') == 'placement' and
         action.get('piece') == 'lemon' and
         action.get('level') != 3 and
         action.get('level') != 2]))
-    calculated_data['lemonSuccessL2'] = round(100 * np.mean([
+    calculated_data['lemonSuccessL2'] = round(100 * avg([
         action['didSucceed'] for action in timd.get('timeline') if
         action.get('type') == 'placement' and
         action.get('piece') == 'lemon' and
         action.get('level') == 2]))
-    calculated_data['lemonSuccessL3'] = round(100 * np.mean([
+    calculated_data['lemonSuccessL3'] = round(100 * avg([
         action['didSucceed'] for action in timd.get('timeline') if
         action.get('type') == 'placement' and
         action.get('piece') == 'lemon' and
         action.get('level') == 3]))
+
+    # Creates the cycle_list, a list of tuples where the intake is the
+    # first item and the placement or drop is the second. This is used
+    # when calculating cycle times.
+    cycle_list = [action for action in timd.get('timeline') if
+                  action.get('type') == 'intake' or
+                  action.get('type') == 'placement' or
+                  action.get('type') == 'drop']
+    if cycle_list != []:
+        # If the first action in the list is a placement, it is a
+        # preload, which doesn't count when calculating cycle times.
+        if cycle_list[0].get('type') == 'placement':
+            cycle_list.pop(0)
+        # If the last action in the list is an intake, it means the
+        # robot finished with a game object, in which the cycle was
+        # never completed.
+        if cycle_list[-1].get('type') == 'intake':
+            cycle_list.pop(-1)
+        paired_cycle_list = list(zip(*[iter(cycle_list)]*2))
+        
 
 
     timd['calculatedData'] = calculated_data
