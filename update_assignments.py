@@ -20,8 +20,8 @@ else:
 # Each scout name is associated with a letter (for compression).
 # This opens the JSON file that stores the letters and loads the dict
 # that is used to swap names with letters.
-with open(utils.create_file_path('letters.json'), 'r') as file:
-    LETTERS = json.load(file)
+with open(utils.create_file_path('data/assignments/assignments.json'), 'r') as file:
+    LETTERS = json.load(file)['letters']
 
 AVAILABILITY = DB.child('scoutManagement/availability').get().val()
 
