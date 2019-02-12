@@ -183,7 +183,7 @@ while True:
     # Checks list of tempTIMDs from files to determine what calculations
     # are needed.
 
-    # List of files (tempTIMDs) in the 'data' directory.
+    # List of files (tempTIMDs) in the 'temp_timds' cache directory.
     TEMP_TIMD_FILES = os.listdir(utils.create_file_path(
         'data/cache/temp_timds'))
     # Stores groups of matching tempTIMDs under a single key (which is
