@@ -110,7 +110,8 @@ def temp_timd_stream_handler(snapshot):
             timd_name = temp_timd_name.split('-')[0]
             # This means an already existing tempTIMD has been modified
             # and needs to be recalculated.
-            if temp_timd_name in LATEST_CALCULATIONS_BY_TIMD[timd_name]:
+            if temp_timd_name in LATEST_CALCULATIONS_BY_TIMD.get(
+                    timd_name, []):
                 register_modified_temp_timd(temp_timd_name)
 
 
