@@ -256,6 +256,9 @@ while True:
     # Forwards data from Cloud Firestore to Realtime Database.
     subprocess.call('python3 forward_firestore_data.py', shell=True)
 
+    # Forwards tempSuper data to Matches and TIMDs.
+    subprocess.call('python3 forward_temp_super.py', shell=True)
+
     # Uploads data in data queue.
     subprocess.call('python3 upload_data.py', shell=True)
 
