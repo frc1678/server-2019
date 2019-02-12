@@ -99,12 +99,12 @@ def temp_timd_stream_handler(snapshot):
         # and we should delete it from our local copy.
         if temp_timd_value is None:
             os.remove(utils.create_file_path(
-                f'data/cache/temp_timds{temp_timd_name}.txt'))
+                f'data/cache/temp_timds/{temp_timd_name}.txt'))
             # Causes the corresponding TIMD to be recalculated
             register_modified_temp_timd(temp_timd_name)
         else:
             with open(utils.create_file_path(
-                    f'data/cache/temp_timds{temp_timd_name}.txt'),
+                    f'data/cache/temp_timds/{temp_timd_name}.txt'),
                       'w') as file:
                 file.write(temp_timd_value)
             timd_name = temp_timd_name.split('-')[0]
