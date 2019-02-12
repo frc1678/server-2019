@@ -27,6 +27,48 @@ TEMP_SUPER_COMPRESSION_VALUES = {
     'L': 'lemon',
 }
 
+def decompress_temp_super_headers(compressed_temp_super_headers):
+    """Decompresses headers for a single tempSuper.
+
+    Headers contain the data that is not specific to a team."""
+    compressed_temp_super_headers = compressed_temp_super_headers.split(',')
+    decompressed_super = {}
+    for header in compressed_temp_super_headers:
+        compressed_key = header[0]
+        compressed_value = header[1:]
+        decompressed_key = TEMP_SUPER_COMPRESSION_KEYS[compressed_key]
+
+        if decompressed_key == 'cargoShipPreloads':
+            # Removes 'compressed_key' and curly brackets
+            compressed_value = header[2:-1]
+
+            decompressed_value = {}
+            for compressed_preload in compressed_value.split(';'):
+                compressed_preload_key = compressed_preload[0]
+                compressed_preload_value = compressed_preload[1:]
+                decompressed_preload_key = TEMP_SUPER_COMPRESSION_VALUES[
+                    compressed_preload_key]
+                decompressed_preload_value = TEMP_SUPER_COMPRESSION_VALUES[
+                    compressed_preload_value]
+                decompressed_value[decompressed_preload_key] = \
+                    decompressed_preload_value
+        elif decompressed_key == 'noShowTeams':
+            # 'noShowTeams' is a list
+            # Removes 'compressed_key' and brackets
+            teams = header[2:-1]
+            decompressed_value = [int(team) for team in teams.split(';')]
+        # Checks if the 'compressed_value' can be decompressed with
+        # 'TEMP_SUPER_COMPRESS_VALUES'.
+        elif len(compressed_value) == 1 and compressed_value.isalpha():
+            decompressed_value = TEMP_SUPER_COMPRESSION_VALUES[
+                compressed_value]
+        # Checks if 'compressed_value' only contains characters 0-9
+        elif compressed_value.isdigit():
+            decompressed_value = int(compressed_value)
+        else:
+            print(f"Error: Unable to process value of '{decompressed_key}': {compressed_value}")
+        decompressed_super[decompressed_key] = decompressed_value
+
 def decompress_temp_super_teams(compressed_temp_super_teams):
     """Decompresses a single data set of tempSuper teams.
 
