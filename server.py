@@ -113,17 +113,56 @@ def temp_timd_stream_handler(snapshot):
             if temp_timd_name in LATEST_CALCULATIONS_BY_TIMD[timd_name]:
                 register_modified_temp_timd(temp_timd_name)
 
+def temp_super_stream_handler(snapshot):
+    """Runs when any new tempSuper datas are uploaded"""
+    data = snapshot['data']
+    path = snapshot['path']
+
+    # This occurs when the entirety of tempSuper datas are updated
+    # (stream initialization, all tempSuper data deleted, or first
+    # tempSuper created)
+    if path == '/':
+        # This means that all tempSuper datas have been wiped and we
+        # should wipe our local copy.
+        if data is None:
+            delete_cache_data_folder('temp_super')
+            return
+    elif path.count('/') == 1:
+        # This is moving the path into the data so it is in the same
+        # format as data at the path '/'.  This allows us to use the
+        # same code to save the data in our local cache later on.
+        # The '[1:]' removes the slash at the beginning of the path
+        data = {path[1:] : data}
+    # If there is more than 1 slash in the path, the data is multiple
+    # children deep.  tempSupers are only one child deep and this will
+    # only trigger if invalid data is sent to Firebase.
+    else:
+        print('Error: Invalid tempSuper data received')
+        return
+
+    # This saves each tempSuper data in a separate text file.
+    for temp_super_name, temp_super_value in data.items():
+        # This means that this tempSuper has been deleted from Firebase
+        # and we should delete it from our local copy.
+        if temp_super_value is None:
+            os.remove(utils.create_file_path(
+                f'data/cache/temp_super/{temp_super_name}.txt'))
+        else:
+            with open(utils.create_file_path(
+                    f'data/cache/temp_super/{temp_super_name}.txt'),
+                      'w') as file:
+                file.write(temp_super_value)
 
 
 def create_streams(stream_names=None):
     """Creates firebase streams given a list of possible streams.
 
     These possible streams include: MATCH_NUM_STREAM, CYCLE_NUM_STREAM,
-                                    TEMP_TIMD_STREAM,"""
+                                    TEMP_TIMD_STREAM, TEMP_SUPER_STREAM"""
     # If specific streams are not given, create all of the possible streams
     if stream_names is None:
         stream_names = ['MATCH_NUM_STREAM', 'CYCLE_NUM_STREAM',
-                        'TEMP_TIMD_STREAM']
+                        'TEMP_TIMD_STREAM', 'TEMP_SUPER_STREAM']
     streams = {}
     # Creates each of the streams specified and stores them in the
     # streams dict.
@@ -140,6 +179,11 @@ def create_streams(stream_names=None):
             delete_cache_data_folder('temp_timds')
             streams[name] = DB.child('tempTIMDs').stream(
                 temp_timd_stream_handler)
+        elif name == 'TEMP_SUPER_STREAM':
+            # Used to remove any outdated data
+            delete_cache_data_folder('temp_super')
+            streams[name] = DB.child('tempSuper').stream(
+                temp_super_stream_handler)
     return streams
 
 # signal.signal passes two arguments to this function, neither are used
