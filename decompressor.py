@@ -62,7 +62,7 @@ def decompress_temp_super_headers(compressed_temp_super_headers):
             for compressed_preload in compressed_value.split(';'):
                 compressed_preload_key = compressed_preload[0]
                 compressed_preload_value = compressed_preload[1:]
-                decompressed_preload_key = TEMP_SUPER_COMPRESSION_VALUES[
+                decompressed_preload_key = TEMP_SUPER_COMPRESSION_KEYS[
                     compressed_preload_key]
                 decompressed_preload_value = TEMP_SUPER_COMPRESSION_VALUES[
                     compressed_preload_value]
@@ -162,7 +162,7 @@ def decompress_temp_super(compressed_temp_super):
     teamSuper teams data contians data that is specific to a team.
 
     compressed_temp_super is a string."""
-    temp_super_key = compressed_temp_super.split('|')[1]
+    temp_super_key = compressed_temp_super.split('|')[0]
     compressed_header = compressed_temp_super.split('|')[1].split('_')[0]
     compressed_team = compressed_temp_super.split('_')[1]
 
