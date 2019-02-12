@@ -210,9 +210,11 @@ def decompress_temp_timd_timeline(compressed_temp_timd_timeline):
                 climb_items = decompressed_action[climb_key][1:-1].split(';')
                 decompressed_climb = {}
                 for climb_item in climb_items:
+                    compressed_key = climb_item[0]
+                    decompressed_value = climb_item[1]
                     decompressed_key = TEMP_TIMD_COMPRESSION_KEYS[
-                        climb_item[0]]
-                    decompressed_value = int(climb_item[1])
+                        compressed_key]
+                    decompressed_value = int(compressed_value)
                     decompressed_climb[decompressed_key] = decompressed_value
                 decompressed_action[climb_key] = decompressed_climb
 
