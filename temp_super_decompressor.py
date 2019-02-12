@@ -68,6 +68,7 @@ def decompress_temp_super_headers(compressed_temp_super_headers):
         else:
             print(f"Error: Unable to process value of '{decompressed_key}': {compressed_value}")
         decompressed_super[decompressed_key] = decompressed_value
+    return decompressed_super
 
 def decompress_temp_super_teams(compressed_temp_super_teams):
     """Decompresses a single data set of tempSuper teams.
