@@ -146,7 +146,8 @@ def decompress_temp_super(compressed_temp_super):
     teamSuper teams data contians data that is specific to a team.
 
     compressed_temp_super is a string."""
-    compressed_header = compressed_temp_super.split('_')[0]
+    temp_super_key = compressed_temp_super.split('|')[1]
+    compressed_header = compressed_temp_super.split('|')[1].split('_')[0]
     compressed_team = compressed_temp_super.split('_')[1]
 
     decompressed_temp_super = {}
@@ -156,4 +157,4 @@ def decompress_temp_super(compressed_temp_super):
     decompressed_temp_super.update(decompress_temp_super_teams(
         compressed_team))
 
-    return decompressed_temp_super
+    return {temp_super_key: decompressed_temp_super}
