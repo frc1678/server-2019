@@ -20,16 +20,16 @@ import utils
 # DB stands for database
 DB = firebase_communicator.configure_firebase()
 
-def delete_temp_timd_data_folder():
-    """Deletes the 'temp_timds' folder and its contents, then recreates it.
+def delete_cache_data_folder(folder_name):
+    """Deletes a cache folder and its contents, then recreates it.
 
     This is to remove any outdated data, since all data is re-downloaded
-    when the TEMP_TIMD_STREAM is restarted."""
+    when a Firebase stream is restarted."""
     # Checks if the directory exists before trying to delete it to avoid
     # causing an error.
-    if os.path.isdir(utils.create_file_path('data/cache/temp_timds',
+    if os.path.isdir(utils.create_file_path(f'data/cache/{folder_name}',
                                             False)):
-        shutil.rmtree(utils.create_file_path('data/cache/temp_timds',
+        shutil.rmtree(utils.create_file_path(f'data/cache/{folder_name}',
                                              False))
 
 def register_modified_temp_timd(temp_timd_name):
@@ -78,7 +78,7 @@ def temp_timd_stream_handler(snapshot):
         # This means that all tempTIMDs have been wiped and we should
         # wipe our local copy.
         if data is None:
-            delete_temp_timd_data_folder()
+            delete_cache_data_folder('temp_timds')
             return
     elif path.count('/') == 1:
         # This is moving the path into the data so it is in the same
@@ -137,7 +137,7 @@ def create_streams(stream_names=None):
                                     ).stream(cycle_num_stream_handler)
         elif name == 'TEMP_TIMD_STREAM':
             # Used to remove any outdated data
-            delete_temp_timd_data_folder()
+            delete_cache_data_folder('temp_timds')
             streams[name] = DB.child('tempTIMDs').stream(
                 temp_timd_stream_handler)
     return streams
