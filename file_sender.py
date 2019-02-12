@@ -1,15 +1,7 @@
 """ Send file from computer to devices and confirm that they're received
 Continuously load files on to the device
 so that it gets loaded on whenever a device is plugged in. """
-#TODO Test this program on EVERY SINGLE TABLET to make sure it works
-#TODO Test this program on EVERY SINGLE TABLET to make sure it works
-#TODO Test this program on EVERY SINGLE TABLET to make sure it works
-#TODO Test this program on EVERY SINGLE TABLET to make sure it works
-#TODO Test this program on EVERY SINGLE TABLET to make sure it works
-#TODO Test this program on EVERY SINGLE TABLET to make sure it works
-#TODO Test this program on EVERY SINGLE TABLET to make sure it works
-#TODO Test this program on EVERY SINGLE TABLET to make sure it works
-#TODO Test this program on EVERY SINGLE TABLET to make sure it works
+
 # External imports
 import subprocess
 import time
@@ -21,14 +13,14 @@ serials_dict = {
     # Green case tablets (Scouts 1-8)
     '094d5740': 'Scout 1',
     '0904a28b': 'Scout 2',
-    '008fce263': 'Scout 3',
-    '005efadbb': 'Scout 4',
-    '0094d26f1': 'Scout 5',
-    '00ac0ed11': 'Scout 6',
-    '00a2849de': 'Scout 7',
+    '08fce263': 'Scout 3',
+    '05efadbb': 'Scout 4',
+    '094d26f1': 'Scout 5',
+    '0ac0ed11': 'Scout 6',
+    '0a2849de': 'Scout 7',
     '094d73e6': 'Scout 8',
     # Black case tablets (Scouts 9-18)
-    '':'Scout 9',  #TODO(Apurva): figure out serial number for this tablet
+    '015d21098450260a': 'Scout 9',
     '015d256469480409': 'Scout 10',
     '015d21d505281419': 'Scout 11',
     '015d2568753c1408': 'Scout 12',
@@ -93,4 +85,7 @@ while True:
                              '/mnt/sdcard/bluetooth/assignments.txt'",
                             shell=True)
             devices_with_file.append(device)
+
+            #TODO (Apurva and Nathan) make an if statement to check if the file is
+            # already on the tablet and if not that it successfully copied
             print(f'Loaded assignment.txt file onto tablet \'{device_name}\'')
