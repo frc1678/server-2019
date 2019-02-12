@@ -4,6 +4,22 @@ Called by forward_temp_super.py"""
 
 # Compressed tempSuper key to uncompressed tempSuper key
 TEMP_SUPER_COMPRESSION_KEYS = {
+    'a': 'cargoShipPreloads',
+    'b': 'leftNear',
+    'c': 'leftMid',
+    'd': 'leftFar',
+    'e': 'rightNear',
+    'f': 'rightMid',
+    'g': 'rightFar',
+    'h': 'noShowTeams',
+    'k': 'redScore',
+    'm': 'blueScore',
+    'n': 'redFoulPoints',
+    'p': 'blueFoulPoints',
+    'q': 'blueDidRocketRP',
+    'r': 'redDidRocketRP',
+    's': 'blueDidClimbRP',
+    't': 'redDidClimbRP',
     'u': 'teamNumber',
     'v': 'rankAgility',
     'w': 'rankSpeed',
