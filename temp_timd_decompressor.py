@@ -173,7 +173,7 @@ def decompress_temp_timd_timeline(compressed_temp_timd_timeline):
                 decompressed_key = TEMP_TIMD_COMPRESSION_KEYS[key]
                 # The previous value is from the last key to the end of
                 # the string.
-                compressed_value = action[index_last_key+1:index+1]
+                compressed_value = action[index_last_key+1:]
                 decompressed_value = decompress_timeline_value(
                     compressed_value)
 
