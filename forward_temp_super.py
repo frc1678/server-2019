@@ -117,10 +117,9 @@ for temp_super_file in TEMP_SUPER_FILES:
     changes_to_upload = {}
 
     for key, value in temp_super_headers.items():
-        # If the data field does not exist or is set to -1, we should
-        # update it since we have not received data from TBA for the
-        # data field.
-        if match_data.get(key, -1) == -1:
+        # If the data field does not exist we should update it since we
+        # have not received data from TBA for the data field.
+        if match_data.get(key) is None:
             match_data[key] = value
             changes_to_upload[key] = value
 
