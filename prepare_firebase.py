@@ -35,21 +35,29 @@ def request_input(message, true_values, false_values):
         else:
             print('Press CTRL+C to exit')
 
-# User input
-PREPARE_TEAMS = request_input(
-    'Prepare teams? (y/n): ', ['y', 'yes'], ['n', 'no'])
-PREPARE_MATCHES = request_input(
-    'Prepare matches? (y/n): ', ['y', 'yes'], ['n', 'no'])
+FULL_WIPE = request_input("Wipe entire database? (y/n): ", ['y', 'yes'],
+                          ['n', 'no'])
 
-if PREPARE_TEAMS is True and PREPARE_MATCHES is True:
-    MESSAGE = 'TEAMS and MATCHES'
-elif PREPARE_TEAMS is True:
-    MESSAGE = 'TEAMS'
-elif PREPARE_MATCHES is True:
-    MESSAGE = 'MATCHES'
+if FULL_WIPE is True:
+    PREPARE_TEAMS = True
+    PREPARE_MATCHES = True
+    MESSAGE = 'EVERYTHING'
 else:
-    print('\nError: No collections were selected to prepare.  Exiting...')
-    sys.exit(0)
+    # User input
+    PREPARE_TEAMS = request_input(
+        'Prepare teams? (y/n): ', ['y', 'yes'], ['n', 'no'])
+    PREPARE_MATCHES = request_input(
+        'Prepare matches? (y/n): ', ['y', 'yes'], ['n', 'no'])
+
+    if PREPARE_TEAMS is True and PREPARE_MATCHES is True:
+        MESSAGE = 'TEAMS and MATCHES'
+    elif PREPARE_TEAMS is True:
+        MESSAGE = 'TEAMS'
+    elif PREPARE_MATCHES is True:
+        MESSAGE = 'MATCHES'
+    else:
+        print('\nError: No collections were selected to prepare.  Exiting...')
+        sys.exit(0)
 
 # User confirmation
 print(f'\nWarning: {MESSAGE} will be wiped from Firebase!')
@@ -94,6 +102,17 @@ if PREPARE_MATCHES is True:
                 'blueTeams': blue_teams,
             }
     FIREBASE_UPLOAD.update({'Matches': FINAL_MATCH_DATA})
+
+if FULL_WIPE is True:
+    FIREBASE_UPLOAD.update({
+        'tempTIMDs': None,
+        'TIMDs': None,
+        'tempSuper': None,
+        'scoutManagement': {
+            'currentMatchNumber': 1,
+            'cycleNumber': 0,
+        }
+    })
 
 # Sends data to Firebase
 FIREBASE.update(FIREBASE_UPLOAD)
