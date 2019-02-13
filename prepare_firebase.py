@@ -1,5 +1,8 @@
 #!/usr/bin/python3.6
-"""Prepares Firebase for competition."""
+"""Prepares Firebase for competition.
+
+Sends blank 'Teams' and 'Matches' to Realtime Database.
+Sends blank 'Teams' to Cloud Firestore."""
 # External imports
 import sys
 # Internal imports
