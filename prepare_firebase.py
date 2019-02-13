@@ -1,4 +1,4 @@
-#!/usr/bin/python3.7
+#!/usr/bin/python3.6
 """Prepares Firebase for competition."""
 # No external imports
 # Internal imports
