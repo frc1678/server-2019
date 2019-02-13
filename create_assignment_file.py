@@ -1,4 +1,4 @@
-#!/usr/bin/python3.7
+#!/usr/bin/python3.6
 """Creates and sends Scout assignment file."""
 # External imports
 import json
