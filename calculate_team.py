@@ -30,6 +30,13 @@ def team_calculations(timds):
     where the data comes from when making calculations."""
     calculated_data = {}
 
+    calculated_data['hasOrangeGroundIntake'] = True if [
+        action for timd in timds for action in timd.get('timeline') if
+        action.get('type') == 'intake' and
+        action.get('piece') == 'orange' and
+        action.get('zone') != 'leftLoadingStation' and
+        action.get('zone') != 'rightLoadingStation'] else False
+
     return calculated_data
 
 # Uses the team number to find all the TIMDs for the passed team.
