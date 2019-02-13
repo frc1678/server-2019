@@ -211,7 +211,7 @@ def decompress_temp_timd_timeline(compressed_temp_timd_timeline):
                 decompressed_climb = {}
                 for climb_item in climb_items:
                     compressed_key = climb_item[0]
-                    decompressed_value = climb_item[1]
+                    compressed_value = climb_item[1]
                     decompressed_key = TEMP_TIMD_COMPRESSION_KEYS[
                         compressed_key]
                     decompressed_value = int(compressed_value)
@@ -231,7 +231,8 @@ def decompress_temp_timd(compressed_temp_timd):
     dictionary represents a timed action.  Returns a dictionary.
 
     compressed_temp_timd is a string."""
-    compressed_header = compressed_temp_timd.split('_')[0]
+    temp_timd_key = compressed_temp_timd.split('|')[0]
+    compressed_header = compressed_temp_timd.split('|')[1].split('_')[0]
     compressed_timeline = compressed_temp_timd.split('_')[1]
 
     decompressed_temp_timd = {}
@@ -241,4 +242,4 @@ def decompress_temp_timd(compressed_temp_timd):
     decompressed_temp_timd['timeline'] = decompress_temp_timd_timeline(
         compressed_timeline)
 
-    return decompressed_temp_timd
+    return {temp_timd_key: decompressed_temp_timd}
