@@ -46,6 +46,12 @@ else:
 print(f'\nWarning: {MESSAGE} will be wiped from Firebase!')
 CONFIRMATION = request_input("Type 'wipe' to continue: ", ['wipe'], [])
 
+# Retrieves data from TBA
+if PREPARE_TEAMS is True:
+    TEAMS = tba_communicator.request_teams()
+if PREPARE_MATCHES is True:
+    MATCHES = tba_communicator.request_matches()
+print('\nAll TBA data successfully retrieved.')
 
 # TODO: Wipe certain Firebase collections
 # TODO: Populate Firebase with Teams and Matches
