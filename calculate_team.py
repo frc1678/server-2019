@@ -36,6 +36,19 @@ def team_calculations(timds):
         action.get('piece') == 'orange' and
         action.get('zone') != 'leftLoadingStation' and
         action.get('zone') != 'rightLoadingStation'] else False
+    calculated_data['hasOrangeGroundIntake'] = True if [
+        action for timd in timds for action in timd.get('timeline') if
+        action.get('type') == 'intake' and
+        action.get('piece') == 'lemon' and
+        action.get('zone') != 'leftLoadingStation' and
+        action.get('zone') != 'rightLoadingStation'] else False
+
+    calculated_data['didPreloadOrange'] = True if [
+        timd for timd in timds if timd.get('preload') == 'orange'
+        ] else False
+    calculated_data['didPreloadLemon'] = True if [
+        timd for timd in timds if timd.get('preload') == 'lemon'
+        ] else False
 
     return calculated_data
 
