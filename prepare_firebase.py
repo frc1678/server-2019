@@ -6,6 +6,8 @@ import sys
 import firebase_communicator
 import tba_communicator
 
+# 'FIREBASE' is a Realtime Database instance
+FIREBASE = firebase_communicator.configure_firebase('ccsaposs-dev')
 def request_input(message, true_values, false_values):
     """Requests user input and returns a boolean.
 
@@ -53,6 +55,39 @@ if PREPARE_MATCHES is True:
     MATCHES = tba_communicator.request_matches()
 print('\nAll TBA data successfully retrieved.')
 
-# TODO: Wipe certain Firebase collections
-# TODO: Populate Firebase with Teams and Matches
-# TODO: Populate TBA data fields with -1
+# Data to be uploaded to the Realtime Database
+FIREBASE_UPLOAD = {}
+
+if PREPARE_TEAMS is True:
+    FINAL_TEAM_DATA = {}
+    for team in TEAMS:
+        team_number = team['team_number']
+        team_name = team['nickname']
+        FINAL_TEAM_DATA[team_number] = {
+            'teamNumber': team_number,
+            'name': team_name,
+        }
+    FIREBASE_UPLOAD.update({'Teams': FINAL_TEAM_DATA})
+
+if PREPARE_MATCHES is True:
+    FINAL_MATCH_DATA = {}
+    for match_data in MATCHES:
+        # 'qm' stands for qualification match
+        if match_data['comp_level'] == 'qm':
+            red_teams = match_data['alliances']['red']['team_keys']
+            blue_teams = match_data['alliances']['blue']['team_keys']
+            match_number = match_data['match_number']
+            # Remove 'frc' from team number and convert to integer
+            # (e.g. 'frc1678' -> 1678)
+            red_teams = [int(team[3:]) for team in red_teams]
+            blue_teams = [int(team[3:]) for team in blue_teams]
+            FINAL_MATCH_DATA[match_number] = {
+                'matchNumber': match_number,
+                'redTeams': red_teams,
+                'blueTeams': blue_teams,
+            }
+    FIREBASE_UPLOAD.update({'Matches': FINAL_MATCH_DATA})
+
+# Sends data to Firebase
+FIREBASE.update(FIREBASE_UPLOAD)
+
