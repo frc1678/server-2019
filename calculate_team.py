@@ -9,6 +9,7 @@ Called by server.py with the number of the Team to be calculated."""
 import json
 import os
 import sys
+import numpy as np
 # Internal imports
 import utils
 
@@ -20,6 +21,18 @@ else:
     print('Error: Team number not being passed as an argument. Exiting...')
     sys.exit(0)
 
+def avg(lis, exception=0.0):
+    """Calculates the average of a list.
+
+    lis is the list that is averaged.
+    exception is returned if there is a divide by zero error. The
+    default is 0.0 because the main usage in in percentage calculations.
+    """
+    try:
+        return sum(lis) / len(lis)
+    except (ZeroDivisionError, TypeError):
+        return exception
+
 def team_calculations(timds):
     """Calculates all the calculated data for one team.
 
@@ -29,6 +42,8 @@ def team_calculations(timds):
     timds is the list of timds that a team has participated in, this is
     where the data comes from when making calculations."""
     calculated_data = {}
+
+    lfm_timds = sorted(timds, key=lambda timd: timd.get('matchNumber'))[-4:]
 
     calculated_data['hasOrangeGroundIntake'] = True if [
         action for timd in timds for action in timd.get('timeline') if
@@ -49,6 +64,288 @@ def team_calculations(timds):
     calculated_data['didPreloadLemon'] = True if [
         timd for timd in timds if timd.get('preload') == 'lemon'
         ] else False
+
+    calculated_data['avgOrangesScored'] = avg([
+        timd['calculatedData'].get('orangesScored') for timd in timds])
+    calculated_data['avgLemonsScored'] = avg([
+        timd['calculatedData'].get('lemonsScored') for timd in timds])
+    calculated_data['avgOrangesFouls'] = avg([
+        timd['calculatedData'].get('orangeFouls') for timd in timds])
+    calculated_data['avgLemonsSpilled'] = avg([
+        timd['calculatedData'].get('lemonsSpilled') for timd in timds])
+
+    calculated_data['lemonLoadSuccess'] = round(100 * avg([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'intake' and
+        action.get('piece') == 'lemon' and
+        (action.get('zone') == 'leftLoadingStation' or
+         action.get('zone') == 'leftLoadingStation')]))
+
+    calculated_data['orangeSuccessAll'] = round(100 * avg([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange']))
+    calculated_data['orangeSuccessDefended'] = round(100 * avg([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange' and
+        action.get('wasDefended') is True]))
+    calculated_data['orangeSuccessUndefended'] = round(100 * avg([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange' and
+        action.get('wasDefended') is False]))
+    calculated_data['orangeSuccessL1'] = round(100.0 * avg([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange' and
+        action.get('level') != 3 and
+        action.get('level') != 2]))
+    calculated_data['orangeSuccessL2'] = round(100 * avg([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange' and
+        action.get('level') == 2]))
+    calculated_data['orangeSuccessL3'] = round(100 * avg([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange' and
+        action.get('level') == 3]))
+
+    calculated_data['lemonSuccessAll'] = round(100 * avg([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon']))
+    calculated_data['lemonSuccessDefended'] = round(100 * avg([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('wasDefended') is True]))
+    calculated_data['lemonSuccessUndefended'] = round(100 * avg([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('wasDefended') is False]))
+    calculated_data['lemonSuccessL1'] = round(100 * avg([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('level') != 3 and
+        action.get('level') != 2]))
+    calculated_data['lemonSuccessL2'] = round(100 * avg([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('level') == 2]))
+    calculated_data['lemonSuccessL3'] = round(100 * avg([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('level') == 3]))
+    calculated_data['lemonSuccessFromSide'] = round(100 * avg([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('side') != 'near']))
+
+    calculated_data['habLineSuccessL1'] = round(100 * avg([
+        timd['crossedHabLine'] for timd in timds if
+        timd.get('startingLevel') == 1]))
+    calculated_data['habLineSuccessL2'] = round(100 * avg([
+        timd['crossedHabLine'] for timd in timds if
+        timd.get('startingLevel') == 2]))
+
+    calculated_data['avgGoodDecisions'] = avg([
+        timd.get('numGoodDecisions') for timd in timds])
+    calculated_data['avgBadDecisions'] = avg([
+        timd.get('numBadDecisions') for timd in timds])
+
+    calculated_data['avgTimeIncap'] = avg([
+        timd['calculatedData'].get('timeIncap') for timd in timds])
+    calculated_data['avgTimeImpaired'] = avg([
+        timd['calculatedData'].get('timeImpaired') for timd in timds])
+    calculated_data['avgTimeClimbing'] = avg([
+        timd['calculatedData'].get('timeClimbing') for timd in timds])
+
+    calculated_data['percentIncap'] = round(100 * avg([
+        True if timd['calculatedData'].get('timeIncap') > 0.0 else
+        False for timd in timds]))
+    calculated_data['percentImpaired'] = round(100 * avg([
+        True if timd['calculatedData'].get('timeImpaired') > 0.0 else
+        False for timd in timds]))
+
+    calculated_data['percentNoShow'] = round(100 * avg([
+        timd.get('isNoShow') for timd in timds]))
+    calculated_data['percentIncapEntireMatch'] = round(100 * avg([
+        timd['calculatedData'].get('isIncapEntireMatch') for timd in
+        timds]))
+
+    calculated_data['lfmAvgOrangesScored'] = avg([
+        timd['calculatedData'].get('orangesScored') for timd in
+        lfm_timds])
+    calculated_data['lfmAvgLemonsScored'] = avg([
+        timd['calculatedData'].get('lemonsScored') for timd in
+        lfm_timds])
+    calculated_data['lfmAvgOrangesFouls'] = avg([
+        timd['calculatedData'].get('orangeFouls') for timd in
+        lfm_timds])
+    calculated_data['lfmAvgLemonsSpilled'] = avg([
+        timd['calculatedData'].get('lemonsSpilled') for timd in
+        lfm_timds])
+
+    calculated_data['lfmLemonLoadSuccess'] = round(100 * avg([
+        action['didSucceed'] for timd in lfm_timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'intake' and
+        action.get('piece') == 'lemon' and
+        (action.get('zone') == 'leftLoadingStation' or
+         action.get('zone') == 'leftLoadingStation')]))
+
+    calculated_data['lfmOrangeSuccessAll'] = round(100 * avg([
+        action['didSucceed'] for timd in lfm_timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange']))
+    calculated_data['lfmOrangeSuccessDefended'] = round(100 * avg([
+        action['didSucceed'] for timd in lfm_timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange' and
+        action.get('wasDefended') is True]))
+    calculated_data['lfmOrangeSuccessUndefended'] = round(100 * avg([
+        action['didSucceed'] for timd in lfm_timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange' and
+        action.get('wasDefended') is False]))
+    calculated_data['lfmOrangeSuccessL1'] = round(100.0 * avg([
+        action['didSucceed'] for timd in lfm_timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange' and
+        action.get('level') != 3 and
+        action.get('level') != 2]))
+    calculated_data['lfmOrangeSuccessL2'] = round(100 * avg([
+        action['didSucceed'] for timd in lfm_timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange' and
+        action.get('level') == 2]))
+    calculated_data['lfmOrangeSuccessL3'] = round(100 * avg([
+        action['didSucceed'] for timd in lfm_timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange' and
+        action.get('level') == 3]))
+
+    calculated_data['lfmLemonSuccessAll'] = round(100 * avg([
+        action['didSucceed'] for timd in lfm_timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon']))
+    calculated_data['lfmLemonSuccessDefended'] = round(100 * avg([
+        action['didSucceed'] for timd in lfm_timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('wasDefended') is True]))
+    calculated_data['lfmLemonSuccessUndefended'] = round(100 * avg([
+        action['didSucceed'] for timd in lfm_timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('wasDefended') is False]))
+    calculated_data['lfmLemonSuccessL1'] = round(100 * avg([
+        action['didSucceed'] for timd in lfm_timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('level') != 3 and
+        action.get('level') != 2]))
+    calculated_data['lfmLemonSuccessL2'] = round(100 * avg([
+        action['didSucceed'] for timd in lfm_timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('level') == 2]))
+    calculated_data['lfmLemonSuccessL3'] = round(100 * avg([
+        action['didSucceed'] for timd in lfm_timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('level') == 3]))
+    calculated_data['lfmLemonSuccessFromSide'] = round(100 * avg([
+        action['didSucceed'] for timd in lfm_timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('side') != 'near']))
+
+    calculated_data['lfmHabLineSuccessL1'] = round(100 * avg([
+        timd['crossedHabLine'] for timd in lfm_timds if
+        timd.get('startingLevel') == 1]))
+    calculated_data['lfmHabLineSuccessL2'] = round(100 * avg([
+        timd['crossedHabLine'] for timd in lfm_timds if
+        timd.get('startingLevel') == 2]))
+
+    calculated_data['lfmAvgGoodDecisions'] = avg([
+        timd.get('numGoodDecisions') for timd in lfm_timds])
+    calculated_data['lfmAvgBadDecisions'] = avg([
+        timd.get('numBadDecisions') for timd in lfm_timds])
+
+    calculated_data['lfmAvgTimeIncap'] = avg([
+        timd['calculatedData'].get('timeIncap') for timd in
+        lfm_timds])
+    calculated_data['lfmAvgTimeImpaired'] = avg([
+        timd['calculatedData'].get('timeImpaired') for timd in
+        lfm_timds])
+    calculated_data['lfmAvgTimeClimbing'] = avg([
+        timd['calculatedData'].get('timeClimbing') for timd in
+        lfm_timds])
+
+    calculated_data['lfmPercentIncap'] = round(100 * avg([
+        True if timd['calculatedData'].get('timeIncap') > 0.0 else
+        False for timd in lfm_timds]))
+    calculated_data['lfmPercentImpaired'] = round(100 * avg([
+        True if timd['calculatedData'].get('timeImpaired') > 0.0 else
+        False for timd in lfm_timds]))
+
+    calculated_data['lfmPercentNoShow'] = round(100 * avg([
+        timd.get('isNoShow') for timd in lfm_timds]))
+    calculated_data['lfmPercentIncapEntireMatch'] = round(100 * avg([
+        timd['calculatedData'].get('isIncapEntireMatch') for timd in
+        lfm_timds]))
+
+    calculated_data['sdAvgOrangesScored'] = np.std([
+        timd['calculatedData'].get('orangesScored') for timd in timds])
+    calculated_data['sdAvgLemonsScored'] = np.std([
+        timd['calculatedData'].get('lemonsScored') for timd in timds])
+    calculated_data['sdAvgOrangesFouls'] = np.std([
+        timd['calculatedData'].get('orangeFouls') for timd in timds])
+    calculated_data['sdAvgLemonsSpilled'] = np.std([
+        timd['calculatedData'].get('lemonsSpilled') for timd in timds])
+
+    calculated_data['sdLemonLoadSuccess'] = round(100 * np.std([
+        action['didSucceed'] for timd in lfm_timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'intake' and
+        action.get('piece') == 'lemon' and
+        (action.get('zone') == 'leftLoadingStation' or
+         action.get('zone') == 'leftLoadingStation')]))
 
     return calculated_data
 
