@@ -21,6 +21,61 @@ else:
     print('Error: Team number not being passed as an argument. Exiting...')
     sys.exit(0)
 
+def first_pick_ability(calculated_data):
+    """Calculates the relative first pick score for a team.
+
+    calculated_data is the dictionary of calculated_data calculated for
+    a team."""
+    #TODO: Implement first pick calculations once strategy decides
+    return 0.0
+
+def second_pick_ability(calculated_data):
+    """Calculates the relative second pick score for a team.
+
+    calculated_data is the dictionary of calculated_data calculated for
+    a team."""
+    #TODO: Implement second pick calculations once strategy decides
+    return 0.0
+
+def calculate_avg_cycle_time(cycles):
+    """Calculates the average time for an action based on start and end times.
+    Finds the time difference between each action pair passed and
+    returns the average of the differences.
+    cycles is a list of tuples where the first action in the tuple is
+    the intake, and the second item is the placement or drop.
+    """
+    cycle_times = []
+    for cycle in cycles:
+        cycle_times.append(float(cycle[0].get('time')) -
+                           float(cycle[1].get('time')))
+    return avg(cycle_times, None)
+
+def calculate_std_cycle_time(cycles):
+    """Calculates the standard deviation time for a type of cycle.
+    Finds the time difference between each action pair passed and
+    returns the standard deviation of the differences.
+    cycles is a list of tuples where the first action in the tuple is
+    the intake, and the second item is the placement or drop.
+    """
+    cycle_times = []
+    for cycle in cycles:
+        cycle_times.append(float(cycle[0].get('time')) -
+                           float(cycle[1].get('time')))
+    return np.std(cycle_times)
+
+def calculate_p75_cycle_time(cycles):
+    """Calculates the upper half average time for a type of cycle.
+    Finds the time difference between each action pair passed and
+    returns the upper half average of the differences.
+    cycles is a list of tuples where the first action in the tuple is
+    the intake, and the second item is the placement or drop.
+    """
+    cycle_times = []
+    for cycle in cycles:
+        cycle_times.append(float(cycle[0].get('time')) -
+                           float(cycle[1].get('time')))
+    return p75(cycle_times)
+
 def p75(lis, exception=0.0):
     """Calculates the average of the upper half of a list.
 
@@ -56,8 +111,11 @@ def team_calculations(timds):
     where the data comes from when making calculations."""
     calculated_data = {}
 
+    # The list of the last four timds used for lfm calculations.
     lfm_timds = sorted(timds, key=lambda timd: timd.get('matchNumber'))[-4:]
 
+    # If the robot has ground intaked a piece at any point in the
+    # competition, the respective hasGroundIntake data point is true.
     calculated_data['hasOrangeGroundIntake'] = True if [
         action for timd in timds for action in timd.get('timeline') if
         action.get('type') == 'intake' and
@@ -71,6 +129,7 @@ def team_calculations(timds):
         action.get('zone') != 'leftLoadingStation' and
         action.get('zone') != 'rightLoadingStation'] else False
 
+    # If the robot has ever preloaded each game piece type.
     calculated_data['didPreloadOrange'] = True if [
         timd for timd in timds if timd.get('preload') == 'orange'
         ] else False
@@ -78,6 +137,7 @@ def team_calculations(timds):
         timd for timd in timds if timd.get('preload') == 'lemon'
         ] else False
 
+    # Find the average of different calculated timd data points.
     calculated_data['avgOrangesScored'] = avg([
         timd['calculatedData'].get('orangesScored') for timd in timds])
     calculated_data['avgLemonsScored'] = avg([
@@ -87,6 +147,7 @@ def team_calculations(timds):
     calculated_data['avgLemonsSpilled'] = avg([
         timd['calculatedData'].get('lemonsSpilled') for timd in timds])
 
+    # Calculations for percent successes for different actions.
     calculated_data['lemonLoadSuccess'] = round(100 * avg([
         action['didSucceed'] for timd in timds for
         action in timd.get('timeline') if
@@ -94,7 +155,6 @@ def team_calculations(timds):
         action.get('piece') == 'lemon' and
         (action.get('zone') == 'leftLoadingStation' or
          action.get('zone') == 'leftLoadingStation')]))
-
     calculated_data['orangeSuccessAll'] = round(100 * avg([
         action['didSucceed'] for timd in timds for
         action in timd.get('timeline') if
@@ -131,7 +191,6 @@ def team_calculations(timds):
         action.get('type') == 'placement' and
         action.get('piece') == 'orange' and
         action.get('level') == 3]))
-
     calculated_data['lemonSuccessAll'] = round(100 * avg([
         action['didSucceed'] for timd in timds for
         action in timd.get('timeline') if
@@ -174,7 +233,6 @@ def team_calculations(timds):
         action.get('type') == 'placement' and
         action.get('piece') == 'lemon' and
         action.get('side') != 'near']))
-
     calculated_data['habLineSuccessL1'] = round(100 * avg([
         timd['crossedHabLine'] for timd in timds if
         timd.get('startingLevel') == 1]))
@@ -182,11 +240,13 @@ def team_calculations(timds):
         timd['crossedHabLine'] for timd in timds if
         timd.get('startingLevel') == 2]))
 
+    # Averages of super data points in timd.
     calculated_data['avgGoodDecisions'] = avg([
         timd.get('numGoodDecisions') for timd in timds])
     calculated_data['avgBadDecisions'] = avg([
         timd.get('numBadDecisions') for timd in timds])
 
+    # Finds the averages of different calculated times in timds.
     calculated_data['avgTimeIncap'] = avg([
         timd['calculatedData'].get('timeIncap') for timd in timds])
     calculated_data['avgTimeImpaired'] = avg([
@@ -194,19 +254,20 @@ def team_calculations(timds):
     calculated_data['avgTimeClimbing'] = avg([
         timd['calculatedData'].get('timeClimbing') for timd in timds])
 
+    # Finds the percent of matches a team was incap, impaired, and no show.
     calculated_data['percentIncap'] = round(100 * avg([
         True if timd['calculatedData'].get('timeIncap') > 0.0 else
         False for timd in timds]))
     calculated_data['percentImpaired'] = round(100 * avg([
         True if timd['calculatedData'].get('timeImpaired') > 0.0 else
         False for timd in timds]))
-
     calculated_data['percentNoShow'] = round(100 * avg([
         timd.get('isNoShow') for timd in timds]))
     calculated_data['percentIncapEntireMatch'] = round(100 * avg([
         timd['calculatedData'].get('isIncapEntireMatch') for timd in
         timds]))
 
+    # Repeats all the previous calculations for only the last four timds.
     calculated_data['lfmAvgOrangesScored'] = avg([
         timd['calculatedData'].get('orangesScored') for timd in
         lfm_timds])
@@ -227,7 +288,6 @@ def team_calculations(timds):
         action.get('piece') == 'lemon' and
         (action.get('zone') == 'leftLoadingStation' or
          action.get('zone') == 'leftLoadingStation')]))
-
     calculated_data['lfmOrangeSuccessAll'] = round(100 * avg([
         action['didSucceed'] for timd in lfm_timds for
         action in timd.get('timeline') if
@@ -264,7 +324,6 @@ def team_calculations(timds):
         action.get('type') == 'placement' and
         action.get('piece') == 'orange' and
         action.get('level') == 3]))
-
     calculated_data['lfmLemonSuccessAll'] = round(100 * avg([
         action['didSucceed'] for timd in lfm_timds for
         action in timd.get('timeline') if
@@ -307,7 +366,6 @@ def team_calculations(timds):
         action.get('type') == 'placement' and
         action.get('piece') == 'lemon' and
         action.get('side') != 'near']))
-
     calculated_data['lfmHabLineSuccessL1'] = round(100 * avg([
         timd['crossedHabLine'] for timd in lfm_timds if
         timd.get('startingLevel') == 1]))
@@ -336,13 +394,14 @@ def team_calculations(timds):
     calculated_data['lfmPercentImpaired'] = round(100 * avg([
         True if timd['calculatedData'].get('timeImpaired') > 0.0 else
         False for timd in lfm_timds]))
-
     calculated_data['lfmPercentNoShow'] = round(100 * avg([
         timd.get('isNoShow') for timd in lfm_timds]))
     calculated_data['lfmPercentIncapEntireMatch'] = round(100 * avg([
         timd['calculatedData'].get('isIncapEntireMatch') for timd in
         lfm_timds]))
 
+    # Finds the standard deviations of all the previous calculations
+    # instead of averages.
     calculated_data['sdAvgOrangesScored'] = np.std([
         timd['calculatedData'].get('orangesScored') for timd in timds])
     calculated_data['sdAvgLemonsScored'] = np.std([
@@ -359,7 +418,6 @@ def team_calculations(timds):
         action.get('piece') == 'lemon' and
         (action.get('zone') == 'leftLoadingStation' or
          action.get('zone') == 'leftLoadingStation')]))
-
     calculated_data['sdOrangeSuccessAll'] = round(100 * np.std([
         action['didSucceed'] for timd in timds for
         action in timd.get('timeline') if
@@ -396,7 +454,6 @@ def team_calculations(timds):
         action.get('type') == 'placement' and
         action.get('piece') == 'orange' and
         action.get('level') == 3]))
-
     calculated_data['sdLemonSuccessAll'] = round(100 * np.std([
         action['didSucceed'] for timd in timds for
         action in timd.get('timeline') if
@@ -439,7 +496,6 @@ def team_calculations(timds):
         action.get('type') == 'placement' and
         action.get('piece') == 'lemon' and
         action.get('side') != 'near']))
-
     calculated_data['sdHabLineSuccessL1'] = round(100 * np.std([
         timd['crossedHabLine'] for timd in timds if
         timd.get('startingLevel') == 1]))
@@ -465,13 +521,14 @@ def team_calculations(timds):
     calculated_data['sdPercentImpaired'] = round(100 * np.std([
         True if timd['calculatedData'].get('timeImpaired') > 0.0 else
         False for timd in timds]))
-
     calculated_data['sdPercentNoShow'] = round(100 * np.std([
         timd.get('isNoShow') for timd in timds]))
     calculated_data['sdPercentIncapEntireMatch'] = round(100 * np.std([
         timd['calculatedData'].get('isIncapEntireMatch') for timd in
         timds]))
 
+    # Finds the upper half average of all the previously calculated data
+    # points.
     calculated_data['p75AvgOrangesScored'] = p75([
         timd['calculatedData'].get('orangesScored') for timd in timds])
     calculated_data['p75AvgLemonsScored'] = p75([
@@ -488,7 +545,6 @@ def team_calculations(timds):
         action.get('piece') == 'lemon' and
         (action.get('zone') == 'leftLoadingStation' or
          action.get('zone') == 'leftLoadingStation')]))
-
     calculated_data['p75OrangeSuccessAll'] = round(100 * p75([
         action['didSucceed'] for timd in timds for
         action in timd.get('timeline') if
@@ -525,10 +581,9 @@ def team_calculations(timds):
         action.get('type') == 'placement' and
         action.get('piece') == 'orange' and
         action.get('level') == 3]))
-
     calculated_data['p75LemonSuccessAll'] = round(100 * p75([
         action['didSucceed'] for timd in timds for
-        action in timd.get('timeli'p75) if
+        action in timd.get('timeline') if
         action.get('type') == 'placement' and
         action.get('piece') == 'lemon']))
     calculated_data['p75LemonSuccessDefended'] = round(100 * p75([
@@ -568,7 +623,6 @@ def team_calculations(timds):
         action.get('type') == 'placement' and
         action.get('piece') == 'lemon' and
         action.get('side') != 'near']))
-
     calculated_data['p75HabLineSuccessL1'] = round(100 * p75([
         timd['crossedHabLine'] for timd in timds if
         timd.get('startingLevel') == 1]))
@@ -594,13 +648,197 @@ def team_calculations(timds):
     calculated_data['p75PercentImpaired'] = round(100 * p75([
         True if timd['calculatedData'].get('timeImpaired') > 0.0 else
         False for timd in timds]))
-
     calculated_data['p75PercentNoShow'] = round(100 * p75([
         timd.get('isNoShow') for timd in timds]))
     calculated_data['p75PercentIncapEntireMatch'] = round(100 * p75([
         timd['calculatedData'].get('isIncapEntireMatch') for timd in
         timds]))
 
+    # Takes out all the cycles in all the timds for a team. These will
+    # be used for average cycle time calculations.
+    total_cycle_list = []
+    for cycle_timd in timds:
+        cycle_list = [action for action in cycle_timd.get('timeline') if
+                      action.get('type') == 'intake' or
+                      action.get('type') == 'placement' or
+                      action.get('type') == 'drop']
+        if cycle_list != []:
+            # If the first action in the list is a placement, it is a
+            # preload, which doesn't count when calculating cycle times.
+            if cycle_list[0].get('type') == 'placement':
+                cycle_list.pop(0)
+            # If the last action in the list is an intake, it means the
+            # robot finished with a game object, in which the cycle was
+            # never completed.
+            if cycle_list[-1].get('type') == 'intake':
+                cycle_list.pop(-1)
+            paired_cycle_list = list(zip(*[iter(cycle_list)]*2))
+            total_cycle_list += paired_cycle_list
+
+    # Calculates the average cycle time for each cycle type.
+    calculated_data['orangeCycleAll'] = calculate_avg_cycle_time(
+        [cycle for cycle in total_cycle_list if
+         cycle[1].get('piece') == 'orange'])
+    calculated_data['orangeCycleL1'] = calculate_avg_cycle_time(
+        [cycle for cycle in total_cycle_list if
+         cycle[1].get('piece') == 'orange' and
+         cycle[1].get('level') != 2 and
+         cycle[1].get('level') != 3])
+    calculated_data['orangeCycleL2'] = calculate_avg_cycle_time(
+        [cycle for cycle in total_cycle_list if
+         cycle[1].get('piece') == 'orange' and
+         cycle[1].get('level') == 2])
+    calculated_data['orangeCycleL3'] = calculate_avg_cycle_time(
+        [cycle for cycle in total_cycle_list if
+         cycle[1].get('piece') == 'orange' and
+         cycle[1].get('level') == 3])
+    calculated_data['lemonCycleAll'] = calculate_avg_cycle_time(
+        [cycle for cycle in total_cycle_list if
+         cycle[1].get('piece') == 'lemon'])
+    calculated_data['lemonCycleL1'] = calculate_avg_cycle_time(
+        [cycle for cycle in total_cycle_list if
+         cycle[1].get('piece') == 'lemon' and
+         cycle[1].get('level') != 2 and
+         cycle[1].get('level') != 3])
+    calculated_data['lemonCycleL2'] = calculate_avg_cycle_time(
+        [cycle for cycle in total_cycle_list if
+         cycle[1].get('piece') == 'lemon' and
+         cycle[1].get('level') == 2])
+    calculated_data['lemonCycleL3'] = calculate_avg_cycle_time(
+        [cycle for cycle in total_cycle_list if
+         cycle[1].get('piece') == 'lemon' and
+         cycle[1].get('level') == 3])
+
+    # Finds the standard deviation of cycle time for each type of cycle.
+    calculated_data['sdOrangeCycleAll'] = calculate_std_cycle_time(
+        [cycle for cycle in total_cycle_list if
+         cycle[1].get('piece') == 'orange'])
+    calculated_data['sdOrangeCycleL1'] = calculate_std_cycle_time(
+        [cycle for cycle in total_cycle_list if
+         cycle[1].get('piece') == 'orange' and
+         cycle[1].get('level') != 2 and
+         cycle[1].get('level') != 3])
+    calculated_data['sdOrangeCycleL2'] = calculate_std_cycle_time(
+        [cycle for cycle in total_cycle_list if
+         cycle[1].get('piece') == 'orange' and
+         cycle[1].get('level') == 2])
+    calculated_data['sdOrangeCycleL3'] = calculate_std_cycle_time(
+        [cycle for cycle in total_cycle_list if
+         cycle[1].get('piece') == 'orange' and
+         cycle[1].get('level') == 3])
+    calculated_data['sdLemonCycleAll'] = calculate_std_cycle_time(
+        [cycle for cycle in total_cycle_list if
+         cycle[1].get('piece') == 'lemon'])
+    calculated_data['sdLemonCycleL1'] = calculate_std_cycle_time(
+        [cycle for cycle in total_cycle_list if
+         cycle[1].get('piece') == 'lemon' and
+         cycle[1].get('level') != 2 and
+         cycle[1].get('level') != 3])
+    calculated_data['sdLemonCycleL2'] = calculate_std_cycle_time(
+        [cycle for cycle in total_cycle_list if
+         cycle[1].get('piece') == 'lemon' and
+         cycle[1].get('level') == 2])
+    calculated_data['sdLemonCycleL3'] = calculate_std_cycle_time(
+        [cycle for cycle in total_cycle_list if
+         cycle[1].get('piece') == 'lemon' and
+         cycle[1].get('level') == 3])
+
+    # Finds the upper half average of each type of cycle.
+    calculated_data['p75OrangeCycleAll'] = calculate_p75_cycle_time(
+        [cycle for cycle in total_cycle_list if
+         cycle[1].get('piece') == 'orange'])
+    calculated_data['p75OrangeCycleL1'] = calculate_p75_cycle_time(
+        [cycle for cycle in total_cycle_list if
+         cycle[1].get('piece') == 'orange' and
+         cycle[1].get('level') != 2 and
+         cycle[1].get('level') != 3])
+    calculated_data['p75OrangeCycleL2'] = calculate_p75_cycle_time(
+        [cycle for cycle in total_cycle_list if
+         cycle[1].get('piece') == 'orange' and
+         cycle[1].get('level') == 2])
+    calculated_data['p75OrangeCycleL3'] = calculate_p75_cycle_time(
+        [cycle for cycle in total_cycle_list if
+         cycle[1].get('piece') == 'orange' and
+         cycle[1].get('level') == 3])
+    calculated_data['p75LemonCycleAll'] = calculate_p75_cycle_time(
+        [cycle for cycle in total_cycle_list if
+         cycle[1].get('piece') == 'lemon'])
+    calculated_data['p75LemonCycleL1'] = calculate_p75_cycle_time(
+        [cycle for cycle in total_cycle_list if
+         cycle[1].get('piece') == 'lemon' and
+         cycle[1].get('level') != 2 and
+         cycle[1].get('level') != 3])
+    calculated_data['p75LemonCycleL2'] = calculate_p75_cycle_time(
+        [cycle for cycle in total_cycle_list if
+         cycle[1].get('piece') == 'lemon' and
+         cycle[1].get('level') == 2])
+    calculated_data['p75LemonCycleL3'] = calculate_p75_cycle_time(
+        [cycle for cycle in total_cycle_list if
+         cycle[1].get('piece') == 'lemon' and
+         cycle[1].get('level') == 3])
+
+    # Repeats the process of gathering cycles for a team, except limited
+    # to only the last four matches.
+    lfm_cycle_list = []
+    for cycle_timd in lfm_timds:
+        cycle_list = [action for action in cycle_timd.get('timeline') if
+                      action.get('type') == 'intake' or
+                      action.get('type') == 'placement' or
+                      action.get('type') == 'drop']
+        if cycle_list != []:
+            # If the first action in the list is a placement, it is a
+            # preload, which doesn't count when calculating cycle times.
+            if cycle_list[0].get('type') == 'placement':
+                cycle_list.pop(0)
+            # If the last action in the list is an intake, it means the
+            # robot finished with a game object, in which the cycle was
+            # never completed.
+            if cycle_list[-1].get('type') == 'intake':
+                cycle_list.pop(-1)
+            paired_cycle_list = list(zip(*[iter(cycle_list)]*2))
+            lfm_cycle_list += paired_cycle_list
+
+    # Calculates the last four match average for each cycle type.
+    calculated_data['lfmOrangeCycleAll'] = calculate_avg_cycle_time(
+        [cycle for cycle in lfm_cycle_list if
+         cycle[1].get('piece') == 'orange'])
+    calculated_data['lfmOrangeCycleL1'] = calculate_avg_cycle_time(
+        [cycle for cycle in lfm_cycle_list if
+         cycle[1].get('piece') == 'orange' and
+         cycle[1].get('level') != 2 and
+         cycle[1].get('level') != 3])
+    calculated_data['lfmOrangeCycleL2'] = calculate_avg_cycle_time(
+        [cycle for cycle in lfm_cycle_list if
+         cycle[1].get('piece') == 'orange' and
+         cycle[1].get('level') == 2])
+    calculated_data['lfmOrangeCycleL3'] = calculate_avg_cycle_time(
+        [cycle for cycle in lfm_cycle_list if
+         cycle[1].get('piece') == 'orange' and
+         cycle[1].get('level') == 3])
+    calculated_data['lfmLemonCycleAll'] = calculate_avg_cycle_time(
+        [cycle for cycle in lfm_cycle_list if
+         cycle[1].get('piece') == 'lemon'])
+    calculated_data['lfmLemonCycleL1'] = calculate_avg_cycle_time(
+        [cycle for cycle in lfm_cycle_list if
+         cycle[1].get('piece') == 'lemon' and
+         cycle[1].get('level') != 2 and
+         cycle[1].get('level') != 3])
+    calculated_data['lfmLemonCycleL2'] = calculate_avg_cycle_time(
+        [cycle for cycle in lfm_cycle_list if
+         cycle[1].get('piece') == 'lemon' and
+         cycle[1].get('level') == 2])
+    calculated_data['lfmLemonCycleL3'] = calculate_avg_cycle_time(
+        [cycle for cycle in lfm_cycle_list if
+         cycle[1].get('piece') == 'lemon' and
+         cycle[1].get('level') == 3])
+
+    # Calculates the first and second pick ability for the team based on
+    # their previous calculated data. To see how these are calculated,
+    # look at the weights in each of their respective functions.
+    calculated_data['firstPickAbility'] = \
+        first_pick_ability(calculated_data)
+    calculated_data['secondPickAbility'] = \
+        second_pick_ability(calculated_data)
 
     return calculated_data
 
