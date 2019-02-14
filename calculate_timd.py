@@ -24,7 +24,7 @@ import consolidation
 import decompress
 import utils
 
-'''
+
 # Check to ensure TIMD name is being passed as an argument
 if len(sys.argv) == 2:
     # Extract TIMD name from system argument
@@ -32,7 +32,6 @@ if len(sys.argv) == 2:
 else:
     print('Error: TIMD name not being passed as an argument. Exiting...')
     sys.exit(0)
-'''
 
 COMPRESSED_TIMDS = []
 
@@ -303,7 +302,7 @@ def add_calculated_data_to_timd(timd):
     # the final TIMD and returns it.
     timd['calculatedData'] = calculated_data
     return timd
-'''
+
 # Goes into the temp_timds folder to get the names of all the tempTIMDs
 # that correspond to the given TIMD.
 for temp_timd in os.listdir(utils.create_file_path('data/cache/temp_timds')):
@@ -323,85 +322,16 @@ for compressed_temp_timd in COMPRESSED_TIMDS:
         compressed_temp_timd)
     TEMP_TIMDS[decompressed_temp_timd.get(
         'scoutName')] = decompressed_temp_timd
-'''
-UNCALCULATED_TIMD = {
-    'startingLevel': 2,
-    'crossedHabLine': True,
-    'startingLocation': 'mid',
-    'preload' : 'lemon',
-    'driverStation': 1,
-    'isNoShow': False,
-    'timerStarted': 1547528330,
-    'currentCycle': 4,
-    'scoutID': 7,
-    'scoutName': 'Carl',
-    'appVersion': '1.2',
-    'assignmentMode': 'QR',
-    'assignmentFileTimestamp': 1547528290,
-    'matchesNotScouted': [1, 14, 28, 35],
-    'timeline': [
-        {
-            'type': 'intake',
-            'time' : '102.4',
-            'piece': 'orange',
-            'zone': 'rightLoadingStation',
-            'didSucceed': True,
-            'wasDefended': False,
-        },
-        {
-            'type': 'incap',
-            'time': '109.6',
-            'cause': 'brokenMechanism',
-        },
-        {
-            'type': 'unincap',
-            'time': '111.1',
-        },
-        {
-            'type': 'drop',
-            'time': '112.1',
-            'piece': 'orange',
-        },
-        {
-            'type': 'intake',
-            'time': '120',
-            'piece': 'lemon',
-            'zone': 'zone2Left',
-            'didSucceed': True,
-            'wasDefended': True,
-        },
-        {
-            'type': 'placement',
-            'time': '127.4',
-            'piece': 'orange',
-            'didSucceed': True,
-            'wasDefended': False,
-            'structure': 'leftRocket',
-            'side': 'right',
-            'level': 2,
-        },
-        {
-            'type': 'spill',
-            'time': '130',
-            'piece': 'lemon',
-        },
-        {
-            'type': 'climb',
-            'time': '138',
-            'attempted': {'self': 3, 'robot1': 3, 'robot2': 2},
-            'actual': {'self': 3, 'robot1': 2, 'robot2': 1},
-        }
-    ],
-}
+
 # After the TEMP_TIMDS are decompressed, they are fed into the
 # consolidation script where they are returned as one final TIMD. This
 # final TIMD is set as the variable name UNCALCULATED_TIMD.
-#UNCALCULATED_TIMD = consolidation.consolidate_temp_timds(TEMP_TIMDS)
+UNCALCULATED_TIMD = consolidation.consolidate_temp_timds(TEMP_TIMDS)
 
 # Defines FINAL_TIMD as a version of the TIMD with calculated data
 # using the add_calculated_data_to_timd function at the top of the file.
 FINAL_TIMD = add_calculated_data_to_timd(UNCALCULATED_TIMD)
-'''
+
 # Save data in local cache
 with open(utils.create_file_path(f'data/cache/timds/{TIMD_NAME}.json'),
           'w') as file:
@@ -411,5 +341,3 @@ with open(utils.create_file_path(f'data/cache/timds/{TIMD_NAME}.json'),
 with open(utils.create_file_path(
         f'data/upload_queue/timds/{TIMD_NAME}.json'), 'w') as file:
     json.dump(FINAL_TIMD, file)
-
-'''
