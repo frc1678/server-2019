@@ -21,6 +21,19 @@ else:
     print('Error: Team number not being passed as an argument. Exiting...')
     sys.exit(0)
 
+def p75(lis, exception=0.0):
+    """Calculates the average of the upper half of a list.
+
+    lis is the list that is averaged.
+    exception is returned if there is a divide by zero error. The
+    default is 0.0 because the main usage in in percentage calculations.
+    """
+    try:
+        upper_half = lis[-(round(len(lis) / 2)):]
+        return sum(upper_half) / len(upper_half)
+    except (ZeroDivisionError, TypeError):
+        return exception
+
 def avg(lis, exception=0.0):
     """Calculates the average of a list.
 
@@ -346,6 +359,248 @@ def team_calculations(timds):
         action.get('piece') == 'lemon' and
         (action.get('zone') == 'leftLoadingStation' or
          action.get('zone') == 'leftLoadingStation')]))
+
+    calculated_data['sdOrangeSuccessAll'] = round(100 * np.std([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange']))
+    calculated_data['sdOrangeSuccessDefended'] = round(100 * np.std([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange' and
+        action.get('wasDefended') is True]))
+    calculated_data['sdOrangeSuccessUndefended'] = round(100 * np.std([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange' and
+        action.get('wasDefended') is False]))
+    calculated_data['sdOrangeSuccessL1'] = round(100.0 * np.std([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange' and
+        action.get('level') != 3 and
+        action.get('level') != 2]))
+    calculated_data['sdOrangeSuccessL2'] = round(100 * np.std([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange' and
+        action.get('level') == 2]))
+    calculated_data['sdOrangeSuccessL3'] = round(100 * np.std([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange' and
+        action.get('level') == 3]))
+
+    calculated_data['sdLemonSuccessAll'] = round(100 * np.std([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon']))
+    calculated_data['sdLemonSuccessDefended'] = round(100 * np.std([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('wasDefended') is True]))
+    calculated_data['sdLemonSuccessUndefended'] = round(100 * np.std([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('wasDefended') is False]))
+    calculated_data['sdLemonSuccessL1'] = round(100 * np.std([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('level') != 3 and
+        action.get('level') != 2]))
+    calculated_data['sdLemonSuccessL2'] = round(100 * np.std([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('level') == 2]))
+    calculated_data['sdLemonSuccessL3'] = round(100 * np.std([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('level') == 3]))
+    calculated_data['sdLemonSuccessFromSide'] = round(100 * np.std([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('side') != 'near']))
+
+    calculated_data['sdHabLineSuccessL1'] = round(100 * np.std([
+        timd['crossedHabLine'] for timd in timds if
+        timd.get('startingLevel') == 1]))
+    calculated_data['sdHabLineSuccessL2'] = round(100 * np.std([
+        timd['crossedHabLine'] for timd in timds if
+        timd.get('startingLevel') == 2]))
+
+    calculated_data['sdAvgGoodDecisions'] = np.std([
+        timd.get('numGoodDecisions') for timd in timds])
+    calculated_data['sdAvgBadDecisions'] = np.std([
+        timd.get('numBadDecisions') for timd in timds])
+
+    calculated_data['sdAvgTimeIncap'] = np.std([
+        timd['calculatedData'].get('timeIncap') for timd in timds])
+    calculated_data['sdAvgTimeImpaired'] = np.std([
+        timd['calculatedData'].get('timeImpaired') for timd in timds])
+    calculated_data['sdAvgTimeClimbing'] = np.std([
+        timd['calculatedData'].get('timeClimbing') for timd in timds])
+
+    calculated_data['sdPercentIncap'] = round(100 * np.std([
+        True if timd['calculatedData'].get('timeIncap') > 0.0 else
+        False for timd in timds]))
+    calculated_data['sdPercentImpaired'] = round(100 * np.std([
+        True if timd['calculatedData'].get('timeImpaired') > 0.0 else
+        False for timd in timds]))
+
+    calculated_data['sdPercentNoShow'] = round(100 * np.std([
+        timd.get('isNoShow') for timd in timds]))
+    calculated_data['sdPercentIncapEntireMatch'] = round(100 * np.std([
+        timd['calculatedData'].get('isIncapEntireMatch') for timd in
+        timds]))
+
+    calculated_data['p75AvgOrangesScored'] = p75([
+        timd['calculatedData'].get('orangesScored') for timd in timds])
+    calculated_data['p75AvgLemonsScored'] = p75([
+        timd['calculatedData'].get('lemonsScored') for timd in timds])
+    calculated_data['p75AvgOrangesFouls'] = p75([
+        timd['calculatedData'].get('orangeFouls') for timd in timds])
+    calculated_data['p75AvgLemonsSpilled'] = p75([
+        timd['calculatedData'].get('lemonsSpilled') for timd in timds])
+
+    calculated_data['p75LemonLoadSuccess'] = round(100 * p75([
+        action['didSucceed'] for timd in lfm_timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'intake' and
+        action.get('piece') == 'lemon' and
+        (action.get('zone') == 'leftLoadingStation' or
+         action.get('zone') == 'leftLoadingStation')]))
+
+    calculated_data['p75OrangeSuccessAll'] = round(100 * p75([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange']))
+    calculated_data['p75OrangeSuccessDefended'] = round(100 * p75([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange' and
+        action.get('wasDefended') is True]))
+    calculated_data['p75OrangeSuccessUndefended'] = round(100 * p75([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange' and
+        action.get('wasDefended') is False]))
+    calculated_data['p75OrangeSuccessL1'] = round(100.0 * p75([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange' and
+        action.get('level') != 3 and
+        action.get('level') != 2]))
+    calculated_data['p75OrangeSuccessL2'] = round(100 * p75([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange' and
+        action.get('level') == 2]))
+    calculated_data['p75OrangeSuccessL3'] = round(100 * p75([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'orange' and
+        action.get('level') == 3]))
+
+    calculated_data['p75LemonSuccessAll'] = round(100 * p75([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeli'p75) if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon']))
+    calculated_data['p75LemonSuccessDefended'] = round(100 * p75([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('wasDefended') is True]))
+    calculated_data['p75LemonSuccessUndefended'] = round(100 * p75([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('wasDefended') is False]))
+    calculated_data['p75LemonSuccessL1'] = round(100 * p75([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('level') != 3 and
+        action.get('level') != 2]))
+    calculated_data['p75LemonSuccessL2'] = round(100 * p75([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('level') == 2]))
+    calculated_data['p75LemonSuccessL3'] = round(100 * p75([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('level') == 3]))
+    calculated_data['p75LemonSuccessFromSide'] = round(100 * p75([
+        action['didSucceed'] for timd in timds for
+        action in timd.get('timeline') if
+        action.get('type') == 'placement' and
+        action.get('piece') == 'lemon' and
+        action.get('side') != 'near']))
+
+    calculated_data['p75HabLineSuccessL1'] = round(100 * p75([
+        timd['crossedHabLine'] for timd in timds if
+        timd.get('startingLevel') == 1]))
+    calculated_data['p75HabLineSuccessL2'] = round(100 * p75([
+        timd['crossedHabLine'] for timd in timds if
+        timd.get('startingLevel') == 2]))
+
+    calculated_data['p75AvgGoodDecisions'] = p75([
+        timd.get('numGoodDecisions') for timd in timds])
+    calculated_data['p75AvgBadDecisions'] = p75([
+        timd.get('numBadDecisions') for timd in timds])
+
+    calculated_data['p75AvgTimeIncap'] = p75([
+        timd['calculatedData'].get('timeIncap') for timd in timds])
+    calculated_data['p75AvgTimeImpaired'] = p75([
+        timd['calculatedData'].get('timeImpaired') for timd in timds])
+    calculated_data['p75AvgTimeClimbing'] = p75([
+        timd['calculatedData'].get('timeClimbing') for timd in timds])
+
+    calculated_data['p75PercentIncap'] = round(100 * p75([
+        True if timd['calculatedData'].get('timeIncap') > 0.0 else
+        False for timd in timds]))
+    calculated_data['p75PercentImpaired'] = round(100 * p75([
+        True if timd['calculatedData'].get('timeImpaired') > 0.0 else
+        False for timd in timds]))
+
+    calculated_data['p75PercentNoShow'] = round(100 * p75([
+        timd.get('isNoShow') for timd in timds]))
+    calculated_data['p75PercentIncapEntireMatch'] = round(100 * p75([
+        timd['calculatedData'].get('isIncapEntireMatch') for timd in
+        timds]))
+
 
     return calculated_data
 
