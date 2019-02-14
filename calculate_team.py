@@ -850,7 +850,7 @@ for timd in os.listdir(utils.create_file_path('data/cache/timds')):
                 f'data/cache/timds/{timd}')) as timd_file:
             TIMDS.append(timd_file.read())
 
-FINAL_TEAM_DATA = team_calculations(TIMDS)
+FINAL_TEAM_DATA = {'calculatedData': team_calculations(TIMDS)}
 
 # Save data in local cache
 with open(utils.create_file_path(f'data/teams/{TEAM_NUMBER}.json'),
