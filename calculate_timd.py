@@ -50,6 +50,13 @@ def avg(lis, exception=0.0):
     except ZeroDivisionError:
         return exception
 
+def percent_success(actions):
+    """Finds the percent of times didSucceed is true in a list of actions.
+
+    actions is the list of actions that can either succeed or fail."""
+    successes = [action.get('didSucceed') for action in actions if
+                 action.get('didSucceed') is not None]
+    return round(100 * avg(successes))
 def calculate_avg_cycle_time(cycles):
     """Calculates the average time for an action based on start and end times.
 
@@ -97,6 +104,14 @@ def filter_timeline_actions(timd, **filters):
             if data_field == 'level' and requirement == 1:
                 if action.get('level') == 1 or action.get('level') == 2:
                     break
+            # If the filter specifies that the zone must be
+            # leftLoadingStation, it means either loading station, so it
+            # only breaks if the zone is not leftLoadingStation or
+            # rightLoadingStation.
+            elif data_field == 'zone' and requirement == 'leftLoadingStation':
+                if action.get('zone') != 'leftLoadingStation' and \
+                        action.get('zone') != 'rightLoadingStation':
+                    break
             # Otherwise, it checks the requirement normally
             else:
                 if action.get(data_field) != requirement:
@@ -130,48 +145,29 @@ def add_calculated_data_to_timd(timd):
     # percentages, these are the percentages (displayed as an integer)
     # of didSucceed for certain actions, such as the percentage of
     # success a team has loading lemons.
-    calculated_data['lemonLoadSuccess'] = round(100 * avg([
-        action['didSucceed'] for action in timd.get('timeline') if
-        action.get('type') == 'intake' and
-        action.get('piece') == 'lemon' and
-        (action.get('zone') == 'leftLoadingStation' or
-         action.get('zone') == 'rightLoadingStation')]))
+    calculated_data['lemonLoadSuccess'] = percent_success(
+        filter_timeline_actions(timd, type='intake', piece='lemon',
+                                zone='leftLoadingStation'))
+    calculated_data['orangeSuccessAll'] = percent_success(
+        filter_timeline_actions(timd, type='placement', piece='orange'))
+    calculated_data['orangeSuccessDefended'] = percent_success(
+        filter_timeline_actions(timd, type='placement', piece='orange',
+                                wasDefended=True))
+    calculated_data['orangeSuccessUndefended'] = percent_success(
+        filter_timeline_actions(timd, type='placement', piece='orange',
+                                wasDefended=False))
+    calculated_data['orangeSuccessL1'] = percent_success(
+        filter_timeline_actions(timd, type='placement', piece='orange',
+                                level=1))
+    calculated_data['orangeSuccessL2'] = percent_success(
+        filter_timeline_actions(timd, type='placement', piece='orange',
+                                level=2))
+    calculated_data['orangeSuccessL3'] = percent_success(
+        filter_timeline_actions(timd, type='placement', piece='orange',
+                                level=3))
 
-    calculated_data['orangeSuccessAll'] = round(100 * avg([
-        action['didSucceed'] for action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange']))
-    calculated_data['orangeSuccessDefended'] = round(100 * avg([
-        action['didSucceed'] for action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange' and
-        action.get('wasDefended') is True]))
-    calculated_data['orangeSuccessUndefended'] = round(100 * avg([
-        action['didSucceed'] for action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange' and
-        action.get('wasDefended') is False]))
-    calculated_data['orangeSuccessL1'] = round(100.0 * avg([
-        action['didSucceed'] for action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange' and
-        action.get('level') != 3 and
-        action.get('level') != 2]))
-    calculated_data['orangeSuccessL2'] = round(100 * avg([
-        action['didSucceed'] for action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange' and
-        action.get('level') == 2]))
-    calculated_data['orangeSuccessL3'] = round(100 * avg([
-        action['didSucceed'] for action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange' and
-        action.get('level') == 3]))
-
-    calculated_data['lemonSuccessAll'] = round(100 * avg([
-        action['didSucceed'] for action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon']))
+    calculated_data['lemonSuccessAll'] = percent_success(
+        filter_timeline_actions(timd, type='placement', piece='lemon'))
     calculated_data['lemonSuccessDefended'] = round(100 * avg([
         action['didSucceed'] for action in timd.get('timeline') if
         action.get('type') == 'placement' and
