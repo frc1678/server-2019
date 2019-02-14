@@ -1,6 +1,7 @@
 """ Send file from computer to devices and confirm that they're received
 Continuously load files on to the device
 so that it gets loaded on whenever a device is plugged in. """
+#TODO Test this program on EVERY SINGLE TABLET to make sure it works
 
 # External imports
 import subprocess
@@ -46,6 +47,30 @@ assignment_file_path = utils.create_file_path('data/assignments/assignments.txt'
 # onto the device again
 devices_with_file = []
 
+""" Makes sure that (1) the file exists and
+(2) that file is the same as assignments.txt """
+def file_load_success(device):
+    try:
+        # pull tablet's copy of the device into pulled_copy.txt
+        # then compare pulled_copy.txt to assignments.txt
+        # if they're the same then it was pushed properly
+        
+        # remove everything after last slash
+        copy_file_path = assignment_file_path.split("/")[:-1]
+        copy_file_path.append('pulled_copy.txt')
+        copy_file_path = '/'.join(copy_file_path)
+        # use 'utils.create_file_path' to create the file if it doesn't exist
+        print(copy_file_path)
+        copy_file_path = utils.create_file_path(copy_file_path, True)
+        
+        subprocess.call(f"adb -s {device} pull '{copy_file_path}' \
+                         '/mnt/sdcard/bluetooth/assignments.txt'",
+                        shell=True)
+        # the 'r' option for open() indicates that the file will only be used for reading from
+        return open(copy_file_path, 'r') == open(assignment_file_path, 'r')
+    except(FileNotFoundError):
+        return False
+
 while True:
     # stores output from 'adb devices' command in var 'output'
     # 'adb devices' finds serials of all connected devices (USB cable)
@@ -84,8 +109,10 @@ while True:
             subprocess.call(f"adb -s {device} push '{assignment_file_path}' \
                              '/mnt/sdcard/bluetooth/assignments.txt'",
                             shell=True)
-            devices_with_file.append(device)
 
-            #TODO (Apurva and Nathan) make an if statement to check if the file is
-            # already on the tablet and if not that it successfully copied
-            print(f'Loaded assignment.txt file onto tablet \'{device_name}\'')
+            if file_load_success(device):
+                devices_with_file.append(device)
+
+                #TODO (Apurva and Nathan) make an if statement to check if the file is
+                # already on the tablet and if not that it successfully copied
+                print(f'Loaded assignment.txt file onto tablet \'{device_name}\'')
