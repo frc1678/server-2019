@@ -57,6 +57,36 @@ def percent_success(actions):
     successes = [action.get('didSucceed') for action in actions if
                  action.get('didSucceed') is not None]
     return round(100 * avg(successes))
+
+def filter_cycles(cycle_list, **filters):
+    """Puts cycles through filters to meet specific requirements
+
+    cycle_list is a list of tuples where the first item is an intake and
+    the second action is the placement or drop.
+    filters are the specifications that certain data points inside the
+    cycles must fit to be included in the returned cycles."""
+    filtered_cycles = []
+    # For each cycle, if any of the specifications are not met, the
+    # loop breaks and it moves on to the next cycle, but if all the
+    # specifications are met, it adds it to the filtered cycles.
+    for cycle in cycle_list:
+        for data_field, requirement in filters.items():
+            # If the data_field requirement is level 1, it instead
+            # checks for it not being level 2 or 3, because level 1 can
+            # encompass all non-level 2 or 3 placement.
+            if data_field == 'level' and requirement == 1:
+                if cycle[1].get('level') == 2 or cycle[1].get('level') == 3:
+                    break
+            # Otherwise, it checks the requirement normally
+            else:
+                if cycle[1].get(data_field) != requirement:
+                    break
+        # If all the requirements are met, it adds the cycle to the
+        # returned filtered cycles.
+        else:
+            filtered_cycles.append(cycle)
+    return filtered_cycles
+
 def calculate_avg_cycle_time(cycles):
     """Calculates the average time for an action based on start and end times.
 
@@ -102,7 +132,7 @@ def filter_timeline_actions(timd, **filters):
             # checks for it not being level 2 or 3, because level 1 can
             # encompass all non-level 2 or 3 placement.
             if data_field == 'level' and requirement == 1:
-                if action.get('level') == 1 or action.get('level') == 2:
+                if action.get('level') == 2 or action.get('level') == 3:
                     break
             # If the filter specifies that the zone must be
             # leftLoadingStation, it means either loading station, so it
@@ -168,32 +198,21 @@ def add_calculated_data_to_timd(timd):
 
     calculated_data['lemonSuccessAll'] = percent_success(
         filter_timeline_actions(timd, type='placement', piece='lemon'))
-    calculated_data['lemonSuccessDefended'] = round(100 * avg([
-        action['didSucceed'] for action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('wasDefended') is True]))
-    calculated_data['lemonSuccessUndefended'] = round(100 * avg([
-        action['didSucceed'] for action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('wasDefended') is False]))
-    calculated_data['lemonSuccessL1'] = round(100 * avg([
-        action['didSucceed'] for action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('level') != 3 and
-        action.get('level') != 2]))
-    calculated_data['lemonSuccessL2'] = round(100 * avg([
-        action['didSucceed'] for action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('level') == 2]))
-    calculated_data['lemonSuccessL3'] = round(100 * avg([
-        action['didSucceed'] for action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('level') == 3]))
+    calculated_data['lemonSuccessDefended'] = percent_success(
+        filter_timeline_actions(timd, type='placement', piece='lemon',
+                                wasDefended=True))
+    calculated_data['lemonSuccessUndefended'] = percent_success(
+        filter_timeline_actions(timd, type='placement', piece='lemon',
+                                wasDefended=False))
+    calculated_data['lemonSuccessL1'] = percent_success(
+        filter_timeline_actions(timd, type='placement', piece='lemon',
+                                level=1))
+    calculated_data['lemonSuccessL2'] = percent_success(
+        filter_timeline_actions(timd, type='placement', piece='lemon',
+                                level=2))
+    calculated_data['lemonSuccessL3'] = percent_success(
+        filter_timeline_actions(timd, type='placement', piece='lemon',
+                                level=3))
 
     # Creates the cycle_list, a list of tuples where the intake is the
     # first item and the placement or drop is the second. This is used
@@ -215,38 +234,22 @@ def add_calculated_data_to_timd(timd):
         paired_cycle_list = list(zip(*[iter(cycle_list)]*2))
 
         calculated_data['orangeCycleAll'] = calculate_avg_cycle_time(
-            [cycle for cycle in paired_cycle_list if
-             cycle[1].get('piece') == 'orange'])
+            filter_cycles(paired_cycle_list, piece='orange'))
         calculated_data['orangeCycleL1'] = calculate_avg_cycle_time(
-            [cycle for cycle in paired_cycle_list if
-             cycle[1].get('piece') == 'orange' and
-             cycle[1].get('level') != 2 and
-             cycle[1].get('level') != 3])
+            filter_cycles(paired_cycle_list, piece='orange', level=1))
         calculated_data['orangeCycleL2'] = calculate_avg_cycle_time(
-            [cycle for cycle in paired_cycle_list if
-             cycle[1].get('piece') == 'orange' and
-             cycle[1].get('level') == 2])
+            filter_cycles(paired_cycle_list, piece='orange', level=2))
         calculated_data['orangeCycleL3'] = calculate_avg_cycle_time(
-            [cycle for cycle in paired_cycle_list if
-             cycle[1].get('piece') == 'orange' and
-             cycle[1].get('level') == 3])
+            filter_cycles(paired_cycle_list, piece='orange', level=3))
 
         calculated_data['lemonCycleAll'] = calculate_avg_cycle_time(
-            [cycle for cycle in paired_cycle_list if
-             cycle[1].get('piece') == 'lemon'])
+            filter_cycles(paired_cycle_list, piece='lemon'))
         calculated_data['lemonCycleL1'] = calculate_avg_cycle_time(
-            [cycle for cycle in paired_cycle_list if
-             cycle[1].get('piece') == 'lemon' and
-             cycle[1].get('level') != 2 and
-             cycle[1].get('level') != 3])
+            filter_cycles(paired_cycle_list, piece='lemon', level=1))
         calculated_data['lemonCycleL2'] = calculate_avg_cycle_time(
-            [cycle for cycle in paired_cycle_list if
-             cycle[1].get('piece') == 'lemon' and
-             cycle[1].get('level') == 2])
+            filter_cycles(paired_cycle_list, piece='lemon', level=1))
         calculated_data['lemonCycleL3'] = calculate_avg_cycle_time(
-            [cycle for cycle in paired_cycle_list if
-             cycle[1].get('piece') == 'lemon' and
-             cycle[1].get('level') == 3])
+            filter_cycles(paired_cycle_list, piece='lemon', level=1))
 
     # Calculates if a team is incap throughout the entirety of the match
     # by checking if they have any actions in the match other than incap
