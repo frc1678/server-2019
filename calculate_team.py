@@ -154,7 +154,7 @@ def team_calculations(timds):
         action.get('type') == 'intake' and
         action.get('piece') == 'lemon' and
         (action.get('zone') == 'leftLoadingStation' or
-         action.get('zone') == 'leftLoadingStation')]))
+         action.get('zone') == 'rightLoadingStation')]))
     calculated_data['orangeSuccessAll'] = round(100 * avg([
         action['didSucceed'] for timd in timds for
         action in timd.get('timeline') if
@@ -287,7 +287,7 @@ def team_calculations(timds):
         action.get('type') == 'intake' and
         action.get('piece') == 'lemon' and
         (action.get('zone') == 'leftLoadingStation' or
-         action.get('zone') == 'leftLoadingStation')]))
+         action.get('zone') == 'rightLoadingStation')]))
     calculated_data['lfmOrangeSuccessAll'] = round(100 * avg([
         action['didSucceed'] for timd in lfm_timds for
         action in timd.get('timeline') if
@@ -417,7 +417,7 @@ def team_calculations(timds):
         action.get('type') == 'intake' and
         action.get('piece') == 'lemon' and
         (action.get('zone') == 'leftLoadingStation' or
-         action.get('zone') == 'leftLoadingStation')]))
+         action.get('zone') == 'rightLoadingStation')]))
     calculated_data['sdOrangeSuccessAll'] = round(100 * np.std([
         action['didSucceed'] for timd in timds for
         action in timd.get('timeline') if
@@ -544,7 +544,7 @@ def team_calculations(timds):
         action.get('type') == 'intake' and
         action.get('piece') == 'lemon' and
         (action.get('zone') == 'leftLoadingStation' or
-         action.get('zone') == 'leftLoadingStation')]))
+         action.get('zone') == 'rightLoadingStation')]))
     calculated_data['p75OrangeSuccessAll'] = round(100 * p75([
         action['didSucceed'] for timd in timds for
         action in timd.get('timeline') if
