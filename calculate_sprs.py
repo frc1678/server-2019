@@ -48,7 +48,6 @@ for temp_timd in TEMP_TIMDS:
     decompressed_temp_timd = decompressor.decompress_temp_timd(file_data)
     temp_timd_name = list(decompressed_temp_timd)[0]
     temp_timd_data = decompressed_temp_timd[temp_timd_name]
-    print(temp_timd_data)
 
     timd_name = temp_timd_name.split('-')[0]
     with open(utils.create_file_path(
