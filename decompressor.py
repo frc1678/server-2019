@@ -85,8 +85,8 @@ TEMP_TIMD_COMPRESSION_VALUES = {
     's': 'near',
 }
 
-def decompress_timeline_value(compressed_value):
-    """Decompresses a single tempTIMD timeline action value.
+def decompress_temp_timd_value(compressed_value):
+    """Decompresses a single tempTIMD value.
 
     compressed_value is a string."""
     # If the 'compressed_value' is a one-character letter, it needs to
@@ -135,7 +135,7 @@ def decompress_temp_timd_headers(compressed_headers):
             # Uses 'scout_name_compression_values' dictionary to decompress scout name
             decompressed_value = scout_name_compression_values[compressed_value]
         else:
-            decompressed_value = decompress_timeline_value(compressed_value)
+            decompressed_value = decompress_temp_timd_value(compressed_value)
         decompressed_headers[decompressed_key] = decompressed_value
 
     return decompressed_headers
@@ -174,7 +174,7 @@ def decompress_temp_timd_timeline(compressed_temp_timd_timeline):
                 # The previous value is from the last key to the end of
                 # the string.
                 compressed_value = action[index_last_key+1:]
-                decompressed_value = decompress_timeline_value(
+                decompressed_value = decompress_temp_timd_value(
                     compressed_value)
 
                 # Save the previous key:value pair in the final dictionary.
@@ -191,7 +191,7 @@ def decompress_temp_timd_timeline(compressed_temp_timd_timeline):
                 # The previous value is between the last key and the
                 # current key.
                 compressed_value = action[index_last_key+1:index]
-                decompressed_value = decompress_timeline_value(
+                decompressed_value = decompress_temp_timd_value(
                     compressed_value)
 
                 # Save the previous key:value pair in the final dictionary.
