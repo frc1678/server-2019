@@ -60,14 +60,13 @@ def file_load_success(device):
         copy_file_path.append('pulled_copy.txt')
         copy_file_path = '/'.join(copy_file_path)
         # use 'utils.create_file_path' to create the file if it doesn't exist
-        print(copy_file_path)
         copy_file_path = utils.create_file_path(copy_file_path, True)
         
         subprocess.call(f"adb -s {device} pull '{copy_file_path}' \
                          '/mnt/sdcard/bluetooth/assignments.txt'",
                         shell=True)
         # the 'r' option for open() indicates that the file will only be used for reading from
-        return open(copy_file_path, 'r') == open(assignment_file_path, 'r')
+        return open(copy_file_path, 'r').read() == open(assignment_file_path, 'r').read()
     except(FileNotFoundError):
         return False
 
@@ -113,6 +112,4 @@ while True:
             if file_load_success(device):
                 devices_with_file.append(device)
 
-                #TODO (Apurva and Nathan) make an if statement to check if the file is
-                # already on the tablet and if not that it successfully copied
                 print(f'Loaded assignment.txt file onto tablet \'{device_name}\'')
