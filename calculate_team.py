@@ -412,7 +412,7 @@ def team_calculations(timds):
         timd['calculatedData'].get('lemonsSpilled') for timd in timds])
 
     calculated_data['sdLemonLoadSuccess'] = round(100 * np.std([
-        action['didSucceed'] for timd in lfm_timds for
+        action['didSucceed'] for timd in timds for
         action in timd.get('timeline') if
         action.get('type') == 'intake' and
         action.get('piece') == 'lemon' and
@@ -539,7 +539,7 @@ def team_calculations(timds):
         timd['calculatedData'].get('lemonsSpilled') for timd in timds])
 
     calculated_data['p75LemonLoadSuccess'] = round(100 * p75([
-        action['didSucceed'] for timd in lfm_timds for
+        action['didSucceed'] for timd in timds for
         action in timd.get('timeline') if
         action.get('type') == 'intake' and
         action.get('piece') == 'lemon' and
