@@ -11,7 +11,7 @@ import firestore_communicator
 import tba_communicator
 
 # 'FIREBASE' is a Realtime Database instance
-FIREBASE = firebase_communicator.configure_firebase('ccsaposs-dev')
+FIREBASE = firebase_communicator.configure_firebase()
 # 'FIRESTORE' is a Cloud Firestore database instance
 FIRESTORE = firestore_communicator.configure_cloud_firestore()
 
