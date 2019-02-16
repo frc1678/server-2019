@@ -96,6 +96,8 @@ def calculate_avg_cycle_time(cycles):
     the intake, and the second item is the placement or drop."""
     cycle_times = []
     for cycle in cycles:
+        # Subtracts the second time from the first because the time
+        # counts down in the timeline.
         cycle_times.append(cycle[0].get('time') -
                            cycle[1].get('time'))
     return avg(cycle_times, None)
@@ -109,6 +111,8 @@ def calculate_incap_time(cycles):
     and the second action is unincap."""
     cycle_times = []
     for cycle in cycles:
+        # Subtracts the second time from the first because the time
+        # counts down in the timeline.
         cycle_times.append(cycle[0].get('time') -
                            cycle[1].get('time'))
     return sum(cycle_times)
