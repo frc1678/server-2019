@@ -9,7 +9,7 @@ import time
 # Internal imports
 import utils
 
-# serial number to human-readable device name
+# Serial number to human-readable device name
 DEVICE_NAMES = {
     # Green case tablets (Scouts 1-8)
     '094d5740': 'Scout 1',
@@ -51,12 +51,12 @@ def file_load_success(device_id):
     """ Makes sure that the file on the tablet
     is the same as assignments.txt
     by comparing tablet_data and computer_data """
-    # the 'r' option for open() indicates that
+    # The 'r' option for open() indicates that
     # the file will only be used for reading from
     with open(ASSIGNMENT_FILE_PATH, 'r') as file:
         computer_data = file.read()
     try:
-        # the -s flag tells adb the serial number of which device to use
+        # The -s flag tells adb the serial number of which device to use
         tablet_data = subprocess.check_output(
             f'adb -s {device_id} shell cat /mnt/sdcard/bluetooth/assignments.txt',
             shell=True)
@@ -72,7 +72,7 @@ def file_load_success(device_id):
     return tablet_data == computer_data
 
 while True:
-    # stores output from 'adb devices' command in var 'OUTPUT'
+    # Stores output from 'adb devices' command in var 'OUTPUT'
     # 'adb devices' finds serials of all connected devices (USB cable)
     # Here's an example output of 'adb devices':
 
@@ -84,10 +84,10 @@ while True:
     # makes it weird, so here's what OUTPUT looks like now:
     # "b'List of devices attached\\n015d2568753c1408\\tdevice\\n015d2856d607f015\\tdevice\\n\\n'"
 
-    # now split OUTPUT values at each r'\n' so that OUTPUT looks like:
+    # Now split OUTPUT values at each r'\n' so that OUTPUT looks like:
     # ["b'List of devices attached", '015d2568753c1408\\tdevice',
     #  '015d2856d607f015\\tdevice', '', "'"]
-    # remove last two and first words
+    # Remove last two and first words
     # of the list so it only contains needed information. OUTPUT is:
     # ['015d2568753c1408\\tdevice', '015d2856d607f015\\tdevice']
     OUTPUT = OUTPUT.split(r'\n')[1:-2]
@@ -96,14 +96,14 @@ while True:
     # Cut off everything except the serial, which is from the beginning of the
     # line to the r'\t'.
     DEVICES = [line.split(r'\t')[0] for line in OUTPUT]
-    # give connection some time to initialize
+    # Give USB connection some time to initialize
     time.sleep(.1)  # seconds
-    # iterate through each device serial number to copy file to it
+    # Iterate through each device serial number to copy file to it
     for device in DEVICES:
         if device not in DEVICES_WITH_FILE:
-            # using subprocess, call 'adb push' command
+            # Using subprocess, call 'adb push' command
             # which uses Android Debug Bridge (adb) to copy files
-            # the -s flag tells adb which device
+            # The -s flag tells adb which device
             # to push to using its serial number
             subprocess.call(f"adb -s {device} push '{ASSIGNMENT_FILE_PATH}' \
                              '/mnt/sdcard/bluetooth/assignments.txt'",
@@ -111,8 +111,8 @@ while True:
 
             if file_load_success(device):
                 DEVICES_WITH_FILE.append(device)
-                # use dictionary to find human-readable
+                # Use dictionary to find human-readable
                 # device name from given device serial
-                # example: DEVICE_NAMES['00a2849de'] evaluates to 'Scout 7'
+                # Example: DEVICE_NAMES['00a2849de'] evaluates to 'Scout 7'
                 device_name = DEVICE_NAMES[device]
                 print(f'Loaded assignment.txt file onto tablet {device_name}')
