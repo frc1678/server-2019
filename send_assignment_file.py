@@ -31,13 +31,13 @@ DEVICE_NAMES = {
     '015d172c98041412': 'Scout 16',
     '015d188421480008': 'Scout 17',
     '015d2568753c0200': 'Scout 18',
-    # Fire tablets without cases (Backups (1-5)
+    # Fire tablets without cases (Backups 1-5)
     'G000H40563460VSC': 'Backup 1',
     'G000H4056383066L': 'Backup 2',
     'G000H40563460T65': 'Backup 3',
     'G000H404610600EK': 'Backup 4',
     'G0K0KH02623400GT': 'Backup 5',
-    # this does not include serial numbs for super scouting tablets
+    # This does not include serial numbers for super scout tablets
 }
 
 ASSIGNMENT_FILE_PATH = utils.create_file_path(
