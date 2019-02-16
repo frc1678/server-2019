@@ -320,8 +320,13 @@ for temp_timd in os.listdir(utils.create_file_path('data/cache/temp_timds')):
 for compressed_temp_timd in COMPRESSED_TIMDS:
     decompressed_temp_timd = decompress.decompress_temp_timd(
         compressed_temp_timd)
-    TEMP_TIMDS[decompressed_temp_timd.get(
-        'scoutName')] = decompressed_temp_timd
+    scout_name = decompressed_temp_timd.get('scoutName')
+    # If there is no scout name in the temp_timd, it is faulty, so it
+    # doesn't consolidate.
+    if scout_name is not None:
+        TEMP_TIMDS[scout_name] = decompressed_temp_timd
+    else:
+        pass
 
 # After the TEMP_TIMDS are decompressed, they are fed into the
 # consolidation script where they are returned as one final TIMD. This
