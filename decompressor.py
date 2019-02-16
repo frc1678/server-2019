@@ -418,4 +418,3 @@ def decompress_temp_super(compressed_temp_super):
         compressed_team))
 
     return {temp_super_key: decompressed_temp_super}
-  
