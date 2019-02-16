@@ -1,9 +1,6 @@
 """ Send file from computer to devices and confirm that they're received
 Continuously load files on to the device
 so that it gets loaded on whenever a device is plugged in. """
-#TODO(Apurva): Test this program on EVERY SINGLE TABLET to make sure it works
-#TODO(Apurva): still gotta test tablets 10, all the others are done
-#TODO(Nathan): make lines fit under 80 characters. Also make it pass pylint
 
 # External imports:
 import subprocess
