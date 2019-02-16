@@ -66,7 +66,7 @@ def file_load_success(device_id):
     # beginning and the " at the end
     # Also, it has \r\n everywhere there should be a newline
     # instead of an actual newline, so we replace r'\r\n' with '\n'
-    tablet_data = str(tablet_data)[2:-1].replace(r'\r\n', '\n')
+    tablet_data = tablet_data.decode('utf-8').replace('\r\n', '\n')
     return tablet_data == computer_data
 
 while True:
@@ -88,12 +88,12 @@ while True:
     # Remove last two and first words
     # of the list so it only contains needed information. OUTPUT is:
     # ['015d2568753c1408\\tdevice', '015d2856d607f015\\tdevice']
-    OUTPUT = OUTPUT.split('\n')
+    OUTPUT = OUTPUT.rstrip('\n').split('\n')[1:]
 
     # Now each word in OUTPUT[] is a serial followed by a r'\t' and other info
     # Cut off everything except the serial, which is from the beginning of the
     # line to the r'\t'.
-    DEVICES = [line.split(r'\t')[0] for line in OUTPUT]
+    DEVICES = [line.split('\t')[0] for line in OUTPUT]
     # Give USB connection some time to initialize
     time.sleep(.1)  # seconds
     # Iterate through each device serial number to copy file to it
