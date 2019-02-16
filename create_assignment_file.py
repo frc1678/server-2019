@@ -45,7 +45,7 @@ def create_assignment_file(matches, scout_names):
 SCOUT_NAMES = [
     'Sam C', 'Sam S', 'Carl', 'Ethan', 'John', 'Jack', 'Bob', 'Joe',
     'Example', 'Running', 'Out', 'Of', 'Names', 'To', 'Use',
-    # '.zfill(2)' adds leading zeroes to 2 decimal places
+    # '.zfill(2)' adds leading zeroes to 2 digits
     # (e.g. '7' becomes '07')
     # Used by the Scout app to alphabetize scout names
 ] + [f'Backup {str(n).zfill(2)}' for n in range(1, 10+1)]
