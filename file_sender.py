@@ -1,12 +1,14 @@
 """ Send file from computer to devices and confirm that they're received
 Continuously load files on to the device
 so that it gets loaded on whenever a device is plugged in. """
-#TODO(Apurva) Test this program on EVERY SINGLE TABLET to make sure it works
+#TODO(Apurva): Test this program on EVERY SINGLE TABLET to make sure it works
+#TODO(Apurva): still gotta test tablets 10, all the others are done
+#TODO(Nathan): make lines fit under 80 characters. Also make it pass pylint
 
-# External imports
+# External imports:
 import subprocess
 import time
-# Internal imports
+# Internal imports:
 import utils
 
 # serial number to human-readable name of device
@@ -55,22 +57,25 @@ def file_load_success(device):
         # pull tablet's copy of the device into pulled_copy.txt
         # then compare pulled_copy.txt to assignments.txt
         # if they're the same then it was pushed properly
-        
+
         # remove everything after last slash
         copy_file_path = assignment_file_path.split("/")[:-1]
         copy_file_path.append('pulled_copy.txt')
         copy_file_path = '/'.join(copy_file_path)
         # use 'utils.create_file_path' to create the file if it doesn't exist
         copy_file_path = utils.create_file_path(copy_file_path, True)
-        
-        subprocess.call(f"adb -s {device} pull '{copy_file_path}' \
-                         '/mnt/sdcard/bluetooth/assignments.txt'",
-                        shell=True)
+        subprocess.call(f'touch {copy_file_path}'.split(' '))
+
+        subprocess.call(f'adb -s {device} pull /mnt/sdcard/bluetooth/assignments.txt {copy_file_path}'
+                        .split(' '))
         # the 'r' option for open() indicates that
         # the file will only be used for reading from
-        return open(copy_file_path, 'r').read() == \
-               open(assignment_file_path, 'r').read()
-    except(FileNotFoundError):
+        with open(copy_file_path, 'r') as file:
+            copy_data = file.read()
+        with open(assignment_file_path, 'r') as file:
+            assignment_data = file.read()
+        return copy_data == assignment_data
+    except FileNotFoundError:
         return False
 
 while True:
@@ -94,7 +99,7 @@ while True:
     # ['015d2568753c1408\\tdevice', '015d2856d607f015\\tdevice']
     output = output.split('\\n')[1:-2]
 
-    # Now each word in output[] is a serial followed by a '\\t' and other stuff
+    # Now each word in output[] is a serial followed by a '\\t' and other info
     # Cut off everything except the serial, which is from the beginning of the
     # line to the '\\t'.
     devices = [line.split('\\t')[0] for line in output]
@@ -118,5 +123,5 @@ while True:
             if file_load_success(device):
                 devices_with_file.append(device)
 
-                print(f'Loaded assignment.txt file onto tablet \
-                        \'{device_name}\'')
+                print(f'Loaded assignment.txt file onto tablet ' \
+                      f'\'{device_name}\'')
