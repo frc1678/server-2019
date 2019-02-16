@@ -225,7 +225,7 @@ def add_calculated_data_to_timd(timd):
         if action.get('type') in ['intake', 'placement', 'drop']:
             cycle_list.append(action)
 
-    if cycle_list != []:
+    if len(cycle_list) > 0:
         # If the first action in the list is a placement, it is a
         # preload, which doesn't count when calculating cycle times.
         if cycle_list[0].get('type') == 'placement':
