@@ -69,7 +69,7 @@ def filter_cycles(cycle_list, **filters):
             # checks for it not being level 2 or 3, because level 1 can
             # encompass all non-level 2 or 3 placement.
             if data_field == 'level' and requirement == 1:
-                if cycle[1].get('level') == 2 or cycle[1].get('level') == 3:
+                if cycle[1].get('level', 1) != 1:
                     break
             # Otherwise, it checks the requirement normally
             else:
