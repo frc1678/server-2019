@@ -329,8 +329,7 @@ for compressed_temp_timd in COMPRESSED_TIMDS:
         pass
 
 # After the TEMP_TIMDS are decompressed, they are fed into the
-# consolidation script where they are returned as one final TIMD. This
-# final TIMD is set as the variable name UNCALCULATED_TIMD.
+# consolidation script where they are returned as one final TIMD.
 UNCALCULATED_TIMD = consolidation.consolidate_temp_timds(TEMP_TIMDS)
 
 # Defines FINAL_TIMD as a version of the TIMD with calculated data
