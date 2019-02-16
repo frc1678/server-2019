@@ -21,7 +21,7 @@ import os
 import sys
 # Internal imports
 import consolidation
-import decompress
+import decompressor
 import utils
 
 
@@ -318,7 +318,7 @@ for temp_timd in os.listdir(utils.create_file_path('data/cache/temp_timds')):
 # Does this in order to have a proper input to the consolidation
 # function.
 for compressed_temp_timd in COMPRESSED_TIMDS:
-    decompressed_temp_timd = decompress.decompress_temp_timd(
+    decompressed_temp_timd = decompressor.decompress_temp_timd(
         compressed_temp_timd)
     scout_name = decompressed_temp_timd.get('scoutName')
     # If there is no scout name in the temp_timd, it is faulty, so it
