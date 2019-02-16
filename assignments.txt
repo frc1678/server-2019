@@ -1,4 +1,0 @@
-This is a test file. It doesn't need to exist; please delete it.
-data/ is in the .gitignore though so it doesn't matter.
-
-Hello world!  :~)
