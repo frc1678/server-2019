@@ -139,7 +139,7 @@ def filter_timeline_actions(timd, **filters):
             # rightLoadingStation.
             elif data_field == 'zone' and requirement == 'loadingStation':
                 if action['zone'] not in ['leftLoadingStation',
-                                              'rightLoadingStation']:
+                                          'rightLoadingStation']:
                     break
             # Otherwise, it checks the requirement normally
             else:
