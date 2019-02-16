@@ -333,7 +333,7 @@ TEMP_TIMDS = {}
 for temp_timd in os.listdir(utils.create_file_path('data/cache/temp_timds')):
     if TIMD_NAME in temp_timd:
         file_path = utils.create_file_path(
-            'data/cache/temp_timds/' + temp_timd)
+            f'data/cache/temp_timds/{temp_timd}')
         with open(file_path, 'r') as compressed_temp_timd:
             COMPRESSED_TIMDS.append(compressed_temp_timd.read())
 
