@@ -286,7 +286,7 @@ def add_calculated_data_to_timd(timd):
             incap_list.append(action)
     if len(incap_list) > 0:
         # If the last action in the list is an incap, it means they
-        # finished the match incap, so it adds an unicap at the end of
+        # finished the match incap, so it adds an unincap at the end of
         # the timeline.
         if incap_list[-1].get('type') == 'incap':
             incap_list.append({'type': 'unIncap', 'time' : 0.0})
