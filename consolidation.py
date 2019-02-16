@@ -228,7 +228,6 @@ def climb_consolidation(input_timelines, sprking):
                 scout : climb[key][robot] for scout, climb in
                 simplified_timelines.items()}, sprking)
 
-    print(final_simplified_timd)
     # Returns the final created timeline
     return final_simplified_timd
 
