@@ -312,11 +312,11 @@ def consolidate_temp_timds(temp_timds):
             # code is using .get and not simply referencing the key out
             # of the dictionary because .get doesn't error out when the
             # key doesn't exist. It instead returns NoneType).
-            data_field_comparison_list = {scout : dicti.get(data_field)
-                                          for scout, dicti in
-                                          temp_timds.items() if
-                                          dicti.get(data_field) is not
-                                          None}
+            data_field_comparison_list = {}
+            for scout, temp_timd in temp_timds.items():
+                temp_data_field = temp_timd.get(data_field)
+                if temp_data_field is not None:
+                    data_field_comparison_list[scout] = temp_data_field
 
             # Uses the max_occurrences function to find the correct value
             # for the data field.
