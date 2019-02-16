@@ -94,12 +94,12 @@ while True:
     # remove last two and first words
     # of the list so it only contains needed information. OUTPUT is:
     # ['015d2568753c1408\\tdevice', '015d2856d607f015\\tdevice']
-    OUTPUT = OUTPUT.split('\\n')[1:-2]
+    OUTPUT = OUTPUT.split(r'\n')[1:-2]
 
     # Now each word in OUTPUT[] is a serial followed by a '\\t' and other info
     # Cut off everything except the serial, which is from the beginning of the
     # line to the '\\t'.
-    DEVICES = [line.split('\\t')[0] for line in OUTPUT]
+    DEVICES = [line.split(r'\t')[0] for line in OUTPUT]
     # iterate through each device serial number to copy file to it
     # give connection some time to initialize
     time.sleep(.1)  # seconds
