@@ -24,7 +24,6 @@ import consolidation
 import decompressor
 import utils
 
-
 # Check to ensure TIMD name is being passed as an argument
 if len(sys.argv) == 2:
     # Extract TIMD name from system argument
