@@ -280,9 +280,10 @@ def add_calculated_data_to_timd(timd):
             calculated_data['timeClimbing'] = action['time']
 
     # Creates a list of all the incap and unincap actions in the timeline.
-    incap_list = [action for action in timd.get('timeline') if
-                  action.get('type') == 'incap' or
-                  action.get('type') == 'unincap']
+    incap_list = []
+    for action in timd.get('timeline'):
+        if action.get('type') in ['incap', 'unincap']:
+            incap_list.append(action)
     if len(incap_list) > 0:
         # If the last action in the list is an incap, it means they
         # finished the match incap, so it adds an unicap at the end of
