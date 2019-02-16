@@ -76,7 +76,8 @@ def max_occurrences(comparison_list, sprking):
     # the max is the 2 in a 2 scout versus 1 split decision.
     if max(occurence_list.values()) == min(occurence_list.values()):
         return comparison_list[sprking]
-    return max(occurence_list, key=occurence_list.get)
+    else:
+        return max(occurence_list, key=occurence_list.get)
 
 def basic_timeline_consolidation(input_timelines, action_type, sprking):
     """Takes an action type out of timelines and consolidates it seperately.
