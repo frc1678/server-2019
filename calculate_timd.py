@@ -235,7 +235,10 @@ def add_calculated_data_to_timd(timd):
         # never completed.
         if cycle_list[-1].get('type') == 'intake':
             cycle_list.pop(-1)
-        paired_cycle_list = list(zip(*[iter(cycle_list)]*2))
+        # [::2] are the even-indexed items of the list, [1::2] are the 
+        # odd-indexed items of the list. The python zip function puts
+        # matching-index items from two lists into tuples.
+        paired_cycle_list = list(zip(cycle_list[::2], cycle_list[1::2]))
 
         calculated_data['orangeCycleAll'] = calculate_avg_cycle_time(
             filter_cycles(paired_cycle_list, piece='orange'))
@@ -283,7 +286,10 @@ def add_calculated_data_to_timd(timd):
         # the timeline.
         if incap_list[-1].get('type') == 'incap':
             incap_list.append({'type': 'unIncap', 'time' : 0.0})
-        paired_incap_list = list(zip(*[iter(incap_list)]*2))
+        # [::2] are the even-indexed items of the list, [1::2] are the
+        # odd-indexed items of the list. The python zip function puts
+        # matching-index items from two lists into tuples.
+        paired_incap_list = list(zip(incap_list[::2], incap_list[1::2]))
 
         # Calculates the timeImpaired and timeIncap by calculating the
         # total amount of time the robot spent incap for either causes
