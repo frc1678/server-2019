@@ -166,9 +166,7 @@ def basic_timeline_consolidation(input_timelines, action_type, sprking):
     final_simplified_timd = [{} for action in range(majority)]
     # Iterates through the longest timeline to compare all
     # the actions.
-    for action_index, action in enumerate(correct_length_timelines[
-            max(correct_length_timelines, key=lambda timeline:
-                len(correct_length_timelines[timeline]))]):
+    for action_index, action in enumerate(correct_length_timelines[sprking]):
         comparison_dict = {scout : timeline[action_index] for scout,
                            timeline in correct_length_timelines.items()}
         for key in comparison_dict[sprking].keys():
