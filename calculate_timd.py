@@ -92,8 +92,8 @@ def calculate_avg_cycle_time(cycles):
     """
     cycle_times = []
     for cycle in cycles:
-        cycle_times.append(float(cycle[0].get('time')) -
-                           float(cycle[1].get('time')))
+        cycle_times.append(cycle[0].get('time') -
+                           cycle[1].get('time'))
     return avg(cycle_times, None)
 
 def calculate_total_cycle_time(cycles):
@@ -107,8 +107,8 @@ def calculate_total_cycle_time(cycles):
     """
     cycle_times = []
     for cycle in cycles:
-        cycle_times.append(float(cycle[0].get('time')) -
-                           float(cycle[1].get('time')))
+        cycle_times.append(cycle[0].get('time') -
+                           cycle[1].get('time'))
     return sum(cycle_times)
 
 def filter_timeline_actions(timd, **filters):
