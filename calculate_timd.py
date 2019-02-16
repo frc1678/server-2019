@@ -325,8 +325,6 @@ for compressed_temp_timd in COMPRESSED_TIMDS:
     # doesn't consolidate.
     if scout_name is not None:
         TEMP_TIMDS[scout_name] = decompressed_temp_timd
-    else:
-        pass
 
 # After the TEMP_TIMDS are decompressed, they are fed into the
 # consolidation script where they are returned as one final TIMD.
