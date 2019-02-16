@@ -79,7 +79,7 @@ def filter_cycles(cycle_list, **filters):
                     break
             # Otherwise, it checks the requirement normally
             else:
-                if cycle[1].get(data_field) != requirement:
+                if cycle[1][data_field] != requirement:
                     break
         # If all the requirements are met, it adds the cycle to the
         # returned filtered cycles.
@@ -138,7 +138,7 @@ def filter_timeline_actions(timd, **filters):
             # only breaks if the zone is not leftLoadingStation or
             # rightLoadingStation.
             elif data_field == 'zone' and requirement == 'loadingStation':
-                if action.get('zone') not in ['leftLoadingStation',
+                if action['zone'] not in ['leftLoadingStation',
                                               'rightLoadingStation']:
                     break
             # Otherwise, it checks the requirement normally
