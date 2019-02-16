@@ -40,9 +40,9 @@ def avg(lis, exception=0.0):
     exception is returned if there is a divide by zero error. The
     default is 0.0 because the main usage in in percentage calculations.
     """
-    try:
+    if len(lis) != 0:
         return sum(lis) / len(lis)
-    except ZeroDivisionError:
+    else:
         return exception
 
 def percent_success(actions):
