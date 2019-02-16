@@ -262,11 +262,15 @@ def add_calculated_data_to_timd(timd):
     # by checking if they have any actions in the match other than incap
     # and unincap. If they don't have any other actions, they were incap
     # the entire match.
-    calculated_data['isIncapEntireMatch'] = False if [
-        action for action in timd.get('timeline') if
-        action.get('type') != 'incap' and
-        action.get('type') != 'unIncap' and
-        float(action.get('time')) <= 135.0] else True
+    non_incap_actions = []
+    for action in timd.get('timeline'):
+        if action.get('type') not in ['incap', 'unincap'] and \
+                action.get('time') <= 135.0:
+            non_incap_actions.append(action)
+    if len(non_incap_actions) > 0:
+        calculated_data['isIncapEntireMatch'] = False
+    else:
+        calculated_data['isIncapEntireMatch'] = True
 
     # Creates a list of the climb dictionary or nothing if there is no
     # climb. If there is a climb, the time of the climb is the amount
