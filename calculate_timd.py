@@ -24,14 +24,6 @@ import consolidation
 import decompressor
 import utils
 
-# Check to ensure TIMD name is being passed as an argument
-if len(sys.argv) == 2:
-    # Extract TIMD name from system argument
-    TIMD_NAME = sys.argv[1]
-else:
-    print('Error: TIMD name not being passed as an argument. Exiting...')
-    sys.exit(0)
-
 def avg(lis, exception=0.0):
     """Calculates the average of a list.
 
@@ -323,6 +315,14 @@ def add_calculated_data_to_timd(timd):
     # the final TIMD and returns it.
     timd['calculatedData'] = calculated_data
     return timd
+
+# Check to ensure TIMD name is being passed as an argument
+if len(sys.argv) == 2:
+    # Extract TIMD name from system argument
+    TIMD_NAME = sys.argv[1]
+else:
+    print('Error: TIMD name not being passed as an argument. Exiting...')
+    sys.exit(0)
 
 COMPRESSED_TIMDS = []
 
