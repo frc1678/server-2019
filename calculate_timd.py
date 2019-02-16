@@ -155,6 +155,15 @@ def filter_timeline_actions(timd, **filters):
             filtered_timeline.append(action)
     return filtered_timeline
 
+def make_paired_cycle_list(cycle_list):
+    """Pairs up cycles together into tuples.
+
+    cycle_list is the list of actions that need to be paired up."""
+    # [::2] are the even-indexed items of the list, [1::2] are the
+    # odd-indexed items of the list. The python zip function puts
+    # matching-index items from two lists into tuples.
+    return list(zip(cycle_list[::2], cycle_list[1::2]))
+
 def add_calculated_data_to_timd(timd):
     """Calculates data in a timd and adds it to 'calculatedData' in the TIMD.
 
@@ -235,10 +244,7 @@ def add_calculated_data_to_timd(timd):
         # never completed.
         if cycle_list[-1].get('type') == 'intake':
             cycle_list.pop(-1)
-        # [::2] are the even-indexed items of the list, [1::2] are the 
-        # odd-indexed items of the list. The python zip function puts
-        # matching-index items from two lists into tuples.
-        paired_cycle_list = list(zip(cycle_list[::2], cycle_list[1::2]))
+        paired_cycle_list = make_paired_cycle_list(cycle_list)
 
         calculated_data['orangeCycleAll'] = calculate_avg_cycle_time(
             filter_cycles(paired_cycle_list, piece='orange'))
@@ -290,10 +296,7 @@ def add_calculated_data_to_timd(timd):
         # the timeline.
         if incap_list[-1]['type'] == 'incap':
             incap_list.append({'type': 'unincap', 'time' : 0.0})
-        # [::2] are the even-indexed items of the list, [1::2] are the
-        # odd-indexed items of the list. The python zip function puts
-        # matching-index items from two lists into tuples.
-        paired_incap_list = list(zip(incap_list[::2], incap_list[1::2]))
+        paired_incap_list = make_paired_cycle_list(incap_list)
 
         # Calculates the timeImpaired and timeIncap by calculating the
         # total amount of time the robot spent incap for either causes
