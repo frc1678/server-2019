@@ -120,5 +120,4 @@ while True:
             if file_load_success(device):
                 DEVICES_WITH_FILE.append(device)
 
-                print(f'Loaded assignment.txt file onto tablet ' \
-                      f'\'{device_name}\'')
+                print(f'Loaded assignment.txt file onto tablet {device_name}')
