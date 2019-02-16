@@ -57,7 +57,9 @@ def filter_cycles(cycle_list, **filters):
     cycle_list is a list of tuples where the first item is an intake and
     the second action is the placement or drop.
     filters are the specifications that certain data points inside the
-    cycles must fit to be included in the returned cycles."""
+    cycles must fit to be included in the returned cycles.
+    example for filter - 'level=1' as an argument, '{'level': 1}' inside
+    the function."""
     filtered_cycles = []
     # For each cycle, if any of the specifications are not met, the
     # loop breaks and it moves on to the next cycle, but if all the
