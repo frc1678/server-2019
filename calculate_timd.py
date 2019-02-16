@@ -33,10 +33,6 @@ else:
     print('Error: TIMD name not being passed as an argument. Exiting...')
     sys.exit(0)
 
-COMPRESSED_TIMDS = []
-
-TEMP_TIMDS = {}
-
 def avg(lis, exception=0.0):
     """Calculates the average of a list.
 
@@ -302,6 +298,10 @@ def add_calculated_data_to_timd(timd):
     # the final TIMD and returns it.
     timd['calculatedData'] = calculated_data
     return timd
+
+COMPRESSED_TIMDS = []
+
+TEMP_TIMDS = {}
 
 # Goes into the temp_timds folder to get the names of all the tempTIMDs
 # that correspond to the given TIMD.
