@@ -102,8 +102,8 @@ def calculate_avg_cycle_time(cycles):
                            cycle[1].get('time'))
     return avg(cycle_times, None)
 
-def calculate_incap_time(cycles):
-    """Calculates the total time for an action based on start and end times.
+def calculate_total_incap_time(cycles):
+    """Calculates the total time for incap based on incap and unincap times.
 
     Finds the time difference between each action pair passed and
     returns the sum of the differences.
@@ -288,11 +288,11 @@ def add_calculated_data_to_timd(timd):
         # total amount of time the robot spent incap for either causes
         # that indicate the robot was impaired, or causes that indicate
         # the robot is incapacitated.
-        calculated_data['timeImpaired'] = calculate_incap_time(
+        calculated_data['timeImpaired'] = calculate_total_incap_time(
             [cycle for cycle in paired_incap_list if
              cycle[0].get('cause') == 'brokenMechanism' or
              cycle[0].get('cause') == 'twoGamePieces'])
-        calculated_data['timeIncap'] = calculate_incap_time(
+        calculated_data['timeIncap'] = calculate_total_incap_time(
             [cycle for cycle in paired_incap_list if
              cycle[0].get('cause') != 'brokenMechanism' and
              cycle[0].get('cause') != 'twoGamePieces'])
