@@ -126,7 +126,7 @@ def filter_timeline_actions(timd, **filters):
             # checks for it not being level 2 or 3, because level 1 can
             # encompass all non-level 2 or 3 placement.
             if data_field == 'level' and requirement == 1:
-                if action.get('level') == 2 or action.get('level') == 3:
+                if action.get('level', 1) != 1:
                     break
             # If the filter specifies that the zone must be
             # leftLoadingStation, it means either loading station, so it
