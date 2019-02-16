@@ -101,12 +101,117 @@ def avg(lis, exception=0.0):
     except (ZeroDivisionError, TypeError):
         return exception
 
-def percent_success(actions):
+def avg_percent_success(actions):
     """Finds the percent of times didSucceed is true in a list of actions.
     actions is the list of actions that can either succeed or fail."""
     successes = [action.get('didSucceed') for action in actions if
                  action.get('didSucceed') is not None]
     return round(100 * avg(successes))
+
+def sd_percent_success(actions):
+    """Finds the percent of times didSucceed is true in a list of actions.
+    actions is the list of actions that can either succeed or fail."""
+    successes = [action.get('didSucceed') for action in actions if
+                 action.get('didSucceed') is not None]
+    return round(100 * np.std(successes))
+
+def p75_percent_success(actions):
+    """Finds the percent of times didSucceed is true in a list of actions.
+    actions is the list of actions that can either succeed or fail."""
+    successes = [action.get('didSucceed') for action in actions if
+                 action.get('didSucceed') is not None]
+    return round(100 * p75(successes))
+
+def filter_timeline_actions(timds, **filters):
+    """Puts a timeline through a filter to use for calculations.
+    timds are the timds that data is calculated from.
+    filters are the specifications that certain data points inside the
+    timeline must fit to be included in the returned timeline. The value
+    in the filter is a tuple with the first value of the filter and the
+    second value of if it is an opposite value, in which case it will be
+    tested if it is not that value."""
+    filtered_timeline = []
+    # For each action, if any of the specifications are not met, the
+    # loop breaks and it moves on to the next action, but if all the
+    # specifications are met, it adds it to the filtered timeline.
+    for timd in timds:
+        for action in timd.get('timeline'):
+            for data_field, rough_requirement in filters.items():
+                if type(rough_requirement) == tuple:
+                    requirement = rough_requirement[0]
+                    opposite = rough_requirement[1]
+                else:
+                    requirement = rough_requirement
+                    opposite = False
+                # If the data_field requirement is level 1, it instead
+                # checks for it not being level 2 or 3, because level 1 can
+                # encompass all non-level 2 or 3 placement.
+                if data_field == 'level' and requirement == 1:
+                    if opposite is False:
+                        if action.get('level') == 2 or action.get(
+                                'level') == 3:
+                            break
+                    else:
+                        if action.get('level') != 2 and action.get(
+                                'level') != 3:
+                            break
+                # If the filter specifies that the zone must be
+                # leftLoadingStation, it means either loading station,
+                # so it only breaks if the zone is not
+                # leftLoadingStation or rightLoadingStation.
+                elif data_field == 'zone' and requirement == \
+                        'leftLoadingStation':
+                    if opposite is False:
+                        if action.get('zone') != 'leftLoadingStation' \
+                                and action.get('zone') != \
+                                'rightLoadingStation':
+                            break
+                    else:
+                        if action.get('zone') == 'leftLoadingStation' \
+                                or action.get('zone') == \
+                                'rightLoadingStation':
+                            break
+                # Otherwise, it checks the requirement normally
+                else:
+                    if opposite is False:
+                        if action.get(data_field) != requirement:
+                            break
+                    else:
+                        if action.get(data_field) == requirement:
+                            break
+            # If all the requirements are met, it adds the action to the
+            # returned filtered timeline.
+            else:
+                filtered_timeline.append(action)
+    return filtered_timeline
+
+def filter_cycles(cycle_list, **filters):
+    """Puts cycles through filters to meet specific requirements
+    cycle_list is a list of tuples where the first item is an intake and
+    the second action is the placement or drop.
+    filters are the specifications that certain data points inside the
+    cycles must fit to be included in the returned cycles."""
+    filtered_cycles = []
+    # For each cycle, if any of the specifications are not met, the
+    # loop breaks and it moves on to the next cycle, but if all the
+    # specifications are met, it adds it to the filtered cycles.
+    for cycle in cycle_list:
+        for data_field, requirement in filters.items():
+            # If the data_field requirement is level 1, it instead
+            # checks for it not being level 2 or 3, because level 1 can
+            # encompass all non-level 2 or 3 placement.
+            if data_field == 'level' and requirement == 1:
+                if cycle[1].get('level') == 2 or cycle[1].get('level') == 3:
+                    break
+            # Otherwise, it checks the requirement normally
+            else:
+                if cycle[1].get(data_field) != requirement:
+                    break
+        # If all the requirements are met, it adds the cycle to the
+        # returned filtered cycles.
+        else:
+            filtered_cycles.append(cycle)
+    return filtered_cycles
 
 def team_calculations(timds):
     """Calculates all the calculated data for one team.
@@ -123,18 +228,12 @@ def team_calculations(timds):
 
     # If the robot has ground intaked a piece at any point in the
     # competition, the respective hasGroundIntake data point is true.
-    calculated_data['hasOrangeGroundIntake'] = True if [
-        action for timd in timds for action in timd.get('timeline') if
-        action.get('type') == 'intake' and
-        action.get('piece') == 'orange' and
-        action.get('zone') != 'leftLoadingStation' and
-        action.get('zone') != 'rightLoadingStation'] else False
-    calculated_data['hasLemonGroundIntake'] = True if [
-        action for timd in timds for action in timd.get('timeline') if
-        action.get('type') == 'intake' and
-        action.get('piece') == 'lemon' and
-        action.get('zone') != 'leftLoadingStation' and
-        action.get('zone') != 'rightLoadingStation'] else False
+    calculated_data['hasOrangeGroundIntake'] = True if \
+        filter_timeline_actions(timds, type='intake', piece='orange', \
+        zone=('leftLoadingStation', True)) else False
+    calculated_data['hasLemonGroundIntake'] = True if \
+        filter_timeline_actions(timds, type='intake', piece='lemon', \
+        zone=('leftLoadingStation', True)) else False
 
     # If the robot has ever preloaded each game piece type.
     calculated_data['didPreloadOrange'] = True if [
@@ -145,101 +244,58 @@ def team_calculations(timds):
         ] else False
 
     # Find the average of different calculated timd data points.
-    calculated_data['avgOrangesScored'] = avg([
-        timd['calculatedData'].get('orangesScored') for timd in timds])
-    calculated_data['avgLemonsScored'] = avg([
-        timd['calculatedData'].get('lemonsScored') for timd in timds])
-    calculated_data['avgOrangesFouls'] = avg([
-        timd['calculatedData'].get('orangeFouls') for timd in timds])
-    calculated_data['avgLemonsSpilled'] = avg([
-        timd['calculatedData'].get('lemonsSpilled') for timd in timds])
+    calculated_data['avgOrangesScored'] = avg([timd[
+        'calculatedData'].get('orangesScored') for timd in timds])
+    calculated_data['avgLemonsScored'] = avg([timd[
+        'calculatedData'].get('lemonsScored') for timd in timds])
+    calculated_data['avgOrangesFouls'] = avg([timd[
+        'calculatedData'].get('orangeFouls') for timd in timds])
+    calculated_data['avgLemonsSpilled'] = avg([timd[
+        'calculatedData'].get('lemonsSpilled') for timd in timds])
 
     # Calculations for percent successes for different actions.
-    calculated_data['lemonLoadSuccess'] = round(100 * avg([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'intake' and
-        action.get('piece') == 'lemon' and
-        (action.get('zone') == 'leftLoadingStation' or
-         action.get('zone') == 'rightLoadingStation')]))
-    calculated_data['orangeSuccessAll'] = round(100 * avg([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange']))
-    calculated_data['orangeSuccessDefended'] = round(100 * avg([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange' and
-        action.get('wasDefended') is True]))
-    calculated_data['orangeSuccessUndefended'] = round(100 * avg([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange' and
-        action.get('wasDefended') is False]))
-    calculated_data['orangeSuccessL1'] = round(100.0 * avg([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange' and
-        action.get('level') != 3 and
-        action.get('level') != 2]))
-    calculated_data['orangeSuccessL2'] = round(100 * avg([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange' and
-        action.get('level') == 2]))
-    calculated_data['orangeSuccessL3'] = round(100 * avg([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange' and
-        action.get('level') == 3]))
-    calculated_data['lemonSuccessAll'] = round(100 * avg([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon']))
-    calculated_data['lemonSuccessDefended'] = round(100 * avg([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('wasDefended') is True]))
-    calculated_data['lemonSuccessUndefended'] = round(100 * avg([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('wasDefended') is False]))
-    calculated_data['lemonSuccessL1'] = round(100 * avg([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('level') != 3 and
-        action.get('level') != 2]))
-    calculated_data['lemonSuccessL2'] = round(100 * avg([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('level') == 2]))
-    calculated_data['lemonSuccessL3'] = round(100 * avg([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('level') == 3]))
-    calculated_data['lemonSuccessFromSide'] = round(100 * avg([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('side') != 'near']))
+    calculated_data['lemonLoadSuccess'] = avg_percent_success(
+        filter_timeline_actions(timds, type='intake', piece='lemon', \
+        zone='leftLoadingStation'))
+    calculated_data['orangeSuccessAll'] = avg_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='orange'))
+    calculated_data['orangeSuccessDefended'] = avg_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='orange', wasDefended='True'))
+    calculated_data['orangeSuccessUndefended'] = avg_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='orange', wasDefended='False'))
+    calculated_data['orangeSuccessL1'] = avg_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='orange', level=1))
+    calculated_data['orangeSuccessL2'] = avg_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='orange', level=2))
+    calculated_data['orangeSuccessL3'] = avg_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='orange', level=3))
+    calculated_data['lemonSuccessAll'] = avg_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='lemon'))
+    calculated_data['lemonSuccessDefended'] = avg_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='lemon', wasDefended='True'))
+    calculated_data['lemonSuccessUndefended'] = avg_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='lemon', wasDefended='False'))
+    calculated_data['lemonSuccessL1'] = avg_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='lemon', level=1))
+    calculated_data['lemonSuccessL2'] = avg_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='lemon', level=2))
+    calculated_data['lemonSuccessL3'] = avg_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='lemon', level=3))
+    calculated_data['lemonSuccessFromSide'] = avg_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='lemon', side=('near', True)))
     calculated_data['habLineSuccessL1'] = round(100 * avg([
         timd['crossedHabLine'] for timd in timds if
         timd.get('startingLevel') == 1]))
@@ -288,91 +344,48 @@ def team_calculations(timds):
         timd['calculatedData'].get('lemonsSpilled') for timd in
         lfm_timds])
 
-    calculated_data['lfmLemonLoadSuccess'] = round(100 * avg([
-        action['didSucceed'] for timd in lfm_timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'intake' and
-        action.get('piece') == 'lemon' and
-        (action.get('zone') == 'leftLoadingStation' or
-         action.get('zone') == 'rightLoadingStation')]))
-    calculated_data['lfmOrangeSuccessAll'] = round(100 * avg([
-        action['didSucceed'] for timd in lfm_timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange']))
-    calculated_data['lfmOrangeSuccessDefended'] = round(100 * avg([
-        action['didSucceed'] for timd in lfm_timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange' and
-        action.get('wasDefended') is True]))
-    calculated_data['lfmOrangeSuccessUndefended'] = round(100 * avg([
-        action['didSucceed'] for timd in lfm_timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange' and
-        action.get('wasDefended') is False]))
-    calculated_data['lfmOrangeSuccessL1'] = round(100.0 * avg([
-        action['didSucceed'] for timd in lfm_timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange' and
-        action.get('level') != 3 and
-        action.get('level') != 2]))
-    calculated_data['lfmOrangeSuccessL2'] = round(100 * avg([
-        action['didSucceed'] for timd in lfm_timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange' and
-        action.get('level') == 2]))
-    calculated_data['lfmOrangeSuccessL3'] = round(100 * avg([
-        action['didSucceed'] for timd in lfm_timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange' and
-        action.get('level') == 3]))
-    calculated_data['lfmLemonSuccessAll'] = round(100 * avg([
-        action['didSucceed'] for timd in lfm_timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon']))
-    calculated_data['lfmLemonSuccessDefended'] = round(100 * avg([
-        action['didSucceed'] for timd in lfm_timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('wasDefended') is True]))
-    calculated_data['lfmLemonSuccessUndefended'] = round(100 * avg([
-        action['didSucceed'] for timd in lfm_timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('wasDefended') is False]))
-    calculated_data['lfmLemonSuccessL1'] = round(100 * avg([
-        action['didSucceed'] for timd in lfm_timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('level') != 3 and
-        action.get('level') != 2]))
-    calculated_data['lfmLemonSuccessL2'] = round(100 * avg([
-        action['didSucceed'] for timd in lfm_timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('level') == 2]))
-    calculated_data['lfmLemonSuccessL3'] = round(100 * avg([
-        action['didSucceed'] for timd in lfm_timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('level') == 3]))
-    calculated_data['lfmLemonSuccessFromSide'] = round(100 * avg([
-        action['didSucceed'] for timd in lfm_timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('side') != 'near']))
+    calculated_data['lfmLemonLoadSuccess'] = avg_percent_success(
+        filter_timeline_actions(lfm_timds, type='intake', \
+        piece='lemon', zone='leftLoadingStation'))
+    calculated_data['lfmOrangeSuccessAll'] = avg_percent_success(
+        filter_timeline_actions(lfm_timds, type='placement', \
+        piece='orange'))
+    calculated_data['lfmOrangeSuccessDefended'] = avg_percent_success(
+        filter_timeline_actions(lfm_timds, type='placement', \
+        piece='orange', wasDefended=True))
+    calculated_data['lfmOrangeSuccessUndefended'] = avg_percent_success(
+        filter_timeline_actions(lfm_timds, type='placement', \
+        piece='orange', wasDefended=False))
+    calculated_data['lfmOrangeSuccessL1'] = avg_percent_success(
+        filter_timeline_actions(lfm_timds, type='placement', \
+        piece='orange', level=1))
+    calculated_data['lfmOrangeSuccessL2'] = avg_percent_success(
+        filter_timeline_actions(lfm_timds, type='placement', \
+        piece='orange', level=2))
+    calculated_data['lfmOrangeSuccessL3'] = avg_percent_success(
+        filter_timeline_actions(lfm_timds, type='placement', \
+        piece='orange', level=3))
+    calculated_data['lfmLemonSuccessAll'] = avg_percent_success(
+        filter_timeline_actions(lfm_timds, type='placement', \
+        piece='lemon'))
+    calculated_data['lfmLemonSuccessDefended'] = avg_percent_success(
+        filter_timeline_actions(lfm_timds, type='placement', \
+        piece='lemon', wasDefended=True))
+    calculated_data['lfmLemonSuccessUndefended'] = avg_percent_success(
+        filter_timeline_actions(lfm_timds, type='placement', \
+        piece='lemon', wasDefended=False))
+    calculated_data['lfmLemonSuccessL1'] = avg_percent_success(
+        filter_timeline_actions(lfm_timds, type='placement', \
+        piece='lemon', level=1))
+    calculated_data['lfmLemonSuccessL2'] = avg_percent_success(
+        filter_timeline_actions(lfm_timds, type='placement', \
+        piece='lemon', level=2))
+    calculated_data['lfmLemonSuccessL3'] = avg_percent_success(
+        filter_timeline_actions(lfm_timds, type='placement', \
+        piece='lemon', level=3))
+    calculated_data['lfmLemonSuccessFromSide'] = avg_percent_success(
+        filter_timeline_actions(lfm_timds, type='placement', \
+        piece='lemon', side=('near', True)))
     calculated_data['lfmHabLineSuccessL1'] = round(100 * avg([
         timd['crossedHabLine'] for timd in lfm_timds if
         timd.get('startingLevel') == 1]))
@@ -418,91 +431,48 @@ def team_calculations(timds):
     calculated_data['sdAvgLemonsSpilled'] = np.std([
         timd['calculatedData'].get('lemonsSpilled') for timd in timds])
 
-    calculated_data['sdLemonLoadSuccess'] = round(100 * np.std([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'intake' and
-        action.get('piece') == 'lemon' and
-        (action.get('zone') == 'leftLoadingStation' or
-         action.get('zone') == 'rightLoadingStation')]))
-    calculated_data['sdOrangeSuccessAll'] = round(100 * np.std([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange']))
-    calculated_data['sdOrangeSuccessDefended'] = round(100 * np.std([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange' and
-        action.get('wasDefended') is True]))
-    calculated_data['sdOrangeSuccessUndefended'] = round(100 * np.std([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange' and
-        action.get('wasDefended') is False]))
-    calculated_data['sdOrangeSuccessL1'] = round(100.0 * np.std([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange' and
-        action.get('level') != 3 and
-        action.get('level') != 2]))
-    calculated_data['sdOrangeSuccessL2'] = round(100 * np.std([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange' and
-        action.get('level') == 2]))
-    calculated_data['sdOrangeSuccessL3'] = round(100 * np.std([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange' and
-        action.get('level') == 3]))
-    calculated_data['sdLemonSuccessAll'] = round(100 * np.std([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon']))
-    calculated_data['sdLemonSuccessDefended'] = round(100 * np.std([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('wasDefended') is True]))
-    calculated_data['sdLemonSuccessUndefended'] = round(100 * np.std([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('wasDefended') is False]))
-    calculated_data['sdLemonSuccessL1'] = round(100 * np.std([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('level') != 3 and
-        action.get('level') != 2]))
-    calculated_data['sdLemonSuccessL2'] = round(100 * np.std([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('level') == 2]))
-    calculated_data['sdLemonSuccessL3'] = round(100 * np.std([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('level') == 3]))
-    calculated_data['sdLemonSuccessFromSide'] = round(100 * np.std([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('side') != 'near']))
+    calculated_data['sdLemonLoadSuccess'] = sd_percent_success(
+        filter_timeline_actions(timds, type='intake', piece='lemon', \
+        zone='leftLoadingStation'))
+    calculated_data['sdOrangeSuccessAll'] = sd_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='orange'))
+    calculated_data['sdOrangeSuccessDefended'] = sd_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='orange', wasDefended=True))
+    calculated_data['sdOrangeSuccessUndefended'] = sd_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='orange', wasDefended=False))
+    calculated_data['sdOrangeSuccessL1'] = sd_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='orange', level=1))
+    calculated_data['sdOrangeSuccessL2'] = sd_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='orange', level=2))
+    calculated_data['sdOrangeSuccessL3'] = sd_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='orange', level=3))
+    calculated_data['sdLemonSuccessAll'] = sd_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='lemon'))
+    calculated_data['sdLemonSuccessDefended'] = sd_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='lemon', wasDefended=True))
+    calculated_data['sdLemonSuccessUndefended'] = sd_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='lemon', wasDefended=False))
+    calculated_data['sdLemonSuccessL1'] = sd_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='lemon', level=1))
+    calculated_data['sdLemonSuccessL2'] = sd_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='lemon', level=2))
+    calculated_data['sdLemonSuccessL3'] = sd_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='lemon', level=3))
+    calculated_data['sdLemonSuccessFromSide'] = sd_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='lemon', side=('near', True)))
     calculated_data['sdHabLineSuccessL1'] = round(100 * np.std([
         timd['crossedHabLine'] for timd in timds if
         timd.get('startingLevel') == 1]))
@@ -545,91 +515,48 @@ def team_calculations(timds):
     calculated_data['p75AvgLemonsSpilled'] = p75([
         timd['calculatedData'].get('lemonsSpilled') for timd in timds])
 
-    calculated_data['p75LemonLoadSuccess'] = round(100 * p75([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'intake' and
-        action.get('piece') == 'lemon' and
-        (action.get('zone') == 'leftLoadingStation' or
-         action.get('zone') == 'rightLoadingStation')]))
-    calculated_data['p75OrangeSuccessAll'] = round(100 * p75([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange']))
-    calculated_data['p75OrangeSuccessDefended'] = round(100 * p75([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange' and
-        action.get('wasDefended') is True]))
-    calculated_data['p75OrangeSuccessUndefended'] = round(100 * p75([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange' and
-        action.get('wasDefended') is False]))
-    calculated_data['p75OrangeSuccessL1'] = round(100.0 * p75([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange' and
-        action.get('level') != 3 and
-        action.get('level') != 2]))
-    calculated_data['p75OrangeSuccessL2'] = round(100 * p75([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange' and
-        action.get('level') == 2]))
-    calculated_data['p75OrangeSuccessL3'] = round(100 * p75([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'orange' and
-        action.get('level') == 3]))
-    calculated_data['p75LemonSuccessAll'] = round(100 * p75([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon']))
-    calculated_data['p75LemonSuccessDefended'] = round(100 * p75([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('wasDefended') is True]))
-    calculated_data['p75LemonSuccessUndefended'] = round(100 * p75([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('wasDefended') is False]))
-    calculated_data['p75LemonSuccessL1'] = round(100 * p75([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('level') != 3 and
-        action.get('level') != 2]))
-    calculated_data['p75LemonSuccessL2'] = round(100 * p75([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('level') == 2]))
-    calculated_data['p75LemonSuccessL3'] = round(100 * p75([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('level') == 3]))
-    calculated_data['p75LemonSuccessFromSide'] = round(100 * p75([
-        action['didSucceed'] for timd in timds for
-        action in timd.get('timeline') if
-        action.get('type') == 'placement' and
-        action.get('piece') == 'lemon' and
-        action.get('side') != 'near']))
+    calculated_data['p75LemonLoadSuccess'] = p75_percent_success(
+        filter_timeline_actions(timds, type='intake', piece='lemon', \
+        zone='leftLoadingStation'))
+    calculated_data['p75OrangeSuccessAll'] = p75_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='orange'))
+    calculated_data['p75OrangeSuccessDefended'] = p75_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='orange', wasDefended=True))
+    calculated_data['p75OrangeSuccessUndefended'] = p75_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='orange', wasDefended=False))
+    calculated_data['p75OrangeSuccessL1'] = p75_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='orange', level=1))
+    calculated_data['p75OrangeSuccessL2'] = p75_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='orange', level=2))
+    calculated_data['p75OrangeSuccessL3'] = p75_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='orange', level=3))
+    calculated_data['p75LemonSuccessAll'] = p75_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='lemon'))
+    calculated_data['p75LemonSuccessDefended'] = p75_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='lemon', wasDefended=True))
+    calculated_data['p75LemonSuccessUndefended'] = p75_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='lemon', wasDefended=False))
+    calculated_data['p75LemonSuccessL1'] = p75_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='lemon', level=1))
+    calculated_data['p75LemonSuccessL2'] = p75_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='lemon', level=2))
+    calculated_data['p75LemonSuccessL3'] = p75_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='lemon', level=3))
+    calculated_data['p75LemonSuccessFromSide'] = p75_percent_success(
+        filter_timeline_actions(timds, type='placement', \
+        piece='lemon', side=('near', True)))
     calculated_data['p75HabLineSuccessL1'] = round(100 * p75([
         timd['crossedHabLine'] for timd in timds if
         timd.get('startingLevel') == 1]))
@@ -684,105 +611,57 @@ def team_calculations(timds):
 
     # Calculates the average cycle time for each cycle type.
     calculated_data['orangeCycleAll'] = calculate_avg_cycle_time(
-        [cycle for cycle in total_cycle_list if
-         cycle[1].get('piece') == 'orange'])
+        filter_cycles(total_cycle_list, piece='orange'))
     calculated_data['orangeCycleL1'] = calculate_avg_cycle_time(
-        [cycle for cycle in total_cycle_list if
-         cycle[1].get('piece') == 'orange' and
-         cycle[1].get('level') != 2 and
-         cycle[1].get('level') != 3])
+        filter_cycles(total_cycle_list, piece='orange', level=1))
     calculated_data['orangeCycleL2'] = calculate_avg_cycle_time(
-        [cycle for cycle in total_cycle_list if
-         cycle[1].get('piece') == 'orange' and
-         cycle[1].get('level') == 2])
+        filter_cycles(total_cycle_list, piece='orange', level=2))
     calculated_data['orangeCycleL3'] = calculate_avg_cycle_time(
-        [cycle for cycle in total_cycle_list if
-         cycle[1].get('piece') == 'orange' and
-         cycle[1].get('level') == 3])
+        filter_cycles(total_cycle_list, piece='orange', level=3))
     calculated_data['lemonCycleAll'] = calculate_avg_cycle_time(
-        [cycle for cycle in total_cycle_list if
-         cycle[1].get('piece') == 'lemon'])
+        filter_cycles(total_cycle_list, piece='lemon'))
     calculated_data['lemonCycleL1'] = calculate_avg_cycle_time(
-        [cycle for cycle in total_cycle_list if
-         cycle[1].get('piece') == 'lemon' and
-         cycle[1].get('level') != 2 and
-         cycle[1].get('level') != 3])
+        filter_cycles(total_cycle_list, piece='lemon', level=1))
     calculated_data['lemonCycleL2'] = calculate_avg_cycle_time(
-        [cycle for cycle in total_cycle_list if
-         cycle[1].get('piece') == 'lemon' and
-         cycle[1].get('level') == 2])
+        filter_cycles(total_cycle_list, piece='lemon', level=2))
     calculated_data['lemonCycleL3'] = calculate_avg_cycle_time(
-        [cycle for cycle in total_cycle_list if
-         cycle[1].get('piece') == 'lemon' and
-         cycle[1].get('level') == 3])
+        filter_cycles(total_cycle_list, piece='lemon', level=3))
 
-    # Finds the standard deviation of cycle time for each type of cycle.
+    # Calculates the standard deviation cycle time for each cycle type.
     calculated_data['sdOrangeCycleAll'] = calculate_std_cycle_time(
-        [cycle for cycle in total_cycle_list if
-         cycle[1].get('piece') == 'orange'])
+        filter_cycles(total_cycle_list, piece='orange'))
     calculated_data['sdOrangeCycleL1'] = calculate_std_cycle_time(
-        [cycle for cycle in total_cycle_list if
-         cycle[1].get('piece') == 'orange' and
-         cycle[1].get('level') != 2 and
-         cycle[1].get('level') != 3])
+        filter_cycles(total_cycle_list, piece='orange', level=1))
     calculated_data['sdOrangeCycleL2'] = calculate_std_cycle_time(
-        [cycle for cycle in total_cycle_list if
-         cycle[1].get('piece') == 'orange' and
-         cycle[1].get('level') == 2])
+        filter_cycles(total_cycle_list, piece='orange', level=2))
     calculated_data['sdOrangeCycleL3'] = calculate_std_cycle_time(
-        [cycle for cycle in total_cycle_list if
-         cycle[1].get('piece') == 'orange' and
-         cycle[1].get('level') == 3])
+        filter_cycles(total_cycle_list, piece='orange', level=3))
     calculated_data['sdLemonCycleAll'] = calculate_std_cycle_time(
-        [cycle for cycle in total_cycle_list if
-         cycle[1].get('piece') == 'lemon'])
+        filter_cycles(total_cycle_list, piece='lemon'))
     calculated_data['sdLemonCycleL1'] = calculate_std_cycle_time(
-        [cycle for cycle in total_cycle_list if
-         cycle[1].get('piece') == 'lemon' and
-         cycle[1].get('level') != 2 and
-         cycle[1].get('level') != 3])
+        filter_cycles(total_cycle_list, piece='lemon', level=1))
     calculated_data['sdLemonCycleL2'] = calculate_std_cycle_time(
-        [cycle for cycle in total_cycle_list if
-         cycle[1].get('piece') == 'lemon' and
-         cycle[1].get('level') == 2])
+        filter_cycles(total_cycle_list, piece='lemon', level=2))
     calculated_data['sdLemonCycleL3'] = calculate_std_cycle_time(
-        [cycle for cycle in total_cycle_list if
-         cycle[1].get('piece') == 'lemon' and
-         cycle[1].get('level') == 3])
+        filter_cycles(total_cycle_list, piece='lemon', level=3))
 
     # Finds the upper half average of each type of cycle.
     calculated_data['p75OrangeCycleAll'] = calculate_p75_cycle_time(
-        [cycle for cycle in total_cycle_list if
-         cycle[1].get('piece') == 'orange'])
+        filter_cycles(total_cycle_list, piece='orange'))
     calculated_data['p75OrangeCycleL1'] = calculate_p75_cycle_time(
-        [cycle for cycle in total_cycle_list if
-         cycle[1].get('piece') == 'orange' and
-         cycle[1].get('level') != 2 and
-         cycle[1].get('level') != 3])
+        filter_cycles(total_cycle_list, piece='orange', level=1))
     calculated_data['p75OrangeCycleL2'] = calculate_p75_cycle_time(
-        [cycle for cycle in total_cycle_list if
-         cycle[1].get('piece') == 'orange' and
-         cycle[1].get('level') == 2])
+        filter_cycles(total_cycle_list, piece='orange', level=2))
     calculated_data['p75OrangeCycleL3'] = calculate_p75_cycle_time(
-        [cycle for cycle in total_cycle_list if
-         cycle[1].get('piece') == 'orange' and
-         cycle[1].get('level') == 3])
+        filter_cycles(total_cycle_list, piece='orange', level=3))
     calculated_data['p75LemonCycleAll'] = calculate_p75_cycle_time(
-        [cycle for cycle in total_cycle_list if
-         cycle[1].get('piece') == 'lemon'])
+        filter_cycles(total_cycle_list, piece='lemon'))
     calculated_data['p75LemonCycleL1'] = calculate_p75_cycle_time(
-        [cycle for cycle in total_cycle_list if
-         cycle[1].get('piece') == 'lemon' and
-         cycle[1].get('level') != 2 and
-         cycle[1].get('level') != 3])
+        filter_cycles(total_cycle_list, piece='lemon', level=1))
     calculated_data['p75LemonCycleL2'] = calculate_p75_cycle_time(
-        [cycle for cycle in total_cycle_list if
-         cycle[1].get('piece') == 'lemon' and
-         cycle[1].get('level') == 2])
+        filter_cycles(total_cycle_list, piece='lemon', level=2))
     calculated_data['p75LemonCycleL3'] = calculate_p75_cycle_time(
-        [cycle for cycle in total_cycle_list if
-         cycle[1].get('piece') == 'lemon' and
-         cycle[1].get('level') == 3])
+        filter_cycles(total_cycle_list, piece='lemon', level=3))
 
     # Repeats the process of gathering cycles for a team, except limited
     # to only the last four matches.
@@ -807,37 +686,21 @@ def team_calculations(timds):
 
     # Calculates the last four match average for each cycle type.
     calculated_data['lfmOrangeCycleAll'] = calculate_avg_cycle_time(
-        [cycle for cycle in lfm_cycle_list if
-         cycle[1].get('piece') == 'orange'])
+        filter_cycles(lfm_cycle_list, piece='orange'))
     calculated_data['lfmOrangeCycleL1'] = calculate_avg_cycle_time(
-        [cycle for cycle in lfm_cycle_list if
-         cycle[1].get('piece') == 'orange' and
-         cycle[1].get('level') != 2 and
-         cycle[1].get('level') != 3])
+        filter_cycles(lfm_cycle_list, piece='orange', level=1))
     calculated_data['lfmOrangeCycleL2'] = calculate_avg_cycle_time(
-        [cycle for cycle in lfm_cycle_list if
-         cycle[1].get('piece') == 'orange' and
-         cycle[1].get('level') == 2])
+        filter_cycles(lfm_cycle_list, piece='orange', level=2))
     calculated_data['lfmOrangeCycleL3'] = calculate_avg_cycle_time(
-        [cycle for cycle in lfm_cycle_list if
-         cycle[1].get('piece') == 'orange' and
-         cycle[1].get('level') == 3])
+        filter_cycles(lfm_cycle_list, piece='orange', level=3))
     calculated_data['lfmLemonCycleAll'] = calculate_avg_cycle_time(
-        [cycle for cycle in lfm_cycle_list if
-         cycle[1].get('piece') == 'lemon'])
+        filter_cycles(lfm_cycle_list, piece='lemon'))
     calculated_data['lfmLemonCycleL1'] = calculate_avg_cycle_time(
-        [cycle for cycle in lfm_cycle_list if
-         cycle[1].get('piece') == 'lemon' and
-         cycle[1].get('level') != 2 and
-         cycle[1].get('level') != 3])
+        filter_cycles(lfm_cycle_list, piece='lemon', level=1))
     calculated_data['lfmLemonCycleL2'] = calculate_avg_cycle_time(
-        [cycle for cycle in lfm_cycle_list if
-         cycle[1].get('piece') == 'lemon' and
-         cycle[1].get('level') == 2])
+        filter_cycles(lfm_cycle_list, piece='lemon', level=2))
     calculated_data['lfmLemonCycleL3'] = calculate_avg_cycle_time(
-        [cycle for cycle in lfm_cycle_list if
-         cycle[1].get('piece') == 'lemon' and
-         cycle[1].get('level') == 3])
+        filter_cycles(lfm_cycle_list, piece='lemon', level=3))
 
     # Calculates the first and second pick ability for the team based on
     # their previous calculated data. To see how these are calculated,
