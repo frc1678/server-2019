@@ -115,7 +115,9 @@ def filter_timeline_actions(timd, **filters):
 
     timd is the TIMD that needs calculated data.
     filters are the specifications that certain data points inside the
-    timeline must fit to be included in the returned timeline."""
+    timeline must fit to be included in the returned timeline.
+    example for filter - 'level=1' as an argument, '{'level': 1}' inside
+    the function."""
     filtered_timeline = []
     # For each action, if any of the specifications are not met, the
     # loop breaks and it moves on to the next action, but if all the
