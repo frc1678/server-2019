@@ -119,11 +119,18 @@ def basic_timeline_consolidation(input_timelines, action_type, sprking):
                                 count_timelines.items() if
                                 timeline_length == majority}
 
-    # If there are scouts that don't agree with the majority timeline
-    time_reference = {scout : [action['time'] for action in timeline]
-                      for scout, timeline in
-                      correct_length_timelines.items() if scout ==
-                      list(correct_length_timelines.keys())[-1]}
+    # If there are scouts that don't agree with the majority timeline,
+    # creates a time_reference to line up against.
+    time_reference = {}
+    if sprking in correct_length_timelines.keys():
+        reference_timeline = correct_length_timelines.get(sprking)
+        time_reference[sprking] = [action['time'] for action in
+                                   reference_timeline]
+    else:
+        correct_scout = list(correct_length_timelines.keys())[-1]
+        reference_timeline = correct_length_timelines.get(correct_scout)
+        time_reference[correct_scout] = [action['time'] for action in
+                                         reference_timeline]
 
     # If there are scouts that do not agree with the correct timeline
     # length, find out which of their action times agree with the time
