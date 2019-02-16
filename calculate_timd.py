@@ -275,10 +275,9 @@ def add_calculated_data_to_timd(timd):
     # Creates a list of the climb dictionary or nothing if there is no
     # climb. If there is a climb, the time of the climb is the amount
     # of time they spent climbing.
-    climb_list = [action for action in timd.get('timeline') if
-                  action.get('type') == 'climb']
-    if climb_list:
-        calculated_data['timeClimbing'] = climb_list[0].get('time')
+    for action in timd.get('timeline'):
+        if action['type'] == 'climb':
+            calculated_data['timeClimbing'] = action['time']
 
     # Creates a list of all the incap and unincap actions in the timeline.
     incap_list = [action for action in timd.get('timeline') if
