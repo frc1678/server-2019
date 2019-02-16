@@ -48,8 +48,7 @@ def percent_success(actions):
     """Finds the percent of times didSucceed is true in a list of actions.
 
     actions is the list of actions that can either succeed or fail."""
-    successes = [action.get('didSucceed') for action in actions if
-                 action.get('didSucceed') is not None]
+    successes = [action.get('didSucceed') for action in actions]
     return round(100 * avg(successes))
 
 def filter_cycles(cycle_list, **filters):
