@@ -101,9 +101,9 @@ def calculate_total_cycle_time(cycles):
 
     Finds the time difference between each action pair passed and
     returns the sum of the differences.
-    cycles is a list of tuples where the first action in the tuple is
-    the starting time for an action, and the second is the end time for
-    the action.
+    cycles is a list of tuples where both the first and second item in
+    the tuple are actions, and the time between the actions is
+    calculated.
     """
     cycle_times = []
     for cycle in cycles:
