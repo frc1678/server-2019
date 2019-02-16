@@ -49,6 +49,11 @@ def percent_success(actions):
 
     actions is the list of actions that can either succeed or fail."""
     successes = [action.get('didSucceed') for action in actions]
+    # Returns the integer percentage of times in successes that
+    # didSucceed is true. Taking an average of a list of booleans
+    # returns a float between 0 and 1 of what percentage of times the
+    # value was True.
+    # Example - [True, True, False, True] returns 75.
     return round(100 * avg(successes))
 
 def filter_cycles(cycle_list, **filters):
