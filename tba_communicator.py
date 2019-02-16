@@ -65,3 +65,7 @@ def make_request(api_url):
 def request_matches():
     """Requests the match schedule from the TBA API."""
     return make_request(f'event/{EVENT_CODE}/matches/simple')
+
+def request_teams():
+    """Requests the team list from the TBA API."""
+    return make_request(f'event/{EVENT_CODE}/teams/simple')
