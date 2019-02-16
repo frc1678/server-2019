@@ -302,14 +302,17 @@ def add_calculated_data_to_timd(timd):
         # total amount of time the robot spent incap for either causes
         # that indicate the robot was impaired, or causes that indicate
         # the robot is incapacitated.
+        impaired_list = []
+        incapacitated_list = []
+        for cycle in paired_incap_list:
+            if cycle[0]['cause'] in ['brokenMechanism', 'twoGamePieces']:
+                impaired_list.append(cycle)
+            else:
+                incapacitated_list.append(cycle)
         calculated_data['timeImpaired'] = calculate_total_incap_time(
-            [cycle for cycle in paired_incap_list if
-             cycle[0].get('cause') == 'brokenMechanism' or
-             cycle[0].get('cause') == 'twoGamePieces'])
+            impaired_list)
         calculated_data['timeIncap'] = calculate_total_incap_time(
-            [cycle for cycle in paired_incap_list if
-             cycle[0].get('cause') != 'brokenMechanism' and
-             cycle[0].get('cause') != 'twoGamePieces'])
+            incapacitated_list)
     else:
         # Otherwise, the time that the robot spent impaired and incap is
         # naturally 0.
