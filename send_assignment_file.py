@@ -79,7 +79,9 @@ while True:
     # List of devices attached
     # 015d2568753c1408	device
     # 015d2856d607f015	device
-    OUTPUT = str(subprocess.check_output('adb devices', shell=True))
+    OUTPUT = subprocess.check_output('adb devices', shell=True)
+    # 'OUTPUT' is a byte-like string and needs to be decoded
+    OUTPUT = OUTPUT.decode('utf-8')
     # check_output returns a byte string and converting that to a string
     # makes it weird, so here's what OUTPUT looks like now:
     # "b'List of devices attached\\n015d2568753c1408\\tdevice\\n015d2856d607f015\\tdevice\\n\\n'"
@@ -90,7 +92,7 @@ while True:
     # Remove last two and first words
     # of the list so it only contains needed information. OUTPUT is:
     # ['015d2568753c1408\\tdevice', '015d2856d607f015\\tdevice']
-    OUTPUT = OUTPUT.split(r'\n')[1:-2]
+    OUTPUT = OUTPUT.split('\n')
 
     # Now each word in OUTPUT[] is a serial followed by a r'\t' and other info
     # Cut off everything except the serial, which is from the beginning of the
