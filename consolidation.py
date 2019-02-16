@@ -49,7 +49,7 @@ def time_consolidation(times):
     # one decimal place.
     return str(format(weighted_average, '.1f'))
 
-def max_occurences(comparison_list, sprking):
+def max_occurrences(comparison_list, sprking):
     """Takes in a dictionary of scouts to their value and returns the majority.
 
     If there is no clear winner, returns the value for the best spr
@@ -87,8 +87,8 @@ def basic_timeline_consolidation(input_timelines, action_type, sprking):
     timelines. 
     action_type is the action type that the function is consolidating.
     sprking is the scout with the best spr out of the scouts, used when
-    max_occurences is called. More info in the docstring for
-    max_occurences.
+    max_occurrences is called. More info in the docstring for
+    max_occurrences.
     """
 
     # The dictionary of three timelines with only the types specified
@@ -109,7 +109,7 @@ def basic_timeline_consolidation(input_timelines, action_type, sprking):
 
     # Finds the majority amount of actions in the timeline to see
     # which amount of actions is the correct amount.
-    majority = max_occurences(count_timelines, sprking)
+    majority = max_occurrences(count_timelines, sprking)
 
     # Creates a dictionary of scouts to their timelines which follow the
     # majority length of timeline.
@@ -175,7 +175,7 @@ def basic_timeline_consolidation(input_timelines, action_type, sprking):
             # takes the majority value for the key.
             if key != 'time':
                 final_simplified_timd[action_index][key] = \
-                        max_occurences(scout_to_keys, sprking)
+                        max_occurrences(scout_to_keys, sprking)
             else:
                 # If the key is time, finds the correct time using the
                 # time_consolidation algorithm.
@@ -193,8 +193,8 @@ def climb_consolidation(input_timelines, sprking):
     input_timelines is the dictionary of the scouts to their specific
     timelines.
     sprking is the scout with the best spr out of the scouts, used when
-    max_occurences is called. More info in the docstring for
-    max_occurences.
+    max_occurrences is called. More info in the docstring for
+    max_occurrences.
     """
 
     # The dictionary of scout name to climb dictionary.
@@ -218,7 +218,7 @@ def climb_consolidation(input_timelines, sprking):
 
     for key in ['attempted', 'actual']:
         for robot in ['self', 'robot1', 'robot2']:
-            final_simplified_timd[0][key][robot] = max_occurences({
+            final_simplified_timd[0][key][robot] = max_occurrences({
                 scout : climb[key][robot] for scout, climb in
                 simplified_timelines.items()}, sprking)
 
@@ -267,9 +267,9 @@ def consolidate_temp_timds(temp_timds):
                                           dicti.get(data_field) is not
                                           None}
 
-            # Uses the max_occurences function to find the correct value
+            # Uses the max_occurrences function to find the correct value
             # for the data field.
-            data_occurence_max = max_occurences(
+            data_occurence_max = max_occurrences(
                 data_field_comparison_list, sprking)
 
             if data_occurence_max is None:
