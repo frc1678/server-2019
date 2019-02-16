@@ -254,9 +254,9 @@ def add_calculated_data_to_timd(timd):
         calculated_data['lemonCycleL1'] = calculate_avg_cycle_time(
             filter_cycles(paired_cycle_list, piece='lemon', level=1))
         calculated_data['lemonCycleL2'] = calculate_avg_cycle_time(
-            filter_cycles(paired_cycle_list, piece='lemon', level=1))
+            filter_cycles(paired_cycle_list, piece='lemon', level=2))
         calculated_data['lemonCycleL3'] = calculate_avg_cycle_time(
-            filter_cycles(paired_cycle_list, piece='lemon', level=1))
+            filter_cycles(paired_cycle_list, piece='lemon', level=3))
 
     # Calculates if a team is incap throughout the entirety of the match
     # by checking if they have any actions in the match other than incap
