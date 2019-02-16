@@ -301,13 +301,9 @@ def consolidate_temp_timds(temp_timds):
         # When consolidating non-timed keys, it is easy to consolidate them,
         # as you can simply find which value is the most common in the set
         # of three possibilities.
-        elif data_field not in ['timeline',
-                                'timerStarted',
-                                'currentCycle',
-                                'scoutID',
-                                'scoutName',
-                                'appVersion',
-                                'assignmentMode',
+        elif data_field not in ['timeline', 'timerStarted',
+                                'currentCycle', 'scoutID', 'scoutName',
+                                'appVersion', 'assignmentMode',
                                 'assignmentFileTimestamp',
                                 'matchesNotScouted']:
 
