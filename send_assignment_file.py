@@ -64,7 +64,7 @@ def file_load_success(device_id):
         subprocess.call(f'touch {copy_file_path}'.split(' '))
 
         subprocess.call(f'adb -s {device_id} pull /mnt/sdcard/bluetooth/assignments.txt {copy_file_path}'
-                        .split(' '))
+                        .split(' '), stdout=subprocess.DEVNULL)
         # the 'r' option for open() indicates that
         # the file will only be used for reading from
         with open(copy_file_path, 'r') as file:
