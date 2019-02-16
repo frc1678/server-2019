@@ -1,8 +1,7 @@
-""" Send assignment file to scout tablets
-and confirm that they're received.
-Continuously loads file on to the device
-so that it gets loaded on whenever a device is plugged in. """
+"""Sends assignment file to scout tablets over ADB.
 
+Verifies that the file is successfully transfered.
+ADB stands for Android Debug Bridge."""
 # External imports
 import subprocess
 import time
@@ -44,7 +43,6 @@ ASSIGNMENT_FILE_PATH = utils.create_file_path(
     'data/assignments/assignments.txt')
 
 # List of devices to which 'assignments.txt' has already been sent
-# This way we know not to load the file onto the device again
 DEVICES_WITH_FILE = []
 
 def file_load_success(device_id):
@@ -72,13 +70,11 @@ def file_load_success(device_id):
     return tablet_data == computer_data
 
 while True:
-    # Stores output from 'adb devices' command in var 'OUTPUT'
-    # 'adb devices' finds serials of all connected devices (USB cable)
-    # Here's an example output of 'adb devices':
-
-    # List of devices attached
-    # 015d2568753c1408	device
-    # 015d2856d607f015	device
+    # Stores output from 'adb devices'
+    # 'adb devices' returns the serial numbers of all devices connected
+    # over ADB.
+    # Example output of 'adb devices':
+    # "List of devices attached\n015d2568753c1408\tdevice\n015d2856d607f015\tdevice"
     OUTPUT = subprocess.check_output('adb devices', shell=True)
     # 'OUTPUT' is a byte-like string and needs to be decoded
     OUTPUT = OUTPUT.decode('utf-8')
