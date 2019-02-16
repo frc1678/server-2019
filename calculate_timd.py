@@ -88,8 +88,7 @@ def calculate_avg_cycle_time(cycles):
     Finds the time difference between each action pair passed and
     returns the average of the differences.
     cycles is a list of tuples where the first action in the tuple is
-    the intake, and the second item is the placement or drop.
-    """
+    the intake, and the second item is the placement or drop."""
     cycle_times = []
     for cycle in cycles:
         cycle_times.append(cycle[0].get('time') -
@@ -102,8 +101,7 @@ def calculate_incap_time(cycles):
     Finds the time difference between each action pair passed and
     returns the sum of the differences.
     cycles is a list of tuples where both the first action is an incap
-    and the second action is unincap.
-    """
+    and the second action is unincap."""
     cycle_times = []
     for cycle in cycles:
         cycle_times.append(cycle[0].get('time') -
