@@ -288,8 +288,8 @@ def add_calculated_data_to_timd(timd):
         # If the last action in the list is an incap, it means they
         # finished the match incap, so it adds an unincap at the end of
         # the timeline.
-        if incap_list[-1].get('type') == 'incap':
-            incap_list.append({'type': 'unIncap', 'time' : 0.0})
+        if incap_list[-1]['type'] == 'incap':
+            incap_list.append({'type': 'unincap', 'time' : 0.0})
         # [::2] are the even-indexed items of the list, [1::2] are the
         # odd-indexed items of the list. The python zip function puts
         # matching-index items from two lists into tuples.
