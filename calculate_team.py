@@ -101,6 +101,13 @@ def avg(lis, exception=0.0):
     except (ZeroDivisionError, TypeError):
         return exception
 
+def percent_success(actions):
+    """Finds the percent of times didSucceed is true in a list of actions.
+    actions is the list of actions that can either succeed or fail."""
+    successes = [action.get('didSucceed') for action in actions if
+                 action.get('didSucceed') is not None]
+    return round(100 * avg(successes))
+
 def team_calculations(timds):
     """Calculates all the calculated data for one team.
 
