@@ -241,6 +241,7 @@ def consolidate_temp_timds(temp_timds):
     """
 
     #TODO: Implement spr system
+    # 'sprking' is the scout with the best (lowest) SPR
     sprking = list(temp_timds.keys())[0]
 
     final_timd = {}
