@@ -11,6 +11,21 @@ def time_consolidation(times):
     times refers to a dictionary of each scout to their respective time
     value."""
 
+    # If any time is uncertain (has an *) it is not considered for time
+    # consolidation.
+    false_scouts = {}
+    for scout, time in times.items():
+        if '*' in time:
+            false_scouts[scout] = time
+    for scout, time in false_scouts.items():
+        times.pop(scout)
+
+    # If there are no more times after deleting times, the false_scouts
+    # are considered.
+    if len(times.keys()) == 0:
+        for scout, time in false_scouts.items():
+            times[scout] = time.split('*')[0]
+
     # Creates a numpy based array of the times in the form of floats
     # instead of their normal format of strings. Does this in order to
     # use them for calculations.
@@ -24,7 +39,7 @@ def time_consolidation(times):
     # If the standard deviation is zero, all the times are the same, so
     # it just returns the mean.
     if std == 0:
-        return str(format(mean, '.1f'))
+        return format(mean, '.1f')
 
     # Creates a list of the absolute value of the reciprocal of the
     # squared z-score for each time, these values are how much each time
@@ -47,7 +62,7 @@ def time_consolidation(times):
 
     # Formats each average to the standard of a string of a float with
     # one decimal place.
-    return str(format(weighted_average, '.1f'))
+    return format(weighted_average, '.1f')
 
 def max_occurrences(comparison_list, sprking):
     """Takes in a dictionary of scouts to their value and returns the majority.
@@ -261,7 +276,15 @@ def consolidate_temp_timds(temp_timds):
             # timeline is taken as the correct one and put into the
             # final TIMD.
             if len(timelines.values()) == 1:
+                # Converts all times to floats and removes asterix to
+                # put it into the format of a timd.
+                final_timeline = []
+                for action in timelines[sprking]:
+                    action_time = action.get('time')
+                    fixed_action = action
+                    fixed_action['time'] = float(action_time.split('*')[0])
                 final_timd['timeline'] = timelines[sprking]
+
             # If the list has more than one tempTIMD, the process for
             # computation has to be split up by each of the types of
             # actions in the timeline.
