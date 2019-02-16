@@ -220,10 +220,11 @@ def add_calculated_data_to_timd(timd):
     # Creates the cycle_list, a list of tuples where the intake is the
     # first item and the placement or drop is the second. This is used
     # when calculating cycle times.
-    cycle_list = [action for action in timd.get('timeline') if
-                  action.get('type') == 'intake' or
-                  action.get('type') == 'placement' or
-                  action.get('type') == 'drop']
+    cycle_list = []
+    for action in timd.get('timeline'):
+        if action.get('type') in ['intake', 'placement', 'drop']:
+            cycle_list.append(action)
+
     if cycle_list != []:
         # If the first action in the list is a placement, it is a
         # preload, which doesn't count when calculating cycle times.
