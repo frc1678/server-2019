@@ -62,7 +62,7 @@ def max_occurrences(comparison_list, sprking):
 
     # Creates a dictionary with how many times an item appeared in
     # the comparison list.
-    occurence_list = {data_field :
+    occurence_list = {data_field : \
                       list(comparison_list.values()).count(data_field)
                       for data_field in set(comparison_list.values())}
 
