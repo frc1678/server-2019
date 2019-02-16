@@ -132,9 +132,9 @@ def filter_timeline_actions(timd, **filters):
             # leftLoadingStation, it means either loading station, so it
             # only breaks if the zone is not leftLoadingStation or
             # rightLoadingStation.
-            elif data_field == 'zone' and requirement == 'leftLoadingStation':
-                if action.get('zone') != 'leftLoadingStation' and \
-                        action.get('zone') != 'rightLoadingStation':
+            elif data_field == 'zone' and requirement == 'LoadingStation':
+                if action.get('zone') not in ['leftLoadingStation',
+                                              'rightLoadingStation']:
                     break
             # Otherwise, it checks the requirement normally
             else:
@@ -171,7 +171,7 @@ def add_calculated_data_to_timd(timd):
     # success a team has loading lemons.
     calculated_data['lemonLoadSuccess'] = percent_success(
         filter_timeline_actions(timd, type='intake', piece='lemon',
-                                zone='leftLoadingStation'))
+                                zone='LoadingStation'))
     calculated_data['orangeSuccessAll'] = percent_success(
         filter_timeline_actions(timd, type='placement', piece='orange'))
     calculated_data['orangeSuccessDefended'] = percent_success(
