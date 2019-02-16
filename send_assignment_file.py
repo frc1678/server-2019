@@ -1,15 +1,16 @@
-""" Send file from computer to devices and confirm that they're received
-Continuously load files on to the device
+""" Send assignment file to scout tablets
+and confirm that they're received.
+Continuously loads file on to the device
 so that it gets loaded on whenever a device is plugged in. """
 
-# External imports:
+# External imports
 import subprocess
 import time
-# Internal imports:
+# Internal imports
 import utils
 
-# serial number to human-readable name of device
-SERIALS_DICT = {
+# serial number to human-readable device name
+DEVICE_NAMES = {
     # Green case tablets (Scouts 1-8)
     '094d5740': 'Scout 1',
     '0904a28b': 'Scout 2',
@@ -37,34 +38,31 @@ SERIALS_DICT = {
     'G000H404610600EK': 'Backup 4',
     'G0K0KH02623400GT': 'Backup 5',
     # this does not include serial numbs for super scouting tablets
-    # (those are the ones named 'red', 'blue', & 'purple')
 }
 
 ASSIGNMENT_FILE_PATH = utils.create_file_path(
     'data/assignments/assignments.txt')
 
-# list of devices with the file so we do not copy the file
-# onto the device again
+# Devices that 'assignments.txt' has already been sent to
+# This way we know not to load the file onto the device again
 DEVICES_WITH_FILE = []
 
 def file_load_success(device_id):
     """ Makes sure that (1) the file exists and
     (2) that file is the same as assignments.txt """
+    # pull tablet's copy of assignments.txt into pulled_copy.txt
+    # then compare pulled_copy.txt to assignments.txt
+    # if they're the same then it was pushed properly
+
+    # remove everything after last slash
+    copy_file_path = ASSIGNMENT_FILE_PATH.split("/")[:-1]
+    copy_file_path.append('pulled_copy.txt')
+    copy_file_path = '/'.join(copy_file_path)
+    # use 'utils.create_file_path()' to create the file if it doesn't exist
+    copy_file_path = utils.create_file_path(copy_file_path, True)
     try:
-        # pull tablet's copy of assignments.txt into pulled_copy.txt
-        # then compare pulled_copy.txt to assignments.txt
-        # if they're the same then it was pushed properly
-
-        # remove everything after last slash
-        copy_file_path = ASSIGNMENT_FILE_PATH.split("/")[:-1]
-        copy_file_path.append('pulled_copy.txt')
-        copy_file_path = '/'.join(copy_file_path)
-        # use 'utils.create_file_path' to create the file if it doesn't exist
-        copy_file_path = utils.create_file_path(copy_file_path, True)
-        subprocess.call(f'touch {copy_file_path}'.split(' '))
-
-        subprocess.call(f'adb -s {device_id} pull /mnt/sdcard/bluetooth/assignments.txt {copy_file_path}'
-                        .split(' '), stdout=subprocess.DEVNULL)
+        subprocess.call(f'adb -s {device_id} pull /mnt/sdcard/bluetooth/assignments.txt {copy_file_path}',
+                        shell=True, stdout=subprocess.DEVNULL)
         # the 'r' option for open() indicates that
         # the file will only be used for reading from
         with open(copy_file_path, 'r') as file:
@@ -83,7 +81,7 @@ while True:
     # List of devices attached
     # 015d2568753c1408	device
     # 015d2856d607f015	device
-    OUTPUT = str(subprocess.check_output('adb devices'.split(' ')))
+    OUTPUT = str(subprocess.check_output('adb devices', shell=True))
     # check_output returns a byte string and converting that to a string
     # makes it weird, so here's what OUTPUT looks like now:
     # "b'List of devices attached\\n015d2568753c1408\\tdevice\\n015d2856d607f015\\tdevice\\n\\n'"
@@ -107,8 +105,8 @@ while True:
         if device not in DEVICES_WITH_FILE:
             # use dictionary to find human-readable
             # device name from given device serial
-            # example: SERIALS_DICT['00a2849de'] evaluates to 'Scout 7'
-            device_name = SERIALS_DICT[device]
+            # example: DEVICE_NAMES['00a2849de'] evaluates to 'Scout 7'
+            device_name = DEVICE_NAMES[device]
             # using subprocess, call 'adb push' command
             # which uses Android Debug Bridge (adb) to copy files
             # the -s flag tells adb which device
