@@ -245,52 +245,10 @@ def consolidate_temp_timds(temp_timds):
     sprking = list(temp_timds.keys())[0]
 
     final_timd = {}
-    # When consolidating non-timed keys, it is easy to consolidate them,
-    # as you can simply find which value is the most common in the set
-    # of three possibilities.
-
-    # Iterates through the keys of the first tempTIMD and finds the ones
-    # that are not timed or scout diagnostics.
+    # Iterates through the keys of the first tempTIMD and consolidates
+    # each data_field one at a time.
     for data_field in list(temp_timds[sprking]):
-        if data_field not in ['timeline',
-                              'timerStarted',
-                              'currentCycle',
-                              'scoutID',
-                              'scoutName',
-                              'appVersion',
-                              'assignmentMode',
-                              'assignmentFileTimestamp',
-                              'matchesNotScouted']:
-
-            # Creates a dictionary of each scout to the key from their
-            # tempTIMD to compare against each other. (Code note - This
-            # code is using .get and not simply referencing the key out
-            # of the dictionary because .get doesn't error out when the
-            # key doesn't exist. It instead returns NoneType).
-            data_field_comparison_list = {scout : dicti.get(data_field)
-                                          for scout, dicti in
-                                          temp_timds.items() if
-                                          dicti.get(data_field) is not
-                                          None}
-
-            # Uses the max_occurrences function to find the correct value
-            # for the data field.
-            data_occurence_max = max_occurrences(
-                data_field_comparison_list, sprking)
-
-            if data_occurence_max is None:
-                final_timd[data_field] = temp_timds[sprking][data_field]
-            else:
-                final_timd[data_field] = data_occurence_max
-        # If the data field name is not any of the non-timed data keys
-        # or the timeline (Which is computed later) it shouldn't be
-        # consolidated. This group of data fields in the tempTIMDs is
-        # mostly scout diagnostics.
-        elif data_field != 'timeline':
-            pass
-        # If the data field doesn't fit any of the previous
-        # requirements, it must be the timeline.
-        else:
+        if data_field == 'timeline':
             # In order to compute the timeline properly, it is split
             # into a list of the timelines.
             timelines = {scout : temp_timd.get('timeline') for
@@ -339,4 +297,42 @@ def consolidate_temp_timds(temp_timds):
                                                 key=lambda action:
                                                 float(action.get(
                                                     'time')))
+
+        # When consolidating non-timed keys, it is easy to consolidate them,
+        # as you can simply find which value is the most common in the set
+        # of three possibilities.
+        elif data_field not in ['timeline',
+                                'timerStarted',
+                                'currentCycle',
+                                'scoutID',
+                                'scoutName',
+                                'appVersion',
+                                'assignmentMode',
+                                'assignmentFileTimestamp',
+                                'matchesNotScouted']:
+
+            # Creates a dictionary of each scout to the key from their
+            # tempTIMD to compare against each other. (Code note - This
+            # code is using .get and not simply referencing the key out
+            # of the dictionary because .get doesn't error out when the
+            # key doesn't exist. It instead returns NoneType).
+            data_field_comparison_list = {scout : dicti.get(data_field)
+                                          for scout, dicti in
+                                          temp_timds.items() if
+                                          dicti.get(data_field) is not
+                                          None}
+
+            # Uses the max_occurrences function to find the correct value
+            # for the data field.
+            data_occurence_max = max_occurrences(
+                data_field_comparison_list, sprking)
+
+            final_timd[data_field] = data_occurence_max
+
+        # If the data field doesn't fit any of the previous
+        # requirements, it is scout diagnostics, which shouldn't be
+        # consolidated into the final timd.
+        else:
+            pass
+
     return final_timd
