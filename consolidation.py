@@ -6,25 +6,25 @@ called in calculate_timd.py."""
 import numpy as np
 # No internal imports
 
-def consolidate_times(times):
+def consolidate_times(times, sprking):
     """Takes in multiple time options and consolidates them into one time.
 
     times is a dictionary of each scout to their respective time value."""
 
     # If any time is in the wrong time period (has an *) it is not
     # considered for time consolidation.
-    false_scouts = {}
-    for scout, time in times.items():
-        if '*' in time:
-            false_scouts[scout] = time
-    for scout, time in false_scouts.items():
-        times.pop(scout)
-
-    # If there are no more times after deleting times, the false_scouts
-    # are considered.
-    if len(times.keys()) == 0:
-        for scout, time in false_scouts.items():
-            times[scout] = time.split('*')[0]
+    if False in ['*' in time for time in times.values()]:
+        for scout, time in times.items():
+            if '*' in time:
+                times.pop(scout)
+    else:
+        altered_asterisk_times = {}
+        for scout, time in times.items():
+            if float(time.split('*')[0]) >= 135.1:
+                altered_asterisk_times[scout] = 135.0
+            else:
+                altered_asterisk_times[scout] = 135.1
+        return max_occurrences(altered_asterisk_times, sprking)
 
     # Creates a numpy based array of the times in the form of floats
     # instead of their normal format of strings. Does this in order to
@@ -201,7 +201,7 @@ def basic_timeline_consolidation(input_timelines, action_type, sprking):
                 # If the key is time, finds the correct time using the
                 # consolidate_times algorithm.
                 final_simplified_timd[action_index]['time'] = \
-                    consolidate_times(scout_to_keys)
+                    consolidate_times(scout_to_keys, sprking)
 
     # Returns the final created timeline
     return final_simplified_timd
@@ -235,7 +235,7 @@ def climb_consolidation(input_timelines, sprking):
     # Consolidates time first
     final_simplified_timd[0]['time'] = consolidate_times({
         scout : climb['time'] for scout,
-        climb in simplified_timelines.items()})
+        climb in simplified_timelines.items()}, sprking)
 
     for key in ['attempted', 'actual']:
         for robot in ['self', 'robot1', 'robot2']:
