@@ -26,10 +26,10 @@ def consolidate_times(times, sprking):
                 altered_asterisk_times[scout] = 135.1
         return max_occurrences(altered_asterisk_times, sprking)
 
-    # Creates a numpy based array of the times in the form of floats
-    # instead of their normal format of strings. Does this in order to
-    # use them for calculations.
-    float_list = np.array([float(time) for time in times.values()])
+    # Creates a list of the times in the form of floats instead of their
+    # tempTIMD format of strings. Does this in order to  use them for
+    # calculations.
+    float_list = [float(time) for time in times.values()]
 
     # Finds the mean and standard deviation for the array of floats,
     # these metrics are used for the reciprocal z-scores used later on.
