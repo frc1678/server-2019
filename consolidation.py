@@ -176,7 +176,7 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
                 correct_length_timelines[scout][lowest_index[1][0]] = \
                     simplified_timelines[scout][lowest_index[0][0]]
                 timings = np.delete(timings, int(lowest_index[1][0]), axis=1)
-                timings = np.delete(timings, int(lowest_index[0][0]), 0)
+                timings = np.delete(timings, int(lowest_index[0][0]), axis=0)
 
     final_simplified_timd = [{} for action in range(majority_length)]
     # Iterates through the longest timeline to compare all
