@@ -136,7 +136,7 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
     # creates a time_reference to line up against.
     time_reference = {}
     if sprking in correct_length_timelines.keys():
-        reference_timeline = correct_length_timelines.get(sprking)
+        reference_timeline = correct_length_timelines[sprking]
         time_reference[sprking] = [action['time'] for action in
                                    reference_timeline]
     else:
