@@ -311,10 +311,7 @@ def add_calculated_data_to_timd(timd):
         calculated_data['timeImpaired'] = 0.0
         calculated_data['timeIncap'] = 0.0
 
-    # Adds the calculated_data calculated throughout this function to
-    # the final TIMD and returns it.
-    timd['calculatedData'] = calculated_data
-    return timd
+    return calculated_data
 
 # Check to ensure TIMD name is being passed as an argument
 if len(sys.argv) == 2:
@@ -346,11 +343,11 @@ for temp_timd in os.listdir(utils.create_file_path('data/cache/temp_timds')):
 
 # After the TEMP_TIMDS are decompressed, they are fed into the
 # consolidation script where they are returned as one final TIMD.
-UNCALCULATED_TIMD = consolidation.consolidate_temp_timds(TEMP_TIMDS)
+FINAL_TIMD = consolidation.consolidate_temp_timds(TEMP_TIMDS)
 
-# Defines FINAL_TIMD as a version of the TIMD with calculated data
-# using the add_calculated_data_to_timd function at the top of the file.
-FINAL_TIMD = add_calculated_data_to_timd(UNCALCULATED_TIMD)
+# Adds calculatedData to the FINAL_TIMD using the
+# add_calculated_data_to_timd function at the top of the file.
+FINAL_TIMD['calculatedData'] = add_calculated_data_to_timd(FINAL_TIMD)
 
 # Save data in local cache
 with open(utils.create_file_path(f'data/cache/timds/{TIMD_NAME}.json'),
