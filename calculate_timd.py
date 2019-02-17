@@ -334,8 +334,8 @@ for temp_timd in os.listdir(utils.create_file_path('data/cache/temp_timds')):
     if TIMD_NAME in temp_timd:
         file_path = utils.create_file_path(
             f'data/cache/temp_timds/{temp_timd}')
-        with open(file_path, 'r') as compressed_temp_timd:
-            COMPRESSED_TIMDS.append(compressed_temp_timd.read())
+        with open(file_path, 'r') as file:
+            COMPRESSED_TIMDS.append(file.read())
 
 # Iterates through all the compressed tempTIMDs and decompresses them.
 # After decompressing them, adds them to the TEMP_TIMDS dictionary with
