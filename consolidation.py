@@ -127,10 +127,10 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
 
     # Creates a dictionary of scouts to their timelines which follow the
     # majority length of timeline.
-    correct_length_timelines = {scout : simplified_timelines[scout] for
-                                scout, timeline_length in
-                                count_timelines.items() if
-                                timeline_length == majority}
+    correct_length_timelines = {}
+    for scout, timeline_length in count_timelines.items():
+        if timeline_length == majority:
+            correct_length_timelines[scout] = simplified_timelines[scout]
 
     # If there are scouts that don't agree with the majority timeline,
     # creates a time_reference to line up against.
