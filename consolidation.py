@@ -2,7 +2,9 @@
 
 The main function in this file is consolidate_temp_timds(), which is
 called in calculate_timd.py."""
+# External imports
 import numpy as np
+# No internal imports
 
 def time_consolidation(times):
     """Takes in multiple time options and consolidates them into one time.
