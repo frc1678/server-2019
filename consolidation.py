@@ -93,7 +93,7 @@ def max_occurrences(comparison_list, sprking):
     else:
         return max(occurence_list, key=occurence_list.get)
 
-def basic_timeline_consolidation(input_timelines, action_type, sprking):
+def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
     """Takes an action type out of timelines and consolidates it seperately.
 
     Returns a consolidated timeline only made up of the action type that
@@ -108,11 +108,11 @@ def basic_timeline_consolidation(input_timelines, action_type, sprking):
 
     # The dictionary of three timelines with only the types specified
     # in the function.
-    simplified_timelines = {scout : [] for scout in input_timelines.keys()}
+    simplified_timelines = {scout : [] for scout in temp_timd_timelines.keys()}
 
     # Takes the three different timelines and cuts out any types of
     # data points which are not the specified types.
-    for scout, timeline in input_timelines.items():
+    for scout, timeline in temp_timd_timelines.items():
         for action in timeline:
             if action.get('type') == action_type:
                 simplified_timelines[scout].append(action)
@@ -301,7 +301,7 @@ def consolidate_temp_timds(temp_timds):
                 for action_type in ['spill', 'incap', 'unincap',
                                     'startDefense', 'endDefense',
                                     'intake', 'placement', 'drop']:
-                    final_timeline += basic_timeline_consolidation(
+                    final_timeline += consolidate_timeline_action(
                         timelines, action_type, sprking)
 
                 # Also consolidates climb seperately in order to
