@@ -157,7 +157,7 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
             # up a matrix of time differences between each action in
             # each tempTIMD.
             timings = np.zeros((len(simplified_timelines[scout]),
-                                majority))
+                                majority_length))
             for false_index, false_action in \
                     enumerate(simplified_timelines[scout]):
                 for comparison_index, comparison_action in \
@@ -176,7 +176,7 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
                 timings = np.delete(timings, int(lowest_index[1][0]), axis=1)
                 timings = np.delete(timings, int(lowest_index[0][0]), 0)
 
-    final_simplified_timd = [{} for action in range(majority)]
+    final_simplified_timd = [{} for action in range(majority_length)]
     # Iterates through the longest timeline to compare all
     # the actions.
     for action_index, action in enumerate(correct_length_timelines[sprking]):
