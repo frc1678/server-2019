@@ -103,9 +103,7 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
     timelines.
     action_type is the action type that the function is consolidating.
     sprking is the scout with the best spr out of the scouts, used when
-    max_occurrences is called. More info in the docstring for
-    max_occurrences.
-    """
+    max_occurrences is called."""
 
     # The dictionary of three timelines with only the types specified
     # in the function.
