@@ -123,13 +123,13 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
 
     # Finds the majority amount of actions in the timeline to see
     # which amount of actions is the correct amount.
-    majority = max_occurrences(count_timelines, sprking)
+    majority_length = max_occurrences(count_timelines, sprking)
 
     # Creates a dictionary of scouts to their timelines which follow the
     # majority length of timeline.
     correct_length_timelines = {}
     for scout, timeline_length in count_timelines.items():
-        if timeline_length == majority:
+        if timeline_length == majority_length:
             correct_length_timelines[scout] = simplified_timelines[scout]
 
     # If there are scouts that don't agree with the majority timeline,
@@ -152,7 +152,7 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
     for scout in simplified_timelines.keys():
         if scout not in correct_length_timelines.keys():
             correct_length_timelines[scout] = [{} for action in
-                                               range(majority)]
+                                               range(majority_length)]
             # In order to find the best option for timings, it sets
             # up a matrix of time differences between each action in
             # each tempTIMD.
