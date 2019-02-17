@@ -276,7 +276,7 @@ def consolidate_temp_timds(temp_timds):
             # timeline is taken as the correct one and put into the
             # final TIMD.
             if len(timelines.values()) == 1:
-                # Converts all times to floats and removes asterix to
+                # Converts all times to floats and removes asterisk to
                 # put it into the format of a timd.
                 final_timeline = []
                 for action in timelines[sprking]:
