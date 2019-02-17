@@ -116,8 +116,8 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
             if action.get('type') == action_type:
                 simplified_timelines[scout].append(action)
 
-    # Creates a dictionary of scouts to the amount of actions of the
-    # specified type are in the timeline.
+    # Scouts to the amount of actions of the specified type are in the
+    # timeline.
     count_timelines = {scout : len(timeline) for
                        scout, timeline in simplified_timelines.items()}
 
