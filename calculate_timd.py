@@ -329,27 +329,23 @@ COMPRESSED_TIMDS = []
 TEMP_TIMDS = {}
 
 # Goes into the temp_timds folder to get the names of all the tempTIMDs
-# that correspond to the given TIMD.
+# that correspond to the given TIMD. Afterwards, it decompresses them
+# and adds them to the TEMP_TIMDS dictionary with the scout name as the
+# key and their decompressed tempTIMD as a value. Does this in order to
+# have a proper input to the consolidation function.
 for temp_timd in os.listdir(utils.create_file_path('data/cache/temp_timds')):
     if TIMD_NAME in temp_timd:
         file_path = utils.create_file_path(
             f'data/cache/temp_timds/{temp_timd}')
         with open(file_path, 'r') as file:
-            COMPRESSED_TIMDS.append(file.read())
-
-# Iterates through all the compressed tempTIMDs and decompresses them.
-# After decompressing them, adds them to the TEMP_TIMDS dictionary with
-# the scout name as the key and their decompressed tempTIMD as a value.
-# Does this in order to have a proper input to the consolidation
-# function.
-for compressed_temp_timd in COMPRESSED_TIMDS:
-    decompressed_temp_timd = decompressor.decompress_temp_timd(
-        compressed_temp_timd)
-    scout_name = decompressed_temp_timd.get('scoutName')
-    # If there is no scout name in the temp_timd, it is faulty, so it
-    # doesn't consolidate.
-    if scout_name is not None:
-        TEMP_TIMDS[scout_name] = decompressed_temp_timd
+            compressed_temp_timd = file.read()
+        decompressed_temp_timd = decompressor.decompress_temp_timd(
+            compressed_temp_timd)
+        scout_name = decompressed_temp_timd.get('scoutName')
+        # If there is no scout name in the temp_timd, it is faulty, so it
+        # doesn't consolidate.
+        if scout_name is not None:
+            TEMP_TIMDS[scout_name] = decompressed_temp_timd
 
 # After the TEMP_TIMDS are decompressed, they are fed into the
 # consolidation script where they are returned as one final TIMD.
