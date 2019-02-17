@@ -98,6 +98,7 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
 
     Returns a consolidated timeline only made up of the action type that
     was passed as action_type.
+
     input_timelines is the dictionary of the scouts to their specific
     timelines.
     action_type is the action type that the function is consolidating.
