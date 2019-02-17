@@ -1,8 +1,7 @@
 """Functions that are used for the consolidation of tempTIMDs into one TIMD.
 
 The main function in this file is consolidate_temp_timds(), which is
-called in calculate_timd.py.
-"""
+called in calculate_timd.py."""
 import numpy as np
 
 def time_consolidation(times):
