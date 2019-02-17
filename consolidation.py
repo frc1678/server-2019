@@ -3,6 +3,7 @@
 The main function in this file is consolidate_temp_timds(), which is
 called in calculate_timd.py."""
 # External imports
+import collections
 import numpy as np
 # No internal imports
 
@@ -77,9 +78,7 @@ def max_occurrences(comparison_list, sprking):
 
     # Creates a dictionary with how many times an item appeared in
     # the comparison list.
-    occurence_list = {data_field : \
-                      list(comparison_list.values()).count(data_field)
-                      for data_field in set(comparison_list.values())}
+    occurence_list = dict(collections.Counter(comparison_list.values()))
 
     # If the highest occurence on the occurence list is the same as
     # the lowest occurence, the correct value for the datapoint is
