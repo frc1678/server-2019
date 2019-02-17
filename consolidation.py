@@ -11,8 +11,8 @@ def consolidate_times(times):
 
     times is a dictionary of each scout to their respective time value."""
 
-    # If any time is uncertain (has an *) it is not considered for time
-    # consolidation.
+    # If any time is in the wrong time period (has an *) it is not
+    # considered for time consolidation.
     false_scouts = {}
     for scout, time in times.items():
         if '*' in time:
