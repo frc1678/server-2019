@@ -68,6 +68,7 @@ def max_occurrences(comparison_list, sprking):
 
     If there is no clear winner, returns the value for the best spr
     scout.
+
     comparison_list is a dictionary of each of the scouts to their input
     on a specific decision (value for a data field, amount of actions,
     etc).
