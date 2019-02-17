@@ -9,8 +9,7 @@ import numpy as np
 def consolidate_times(times):
     """Takes in multiple time options and consolidates them into one time.
 
-    times refers to a dictionary of each scout to their respective time
-    value."""
+    times is a dictionary of each scout to their respective time value."""
 
     # If any time is uncertain (has an *) it is not considered for time
     # consolidation.
