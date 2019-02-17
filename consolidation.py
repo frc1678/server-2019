@@ -179,8 +179,7 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
                 timings = np.delete(timings, int(lowest_index[0][0]), axis=0)
 
     final_simplified_timd = [{} for action in range(majority_length)]
-    # Iterates through the longest timeline to compare all
-    # the actions.
+    # Iterates through the sprking's timeline to compare all the actions.
     for action_index, action in enumerate(correct_length_timelines[sprking]):
         comparison_dict = {scout : timeline[action_index] for scout,
                            timeline in correct_length_timelines.items()}
