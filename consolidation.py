@@ -41,19 +41,19 @@ def consolidate_times(times, sprking):
     if std == 0:
         return format(mean, '.1f')
 
-    # Creates a list of the of the squared reciprocal of the z-score for
-    # each time, these values are how much each time is weighted when
+    # Creates a list of tuples with the time as the first item and the
+    # second item as the squared reciprocal of the z-score for each
+    # time. These values are how much each time is weighted when
     # calculating the final weighted average. The lower the value on
     # this list the time is, the farther away from the mean it is, and
     # the less it is weighted.
-    reciprocal_zscore_list = [(1 / ((mean - number) / std)) ** 2
-                              for number in float_list]
+    reciprocal_zscore_list = [(number, (1 / ((mean - number) / std)) **
+                               2) for number in float_list]
 
     # Multiplies each time by its corresponding reciprocal z-score
     # value, creating a weighted time.
-    weighted_times = [float_list[number] *
-                      reciprocal_zscore_list[number]
-                      for number in range(len(float_list))]
+    weighted_times = [number * zscore_weight for number, zscore_weight
+                      in reciprocal_zscore_list]
 
     # Adds up all the weighted times and divides it by the sum of the
     # reciprocal_zscore_list. Does this it order to get a reasonable
