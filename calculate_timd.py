@@ -156,7 +156,7 @@ def make_paired_cycle_list(cycle_list):
     # matching-index items from two lists into tuples.
     return list(zip(cycle_list[::2], cycle_list[1::2]))
 
-def add_calculated_data_to_timd(timd):
+def calculate_timd_data(timd):
     """Calculates data in a timd and adds it to 'calculatedData' in the TIMD.
 
     timd is the TIMD that needs calculated data."""
@@ -345,7 +345,7 @@ FINAL_TIMD = consolidation.consolidate_temp_timds(TEMP_TIMDS)
 
 # Adds calculatedData to the FINAL_TIMD using the
 # add_calculated_data_to_timd function at the top of the file.
-FINAL_TIMD['calculatedData'] = add_calculated_data_to_timd(FINAL_TIMD)
+FINAL_TIMD['calculatedData'] = calculate_timd_data(FINAL_TIMD)
 
 # Save data in local cache
 with open(utils.create_file_path(f'data/cache/timds/{TIMD_NAME}.json'),
