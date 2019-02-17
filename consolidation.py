@@ -6,7 +6,7 @@ called in calculate_timd.py."""
 import numpy as np
 # No internal imports
 
-def time_consolidation(times):
+def consolidate_times(times):
     """Takes in multiple time options and consolidates them into one time.
 
     times refers to a dictionary of each scout to their respective time
@@ -200,9 +200,9 @@ def basic_timeline_consolidation(input_timelines, action_type, sprking):
                         max_occurrences(scout_to_keys, sprking)
             else:
                 # If the key is time, finds the correct time using the
-                # time_consolidation algorithm.
+                # consolidate_times algorithm.
                 final_simplified_timd[action_index]['time'] = \
-                    time_consolidation(scout_to_keys)
+                    consolidate_times(scout_to_keys)
 
     # Returns the final created timeline
     return final_simplified_timd
@@ -234,7 +234,7 @@ def climb_consolidation(input_timelines, sprking):
                               'actual' : {}}]
 
     # Consolidates time first
-    final_simplified_timd[0]['time'] = time_consolidation({
+    final_simplified_timd[0]['time'] = consolidate_times({
         scout : climb['time'] for scout,
         climb in simplified_timelines.items()})
 
