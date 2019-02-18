@@ -277,8 +277,7 @@ def consolidate_temp_timds(temp_timds):
                 final_timeline = []
                 for action in timelines[sprking]:
                     action_time = action.get('time')
-                    fixed_action = action
-                    fixed_action['time'] = float(action_time.split('*')[0])
+                    action['time'] = float(action_time.split('*')[0])
                 final_timd['timeline'] = timelines[sprking]
 
             # If the list has more than one tempTIMD, the process for
