@@ -252,6 +252,22 @@ def team_calculations(timds):
         'calculatedData'].get('orangeFouls') for timd in timds])
     calculated_data['avgLemonsSpilled'] = avg([timd[
         'calculatedData'].get('lemonsSpilled') for timd in timds])
+    calculated_data['avgOrangesScoredSandstorm'] = avg([timd[
+        'calculatedData'].get('orangesScoredSandstorm') for timd in timds])
+    calculated_data['avgLemonsScoredSandstorm'] = avg([timd[
+        'calculatedData'].get('lemonsScoredSandstorm') for timd in timds])
+    calculated_data['avgOrangesScoredTeleL1'] = avg([timd[
+        'calculatedData'].get('orangesScoredTeleL1') for timd in timds])
+    calculated_data['avgOrangesScoredTeleL2'] = avg([timd[
+        'calculatedData'].get('orangesScoredTeleL2') for timd in timds])
+    calculated_data['avgOrangesScoredTeleL3'] = avg([timd[
+        'calculatedData'].get('orangesScoredTeleL3') for timd in timds])
+    calculated_data['avgLemonsScoredTeleL1'] = avg([timd[
+        'calculatedData'].get('lemonsScoredTeleL1') for timd in timds])
+    calculated_data['avgLemonsScoredTeleL2'] = avg([timd[
+        'calculatedData'].get('lemonsScoredTeleL2') for timd in timds])
+    calculated_data['avgLemonsScoredTeleL3'] = avg([timd[
+        'calculatedData'].get('lemonsScoredTeleL3') for timd in timds])
 
     # Calculations for percent successes for different actions.
     calculated_data['lemonLoadSuccess'] = avg_percent_success(
