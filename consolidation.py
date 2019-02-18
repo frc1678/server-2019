@@ -47,9 +47,9 @@ def consolidate_times(times, sprking):
     if std == 0:
         return format(mean, '.1f')
 
-    # Creates a list of tuples with the time as the first item and the
-    # second item as the squared reciprocal of the z-score for each
-    # time. These values are how much each time is weighted when
+    # Creates a list of tuples with the first item as the time and the
+    # second item as the weight (squared reciprocal of the z-score for
+    # each time). These values are how much each time is weighted when
     # calculating the final weighted average. The lower the value on
     # this list the time is, the farther away from the mean it is, and
     # the less it is weighted.
