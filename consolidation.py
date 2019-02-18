@@ -66,7 +66,7 @@ def consolidate_times(times, sprking):
     # time, if this step is not taken, the weighted time makes no sense.
     weighted_average = sum(weighted_times) / sum(reciprocal_zscores)
 
-    # Formats each average to the standard of a float with one decimal place.
+    # Formats each average to a float with one decimal place.
     return format(weighted_average, '.1f')
 
 def max_occurrences(comparison_list, sprking):
