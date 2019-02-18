@@ -142,12 +142,12 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
     # creates a time_reference to line up against.
     time_reference = {}
     if sprking in correct_length_timelines.keys():
-        reference_timeline = correct_length_timelines[sprking]
+        correct_scout = sprking
     else:
         correct_scout = list(correct_length_timelines.keys())[-1]
-        reference_timeline = correct_length_timelines.get(correct_scout)
-    time_reference[sprking] = [action['time'] for action in
-                               reference_timeline]
+    reference_timeline = correct_length_timelines[correct_scout]
+    time_reference[correct_scout] = [action['time'] for action in
+                                     reference_timeline]
 
     # If there are scouts that do not agree with the correct timeline
     # length, find out which of their action times agree with the time
