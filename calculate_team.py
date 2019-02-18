@@ -13,14 +13,6 @@ import numpy as np
 # Internal imports
 import utils
 
-# Check to ensure Team number is being passed as an argument
-if len(sys.argv) == 2:
-    # Extract Team number from system argument
-    TEAM_NUMBER = int(sys.argv[1])
-else:
-    print('Error: Team number not being passed as an argument. Exiting...')
-    sys.exit(0)
-
 def first_pick_ability(calculated_data):
     """Calculates the relative first pick score for a team.
 
@@ -144,8 +136,8 @@ def filter_timeline_actions(timds, **filters):
                     requirement = rough_requirement
                     opposite = False
                 # If the data_field requirement is level 1, it instead
-                # checks for it not being level 2 or 3, because level 1 can
-                # encompass all non-level 2 or 3 placement.
+                # checks for it not being level 2 or 3, because level 1
+                # can encompass all non-level 2 or 3 placement.
                 if data_field == 'level' and requirement == 1:
                     if opposite is False:
                         if action.get('level') == 2 or action.get(
@@ -212,6 +204,14 @@ def filter_cycles(cycle_list, **filters):
         else:
             filtered_cycles.append(cycle)
     return filtered_cycles
+
+def make_paired_cycle_list(cycle_list):
+    """Pairs up cycles together into tuples.
+    cycle_list is the list of actions that need to be paired up."""
+    # [::2] are the even-indexed items of the list, [1::2] are the
+    # odd-indexed items of the list. The python zip function puts
+    # matching-index items from two lists into tuples.
+    return list(zip(cycle_list[::2], cycle_list[1::2]))
 
 def team_calculations(timds):
     """Calculates all the calculated data for one team.
@@ -592,11 +592,11 @@ def team_calculations(timds):
     # be used for average cycle time calculations.
     total_cycle_list = []
     for cycle_timd in timds:
-        cycle_list = [action for action in cycle_timd.get('timeline') if
-                      action.get('type') == 'intake' or
-                      action.get('type') == 'placement' or
-                      action.get('type') == 'drop']
-        if cycle_list != []:
+        cycle_list = []
+        for action in cycle_timd.get('timeline'):
+            if action['type'] in ['intake', 'placement', 'type']:
+                cycle_list.append(action)
+        if len(cycle_list) > 0:
             # If the first action in the list is a placement, it is a
             # preload, which doesn't count when calculating cycle times.
             if cycle_list[0].get('type') == 'placement':
@@ -606,7 +606,7 @@ def team_calculations(timds):
             # never completed.
             if cycle_list[-1].get('type') == 'intake':
                 cycle_list.pop(-1)
-            paired_cycle_list = list(zip(*[iter(cycle_list)]*2))
+            paired_cycle_list = make_paired_cycle_list(cycle_list)
             total_cycle_list += paired_cycle_list
 
     # Calculates the average cycle time for each cycle type.
@@ -667,11 +667,11 @@ def team_calculations(timds):
     # to only the last four matches.
     lfm_cycle_list = []
     for cycle_timd in lfm_timds:
-        cycle_list = [action for action in cycle_timd.get('timeline') if
-                      action.get('type') == 'intake' or
-                      action.get('type') == 'placement' or
-                      action.get('type') == 'drop']
-        if cycle_list != []:
+        cycle_list = []
+        for action in cycle_timd.get('timeline'):
+            if action['type'] in ['intake', 'placement', 'type']:
+                cycle_list.append(action)
+        if len(cycle_list) > 0:
             # If the first action in the list is a placement, it is a
             # preload, which doesn't count when calculating cycle times.
             if cycle_list[0].get('type') == 'placement':
@@ -681,7 +681,7 @@ def team_calculations(timds):
             # never completed.
             if cycle_list[-1].get('type') == 'intake':
                 cycle_list.pop(-1)
-            paired_cycle_list = list(zip(*[iter(cycle_list)]*2))
+            paired_cycle_list = make_paired_cycle_list(cycle_list)
             lfm_cycle_list += paired_cycle_list
 
     # Calculates the last four match average for each cycle type.
@@ -711,6 +711,14 @@ def team_calculations(timds):
         second_pick_ability(calculated_data)
 
     return calculated_data
+
+# Check to ensure Team number is being passed as an argument
+if len(sys.argv) == 2:
+    # Extract Team number from system argument
+    TEAM_NUMBER = int(sys.argv[1])
+else:
+    print('Error: Team number not being passed as an argument. Exiting...')
+    sys.exit(0)
 
 # Uses the team number to find all the TIMDs for the passed team.
 TIMDS = []
