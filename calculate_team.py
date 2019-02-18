@@ -16,16 +16,14 @@ import utils
 def first_pick_ability(calculated_data):
     """Calculates the relative first pick score for a team.
 
-    calculated_data is the dictionary of calculated_data calculated for
-    a team."""
+    calculated_data is the dictionary of data calculated for a team."""
     #TODO: Implement first pick calculations once strategy decides
     return 0.0
 
 def second_pick_ability(calculated_data):
     """Calculates the relative second pick score for a team.
 
-    calculated_data is the dictionary of calculated_data calculated for
-    a team."""
+    calculated_data is the dictionary of data calculated for a team."""
     #TODO: Implement second pick calculations once strategy decides
     return 0.0
 
