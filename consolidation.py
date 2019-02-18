@@ -227,18 +227,16 @@ def climb_consolidation(input_timelines, sprking):
             if action.get('type') == 'climb':
                 simplified_timelines[scout] = action
 
-    final_simplified_timd = [{'type' : 'climb',
-                              'attempted' : {},
-                              'actual' : {}}]
+    final_simplified_timd = {'type': 'climb', 'attempted': {}, 'actual': {}}
 
     # Consolidates time first
-    final_simplified_timd[0]['time'] = consolidate_times({
+    final_simplified_timd['time'] = consolidate_times({
         scout : climb['time'] for scout,
         climb in simplified_timelines.items()}, sprking)
 
     for key in ['attempted', 'actual']:
         for robot in ['self', 'robot1', 'robot2']:
-            final_simplified_timd[0][key][robot] = max_occurrences({
+            final_simplified_timd[key][robot] = max_occurrences({
                 scout : climb[key][robot] for scout, climb in
                 simplified_timelines.items()}, sprking)
 
@@ -308,7 +306,7 @@ def consolidate_temp_timds(temp_timds):
                 # seperate it from intakes and placements. Climb needs a
                 # seperate function because of its relatively strange
                 # structure.
-                final_timeline += climb_consolidation(timelines, sprking)
+                final_timeline.append(climb_consolidation(timelines, sprking))
 
                 # Once the timeline is finally completed, it is sorted
                 # by time, and added to the final timd.
