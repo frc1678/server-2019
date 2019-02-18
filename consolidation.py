@@ -175,9 +175,9 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
             # against each other until the entire matrix is deleted.
             while timings.size > 0:
                 # lowest_index is in the format of ([y coordinate],
-                # [x coordinate]), which requires the strange formatting
-                # of lowest_index[1][0] to get the x coordinate, and
-                # lowest_index[0][0] for the y coordinate.
+                # [x coordinate]), which requires lowest_index[1][0] to
+                # get the x coordinate, and lowest_index[0][0] for the y
+                # coordinate.
                 lowest_index = np.where(timings == timings.min())
                 correct_length_timelines[scout][lowest_index[1][0]] = \
                     simplified_timelines[scout][lowest_index[0][0]]
