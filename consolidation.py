@@ -265,9 +265,8 @@ def consolidate_temp_timds(temp_timds):
             # into a list of the timelines.
             timelines = {}
             for scout, temp_timd in temp_timds.items():
-                temp_timeline = temp_timd.get('timeline')
-                if temp_timeline is not None:
-                    timelines[scout] = temp_timeline
+                temp_timeline = temp_timd.get('timeline', [])
+                timelines[scout] = temp_timeline
 
             # If the list of timelines only includes one timeline, that
             # timeline is taken as the correct one and put into the
