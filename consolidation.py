@@ -277,6 +277,10 @@ def consolidate_temp_timds(temp_timds):
                 final_timeline = []
                 for action in timelines[sprking]:
                     action_time = action.get('time')
+                    # Takes the time before the asterisk, if there is no
+                    # asterisk, .split() still returns a list, a list of
+                    # only the time, meaning [0] works in both
+                    # instances.
                     action['time'] = float(action_time.split('*')[0])
                 final_timd['timeline'] = timelines[sprking]
 
