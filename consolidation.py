@@ -257,8 +257,8 @@ def consolidate_temp_timds(temp_timds):
     sprking = list(temp_timds.keys())[0]
 
     final_timd = {}
-    # Iterates through the keys of the first tempTIMD and consolidates
-    # each data_field one at a time.
+    # Iterates through the keys of the best scout's tempTIMD and
+    # consolidates each data_field one at a time.
     for data_field in list(temp_timds[sprking]):
         if data_field == 'timeline':
             # In order to compute the timeline properly, it is split
