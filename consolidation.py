@@ -216,7 +216,7 @@ def climb_consolidation(input_timelines, sprking):
     max_occurrences.
     """
 
-    # The dictionary of scout name to climb dictionary.
+    # Scout name to climb dictionary.
     simplified_timelines = {}
 
     # Fills in the simplified timelines dictionary with the scout and
