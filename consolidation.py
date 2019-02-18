@@ -231,13 +231,13 @@ def climb_consolidation(input_timelines, sprking):
 
     # Consolidates time first
     final_simplified_timd['time'] = consolidate_times({
-        scout : climb['time'] for scout,
+        scout: climb['time'] for scout,
         climb in simplified_timelines.items()}, sprking)
 
     for key in ['attempted', 'actual']:
         for robot in ['self', 'robot1', 'robot2']:
             final_simplified_timd[key][robot] = max_occurrences({
-                scout : climb[key][robot] for scout, climb in
+                scout: climb[key][robot] for scout, climb in
                 simplified_timelines.items()}, sprking)
 
     # Returns the final created timeline
