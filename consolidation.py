@@ -57,7 +57,7 @@ def consolidate_times(times, sprking):
                       in reciprocal_zscore_list]
 
     # Adds up all the weighted times and divides it by the sum of the
-    # reciprocal_zscore_list. Does this it order to get a reasonable
+    # reciprocal_zscore_list. Does this in order to get a reasonable
     # time, if this step is not taken, the weighted time makes no sense.
     weighted_average = sum(weighted_times) / sum(reciprocal_zscore_list)
 
