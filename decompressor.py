@@ -239,9 +239,12 @@ def decompress_temp_timd(compressed_temp_timd):
 
     decompressed_temp_timd.update(decompress_temp_timd_headers(
         compressed_header))
-    decompressed_temp_timd['timeline'] = decompress_temp_timd_timeline(
-        compressed_timeline)
-
+    # If 'compressed_timeline' is empty, it cannot be decompressed.
+    # This occurs if a team is a no-show, or if they do not perform any
+    # actions during the match.
+    if compressed_timeline != '':
+        decompressed_temp_timd['timeline'] = decompress_temp_timd_timeline(
+            compressed_timeline)
     return {temp_timd_key: decompressed_temp_timd}
 
 
