@@ -319,7 +319,10 @@ def decompress_temp_super_headers(compressed_temp_super_headers):
             # 'noShowTeams' is a list
             # Removes 'compressed_key' and brackets
             teams = header[2:-1]
-            decompressed_value = [int(team) for team in teams.split(';')]
+            if teams == '':
+                decompressed_value = []
+            else:
+                decompressed_value = [int(team) for team in teams.split(';')]
         # Checks if the 'compressed_value' can be decompressed with
         # 'TEMP_SUPER_COMPRESS_VALUES'.
         elif len(compressed_value) == 1 and compressed_value.isalpha():
@@ -406,7 +409,7 @@ def decompress_temp_super(compressed_temp_super):
     """Decompresses a single tempSuper data.
 
     tempSuper headers contain the data that is not specific to a team.
-    teamSuper teams data contians data that is specific to a team.
+    teamSuper teams data contains data that is specific to a team.
 
     compressed_temp_super is a string."""
     temp_super_key = compressed_temp_super.split('|')[0]
