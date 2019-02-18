@@ -4,11 +4,13 @@
 Sends blank 'Teams' and 'Matches' to Realtime Database.
 Sends blank 'Teams' to Cloud Firestore."""
 # External imports
+import json
 import sys
 # Internal imports
 import firebase_communicator
 import firestore_communicator
 import tba_communicator
+import utils
 
 # 'FIREBASE' is a Realtime Database instance
 FIREBASE = firebase_communicator.configure_firebase()
@@ -104,6 +106,10 @@ if PREPARE_MATCHES is True:
     FIREBASE_UPLOAD.update({'Matches': FINAL_MATCH_DATA})
 
 if FULL_WIPE is True:
+    # Loads scout names from assignment file
+    with open(utils.create_file_path('data/assignments/assignments.json'),
+              'r') as file:
+        SCOUT_NAMES = json.load(file)['letters'].keys()
     FIREBASE_UPLOAD.update({
         'tempTIMDs': None,
         'TIMDs': None,
@@ -111,7 +117,8 @@ if FULL_WIPE is True:
         'scoutManagement': {
             'currentMatchNumber': 1,
             'cycleNumber': 0,
-        }
+            'availability': {scout: 0 for scout in SCOUT_NAMES},
+        },
     })
 
 # Sends data to Firebase
