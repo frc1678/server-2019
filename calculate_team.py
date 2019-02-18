@@ -132,6 +132,11 @@ def filter_timeline_actions(timds, **filters):
     for timd in timds:
         for action in timd.get('timeline', []):
             for data_field, rough_requirement in filters.items():
+                # Tests if the rough_requirement is a tuple or not. If
+                # it is a tuple, the second item in the tuple is a bool
+                # showing whether or not opposite is True. If opposite
+                # is True, it validates that the specification is not
+                # met, rather than is met.
                 if type(rough_requirement) == tuple:
                     requirement = rough_requirement[0]
                     opposite = rough_requirement[1]
