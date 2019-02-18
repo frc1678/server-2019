@@ -319,6 +319,7 @@ def decompress_temp_super_headers(compressed_temp_super_headers):
             # 'noShowTeams' is a list
             # Removes 'compressed_key' and brackets
             teams = header[2:-1]
+            # Checks for empty 'noShowTeams'
             if teams == '':
                 decompressed_value = []
             else:
