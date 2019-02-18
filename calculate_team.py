@@ -38,8 +38,8 @@ def calculate_avg_cycle_time(cycles):
     """
     cycle_times = []
     for cycle in cycles:
-        cycle_times.append(float(cycle[0].get('time')) -
-                           float(cycle[1].get('time')))
+        cycle_times.append(cycle[0].get('time') -
+                           cycle[1].get('time'))
     return avg(cycle_times, None)
 
 def calculate_std_cycle_time(cycles):
@@ -51,8 +51,8 @@ def calculate_std_cycle_time(cycles):
     """
     cycle_times = []
     for cycle in cycles:
-        cycle_times.append(float(cycle[0].get('time')) -
-                           float(cycle[1].get('time')))
+        cycle_times.append(cycle[0].get('time') -
+                           cycle[1].get('time'))
     return np.std(cycle_times)
 
 def calculate_p75_cycle_time(cycles):
@@ -64,8 +64,8 @@ def calculate_p75_cycle_time(cycles):
     """
     cycle_times = []
     for cycle in cycles:
-        cycle_times.append(float(cycle[0].get('time')) -
-                           float(cycle[1].get('time')))
+        cycle_times.append(cycle[0].get('time') -
+                           cycle[1].get('time'))
     return p75(cycle_times)
 
 def p75(lis, exception=0.0):
@@ -75,11 +75,11 @@ def p75(lis, exception=0.0):
     exception is returned if there is a divide by zero error. The
     default is 0.0 because the main usage in in percentage calculations.
     """
-    try:
+    if len(lis) == 0:
+        return exception
+    else:
         upper_half = lis[-(round(len(lis) / 2)):]
         return sum(upper_half) / len(upper_half)
-    except (ZeroDivisionError, TypeError):
-        return exception
 
 def avg(lis, exception=0.0):
     """Calculates the average of a list.
@@ -88,30 +88,27 @@ def avg(lis, exception=0.0):
     exception is returned if there is a divide by zero error. The
     default is 0.0 because the main usage in in percentage calculations.
     """
-    try:
-        return sum(lis) / len(lis)
-    except (ZeroDivisionError, TypeError):
+    if len(lis) == 0:
         return exception
+    else:
+        return sum(lis) / len(lis)
 
 def avg_percent_success(actions):
     """Finds the percent of times didSucceed is true in a list of actions.
     actions is the list of actions that can either succeed or fail."""
-    successes = [action.get('didSucceed') for action in actions if
-                 action.get('didSucceed') is not None]
+    successes = [action.get('didSucceed') for action in actions]
     return round(100 * avg(successes))
 
 def sd_percent_success(actions):
     """Finds the percent of times didSucceed is true in a list of actions.
     actions is the list of actions that can either succeed or fail."""
-    successes = [action.get('didSucceed') for action in actions if
-                 action.get('didSucceed') is not None]
+    successes = [action.get('didSucceed') for action in actions]
     return round(100 * np.std(successes))
 
 def p75_percent_success(actions):
     """Finds the percent of times didSucceed is true in a list of actions.
     actions is the list of actions that can either succeed or fail."""
-    successes = [action.get('didSucceed') for action in actions if
-                 action.get('didSucceed') is not None]
+    successes = [action.get('didSucceed') for action in actions]
     return round(100 * p75(successes))
 
 def filter_timeline_actions(timds, **filters):
@@ -127,7 +124,7 @@ def filter_timeline_actions(timds, **filters):
     # loop breaks and it moves on to the next action, but if all the
     # specifications are met, it adds it to the filtered timeline.
     for timd in timds:
-        for action in timd.get('timeline'):
+        for action in timd.get('timeline', []):
             for data_field, rough_requirement in filters.items():
                 if type(rough_requirement) == tuple:
                     requirement = rough_requirement[0]
@@ -140,28 +137,23 @@ def filter_timeline_actions(timds, **filters):
                 # can encompass all non-level 2 or 3 placement.
                 if data_field == 'level' and requirement == 1:
                     if opposite is False:
-                        if action.get('level') == 2 or action.get(
-                                'level') == 3:
+                        if action.get('level', 1) != 1:
                             break
                     else:
-                        if action.get('level') != 2 and action.get(
-                                'level') != 3:
+                        if action.get('level', 1) == 1:
                             break
                 # If the filter specifies that the zone must be
                 # leftLoadingStation, it means either loading station,
                 # so it only breaks if the zone is not
                 # leftLoadingStation or rightLoadingStation.
-                elif data_field == 'zone' and requirement == \
-                        'leftLoadingStation':
+                elif data_field == 'zone' and requirement == 'loadingStation':
                     if opposite is False:
-                        if action.get('zone') != 'leftLoadingStation' \
-                                and action.get('zone') != \
-                                'rightLoadingStation':
+                        if action['zone'] not in ['leftLoadingStation',
+                                                  'rightLoadingStation']:
                             break
                     else:
-                        if action.get('zone') == 'leftLoadingStation' \
-                                or action.get('zone') == \
-                                'rightLoadingStation':
+                        if action['zone'] in ['leftLoadingStation',
+                                              'rightLoadingStation']:
                             break
                 # Otherwise, it checks the requirement normally
                 else:
@@ -193,7 +185,7 @@ def filter_cycles(cycle_list, **filters):
             # checks for it not being level 2 or 3, because level 1 can
             # encompass all non-level 2 or 3 placement.
             if data_field == 'level' and requirement == 1:
-                if cycle[1].get('level') == 2 or cycle[1].get('level') == 3:
+                if cycle[1].get('level', 1) != 1:
                     break
             # Otherwise, it checks the requirement normally
             else:
