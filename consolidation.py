@@ -14,11 +14,12 @@ def consolidate_times(times, sprking):
 
     # If any time is in the wrong time period (has an *) it is not
     # considered for time consolidation.
-    if False in ['*' in time for time in times.values()]:
-        for scout, time in times.items():
-            if '*' in time:
-                times.pop(scout)
-    else:
+    # Checks if all of the times end in an asterisk
+    if all([time[-1] == '*' for time in times.values()]):
+        # If all the times end in asterisks, they are in the wrong time
+        # period. To fix the time period, all wrong times in sandstorm
+        # (time >= 135.1) are set to teleop as 135.0, and all wrong
+        # times in teleop (time <= 135.0) are set to sandstorm as 135.1.
         altered_asterisk_times = {}
         for scout, time in times.items():
             if float(time.split('*')[0]) >= 135.1:
@@ -26,6 +27,10 @@ def consolidate_times(times, sprking):
             else:
                 altered_asterisk_times[scout] = 135.1
         return max_occurrences(altered_asterisk_times, sprking)
+    else:
+        for scout, time in times.items():
+            if '*' in time:
+                times.pop(scout)
 
     # Creates a list of the times in the form of floats instead of their
     # tempTIMD format of strings. Does this in order to  use them for
