@@ -31,11 +31,12 @@ def second_pick_ability(calculated_data):
 
 def calculate_avg_cycle_time(cycles):
     """Calculates the average time for an action based on start and end times.
+
     Finds the time difference between each action pair passed and
     returns the average of the differences.
+
     cycles is a list of tuples where the first action in the tuple is
-    the intake, and the second item is the placement or drop.
-    """
+    the intake, and the second item is the placement or drop."""
     cycle_times = []
     for cycle in cycles:
         cycle_times.append(cycle[0].get('time') -
@@ -44,11 +45,12 @@ def calculate_avg_cycle_time(cycles):
 
 def calculate_std_cycle_time(cycles):
     """Calculates the standard deviation time for a type of cycle.
+
     Finds the time difference between each action pair passed and
     returns the standard deviation of the differences.
+
     cycles is a list of tuples where the first action in the tuple is
-    the intake, and the second item is the placement or drop.
-    """
+    the intake, and the second item is the placement or drop."""
     cycle_times = []
     for cycle in cycles:
         cycle_times.append(cycle[0].get('time') -
@@ -57,11 +59,12 @@ def calculate_std_cycle_time(cycles):
 
 def calculate_p75_cycle_time(cycles):
     """Calculates the upper half average time for a type of cycle.
+
     Finds the time difference between each action pair passed and
     returns the upper half average of the differences.
+
     cycles is a list of tuples where the first action in the tuple is
-    the intake, and the second item is the placement or drop.
-    """
+    the intake, and the second item is the placement or drop."""
     cycle_times = []
     for cycle in cycles:
         cycle_times.append(cycle[0].get('time') -
@@ -95,24 +98,28 @@ def avg(lis, exception=0.0):
 
 def avg_percent_success(actions):
     """Finds the percent of times didSucceed is true in a list of actions.
+
     actions is the list of actions that can either succeed or fail."""
     successes = [action.get('didSucceed') for action in actions]
     return round(100 * avg(successes))
 
 def sd_percent_success(actions):
     """Finds the percent of times didSucceed is true in a list of actions.
+
     actions is the list of actions that can either succeed or fail."""
     successes = [action.get('didSucceed') for action in actions]
     return round(100 * np.std(successes))
 
 def p75_percent_success(actions):
     """Finds the percent of times didSucceed is true in a list of actions.
+
     actions is the list of actions that can either succeed or fail."""
     successes = [action.get('didSucceed') for action in actions]
     return round(100 * p75(successes))
 
 def filter_timeline_actions(timds, **filters):
     """Puts a timeline through a filter to use for calculations.
+    
     timds are the timds that data is calculated from.
     filters are the specifications that certain data points inside the
     timeline must fit to be included in the returned timeline. The value
@@ -143,7 +150,7 @@ def filter_timeline_actions(timds, **filters):
                         if action.get('level', 1) == 1:
                             break
                 # If the filter specifies that the zone must be
-                # leftLoadingStation, it means either loading station,
+                # loadingStation, it means either loading station,
                 # so it only breaks if the zone is not
                 # leftLoadingStation or rightLoadingStation.
                 elif data_field == 'zone' and requirement == 'loadingStation':
@@ -170,7 +177,8 @@ def filter_timeline_actions(timds, **filters):
     return filtered_timeline
 
 def filter_cycles(cycle_list, **filters):
-    """Puts cycles through filters to meet specific requirements
+    """Puts cycles through filters to meet specific requirements.
+
     cycle_list is a list of tuples where the first item is an intake and
     the second action is the placement or drop.
     filters are the specifications that certain data points inside the
@@ -199,6 +207,7 @@ def filter_cycles(cycle_list, **filters):
 
 def make_paired_cycle_list(cycle_list):
     """Pairs up cycles together into tuples.
+
     cycle_list is the list of actions that need to be paired up."""
     # [::2] are the even-indexed items of the list, [1::2] are the
     # odd-indexed items of the list. The python zip function puts
@@ -211,6 +220,7 @@ def team_calculations(timds):
     Uses a team's timds to make many calculations and return them in a
     dictionary of calculatedData, the same that is used when exporting
     to the firebase later on.
+
     timds is the list of timds that a team has participated in, this is
     where the data comes from when making calculations."""
     calculated_data = {}
@@ -222,10 +232,10 @@ def team_calculations(timds):
     # competition, the respective hasGroundIntake data point is true.
     calculated_data['hasOrangeGroundIntake'] = True if \
         filter_timeline_actions(timds, type='intake', piece='orange', \
-        zone=('leftLoadingStation', True)) else False
+        zone=('loadingStation', True)) else False
     calculated_data['hasLemonGroundIntake'] = True if \
         filter_timeline_actions(timds, type='intake', piece='lemon', \
-        zone=('leftLoadingStation', True)) else False
+        zone=('loadingStation', True)) else False
 
     # If the robot has ever preloaded each game piece type.
     calculated_data['didPreloadOrange'] = True if [
@@ -354,7 +364,7 @@ def team_calculations(timds):
 
     calculated_data['lfmLemonLoadSuccess'] = avg_percent_success(
         filter_timeline_actions(lfm_timds, type='intake', \
-        piece='lemon', zone='leftLoadingStation'))
+        piece='lemon', zone='loadingStation'))
     calculated_data['lfmOrangeSuccessAll'] = avg_percent_success(
         filter_timeline_actions(lfm_timds, type='placement', \
         piece='orange'))
@@ -441,7 +451,7 @@ def team_calculations(timds):
 
     calculated_data['sdLemonLoadSuccess'] = sd_percent_success(
         filter_timeline_actions(timds, type='intake', piece='lemon', \
-        zone='leftLoadingStation'))
+        zone='loadingStation'))
     calculated_data['sdOrangeSuccessAll'] = sd_percent_success(
         filter_timeline_actions(timds, type='placement', \
         piece='orange'))
@@ -525,7 +535,7 @@ def team_calculations(timds):
 
     calculated_data['p75LemonLoadSuccess'] = p75_percent_success(
         filter_timeline_actions(timds, type='intake', piece='lemon', \
-        zone='leftLoadingStation'))
+        zone='loadingStation'))
     calculated_data['p75OrangeSuccessAll'] = p75_percent_success(
         filter_timeline_actions(timds, type='placement', \
         piece='orange'))
