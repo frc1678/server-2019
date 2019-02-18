@@ -188,8 +188,7 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
             # have a majority, the majority opinion is set to the final
             # timd.
             scout_to_keys = {scout : action.get(key) for scout,
-                             action in comparison_dict.items() if
-                             action.get(key) is not None}
+                             action in comparison_dict.items()}
 
             # For every key in the dictionary other than time, it just
             # takes the majority value for the key.
