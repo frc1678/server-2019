@@ -173,7 +173,7 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
             # Once the matrix of timing differences has been
             # created, the lowest difference is targeted to line up
             # against each other until the entire matrix is deleted.
-            while timings.size:
+            while timings.size > 0:
                 # lowest_index is in the format of ([y coordinate],
                 # [x coordinate]), which requires the strange formatting
                 # of lowest_index[1][0] to get the x coordinate, and
