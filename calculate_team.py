@@ -26,16 +26,73 @@ def first_pick_ability(calculated_data):
 
     calculated_data is the dictionary of calculated_data calculated for
     a team."""
-    #TODO: Implement first pick calculations once strategy decides
-    return 0.0
+    # constants that determine how much each score is weighted
+    # in determining first pick ability
+    # TODO(Emily): Give the constants descriptive names
+    a = 1  # how much we care about teams scoring on lvl 1
+    b = 1  # how much we care about teams scoring on lvl 2
+    c = 1  # how much we care about teams scoring on lvl 3
+    w = 1  # something to do with robots climbing solo or with us
+
+    level_1_teleop_score = ((2 * calculated_data['lemonsScoredTeleL1']
+        + 3 * calculated_data['orangesScoredTeleL1']) * a
+    level_2_teleop_score = ((2 * calculated_data['lemonsScoredTeleL2']
+        + 3 * calculated_data['orangesScoredTeleL2']) * b
+    level_3_teleop_score = ((2 * calculated_data['lemonsScoredTeleL3']
+        + 3 * calculated_data['orangesScoredTeleL3']) * c
+
+    sand_score = calculated_data['HabCrossSuccessRate']
+    sand_score += calculated_data['DidDoLevel2'] * 3
+    sand_score += calculated_data['lemonsScoredSandstorm'] * 5
+    sand_score += calculated_data['orangesScoredSandstorm'] * 3
+
+    end_game_score = 3 * calculated_data['ClimbSuccessesLevel1']
+    end_game_score += 6 * calculated_data['ClimbSuccessesLevel2']
+    end_game_score += 12 * calculated_data['ClimbSuccessesLevel3']
+    end_game_score *= w
+    #end_game_score += (1 - w) * calculated_data['ClimbCompatibility']
+    #    * 12 * calculated_data['SuccessRate']
+
+    pick_ability = sand_score + end_game_score
+        Level1TeleopScore + Level2TeleopScore + Level3TeleopScore
+    return pick_ability
 
 def second_pick_ability(calculated_data):
     """Calculates the relative second pick score for a team.
 
     calculated_data is the dictionary of calculated_data calculated for
     a team."""
-    #TODO: Implement second pick calculations once strategy decides
-    return 0.0
+    w = 1  # something to do with robots climbing solo or with us
+    j = 1  # how much we care about driver ability
+    k = 1  # how much we prioritize speed over agility
+    z = 1  # how much we want second picks to be scoring oranges
+    y = 1  # how much we want second picks to be scoring lemons
+    Q = 1  # how much we want second picks to be defending
+
+    sand_score = calculated_data['HabCrossSuccessRate']
+    sand_score += calculated_data['DidDoLevel2'] * 3
+    sand_score += calculated_data['lemonsScoredSandstorm'] * 5
+    sand_score += calculated_data['orangesScoredSandstorm'] * 3
+
+    level_1_teleop_score = calculated_data['LemonsScoredTeleL1'] * 2 * y
+    level_1_teleop_score += calculated_data['OrangesScoredTeleL1'] * 3 * z
+
+    end_game_score = 3 * calculated_data['ClimbSuccessesLevel1']
+    end_game_score += 6 * calculated_data['ClimbSuccessesLevel2']
+    end_game_score += 12 * calculated_data['ClimbSuccessesLevel3']
+    end_game_score *= w
+    #end_game_score += (1 - w) * calculated_data['ClimbCompatibility']
+    #    * 12 * calculated_data['SuccessRate']
+
+    driver_ability = k * calculated_data['Speed']
+    driver_ability += (1 - k) * calculated_data['Agility']
+    driver_ability *= j
+
+#TODO(Emily)    defense_ability = Knocking * numKnocks * (OpposingAllianceDrops - AvgOpposingAllianceDrops) + Docking * SecondsAddedtoCycle * PointsPerCyclePerSecond + PathBlocking * SecondAddedtoCycle * PointsperCycleperSecond
+    defense_ability *= Q
+
+    pick_ability = ?????????
+    return pick_ability
 
 def calculate_avg_cycle_time(cycles):
     """Calculates the average time for an action based on start and end times.
@@ -166,6 +223,10 @@ def filter_timeline_actions(timds, **filters):
                                 and action.get('zone') != \
                                 'rightLoadingStation':
                             break
+
+ 
+ 
+more rows at bottom.
                     else:
                         if action.get('zone') == 'leftLoadingStation' \
                                 or action.get('zone') == \
@@ -233,6 +294,7 @@ def team_calculations(timds):
         zone=('leftLoadingStation', True)) else False
     calculated_data['hasLemonGroundIntake'] = True if \
         filter_timeline_actions(timds, type='intake', piece='lemon', \
+
         zone=('leftLoadingStation', True)) else False
 
     # If the robot has ever preloaded each game piece type.
@@ -251,7 +313,8 @@ def team_calculations(timds):
     calculated_data['avgOrangesFouls'] = avg([timd[
         'calculatedData'].get('orangeFouls') for timd in timds])
     calculated_data['avgLemonsSpilled'] = avg([timd[
-        'calculatedData'].get('lemonsSpilled') for timd in timds])
+        eoalculatedData at bottom.
+].get('lemonsSpilled') for timd in timds])
 
     # Calculations for percent successes for different actions.
     calculated_data['lemonLoadSuccess'] = avg_percent_success(
