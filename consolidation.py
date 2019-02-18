@@ -190,16 +190,16 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
             scout_to_keys = {scout : action.get(key) for scout,
                              action in comparison_dict.items()}
 
-            # For every key in the dictionary other than time, it just
-            # takes the majority value for the key.
-            if key != 'time':
-                final_simplified_timd[action_index][key] = \
-                        max_occurrences(scout_to_keys, sprking)
-            else:
+            if key == 'time':
                 # If the key is time, finds the correct time using the
                 # consolidate_times algorithm.
                 final_simplified_timd[action_index]['time'] = \
                     consolidate_times(scout_to_keys, sprking)
+            else:
+                # For every key in the dictionary other than time, it just
+                # takes the majority value for the key.
+                final_simplified_timd[action_index][key] = \
+                    max_occurrences(scout_to_keys, sprking)
 
     # Returns the final created timeline
     return final_simplified_timd
