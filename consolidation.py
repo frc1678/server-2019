@@ -81,8 +81,9 @@ def max_occurrences(comparison_list, sprking):
     sprking is the scout with the best spr out of the scouts, used if
     there is no clear majority."""
 
-    # Creates a dictionary with how many times an item appeared in
-    # the comparison list.
+    # Each item in the list to how many times it appeared in the list.
+    # Uses the collections module to count how many appearances each
+    # item has in the list.
     occurence_list = dict(collections.Counter(comparison_list.values()))
 
     # If the highest occurence on the occurence list is the same as
