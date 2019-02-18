@@ -209,6 +209,7 @@ def climb_consolidation(input_timelines, sprking):
 
     Returns a timeline only with climb inside it to add to the final
     timeline for the timd.
+
     input_timelines is the dictionary of the scouts to their specific
     timelines.
     sprking is the scout with the best spr out of the scouts, used when
