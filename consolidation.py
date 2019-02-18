@@ -315,9 +315,11 @@ def consolidate_temp_timds(temp_timds):
                 final_timd['timeline'] = sorted(final_timeline, \
                     key=lambda action: float(action.get('time')))
 
-        # When consolidating non-timed keys, it is easy to consolidate them,
-        # as you can simply find which value is the most common in the set
-        # of three possibilities.
+        # When consolidating non-timed keys, it is easy to consolidate
+        # them, as you can simply find which value is the most common in
+        # the set of three possibilities. The other data_fields that
+        # are not included in this set, such as timerStarted, are scout
+        # diagnostics, and not included in the final TIMD.
         elif data_field not in ['timeline', 'timerStarted',
                                 'currentCycle', 'scoutID', 'scoutName',
                                 'appVersion', 'assignmentMode',
@@ -341,11 +343,5 @@ def consolidate_temp_timds(temp_timds):
                 data_field_comparison_list, sprking)
 
             final_timd[data_field] = data_occurence_max
-
-        # If the data field doesn't fit any of the previous
-        # requirements, it is scout diagnostics, which shouldn't be
-        # consolidated into the final timd.
-        else:
-            pass
 
     return final_timd
