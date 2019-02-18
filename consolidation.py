@@ -220,8 +220,8 @@ def climb_consolidation(input_timelines, sprking):
     # Scout name to climb dictionary.
     simplified_timelines = {}
 
-    # Fills in the simplified timelines dictionary with the scout and
-    # the climb dictionary from the three tempTIMDs.
+    # Fills in 'simplified_timelines' with the scout and the climb
+    # dictionary from the three tempTIMDs.
     for scout, timeline in input_timelines.items():
         for action in timeline:
             if action.get('type') == 'climb':
