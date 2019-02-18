@@ -95,6 +95,9 @@ def temp_timd_stream_handler(snapshot):
 
     # This saves each tempTIMD in a separate text file.
     for temp_timd_name, temp_timd_value in data.items():
+        # HACK: Remove trailing '\n' (newlines) in compressed tempTIMD
+        # data.  This is a bug in the Scout app.
+        temp_timd_value = temp_timd_value.rstrip('\n')
         # This means that this tempTIMD has been deleted from Firebase
         # and we should delete it from our local copy.
         if temp_timd_value is None:
