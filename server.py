@@ -250,8 +250,8 @@ while True:
     # data to be recalculated. #TODO: Update this comment w/future development
     for timd in FILES_BY_TIMD:
         if LATEST_CALCULATIONS_BY_TIMD.get(timd) != FILES_BY_TIMD[timd]:
-            # TODO: add call for calculation process for a single TIMD
-            print(f"Did calculations for {timd}") # TODO: remove me
+            subprocess.call(f'python3 calculate_timd.py {timd}', shell=True)
+            print(f"Did calculations for {timd}")
             LATEST_CALCULATIONS_BY_TIMD[timd] = FILES_BY_TIMD[timd]
 
     # Forwards data from Cloud Firestore to Realtime Database.
