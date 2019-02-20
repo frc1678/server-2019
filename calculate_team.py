@@ -571,6 +571,9 @@ def filter_cycles(cycle_list, filters):
 def make_paired_cycle_list(cycle_list):
     """Pairs up cycles together into tuples of intakes and outakes.
 
+    Intakes are the first items and outakes are the second items in the
+    cycle tuples.
+
     cycle_list is the list of actions that need to be paired up."""
     # [::2] are the even-indexed items of the list, [1::2] are the
     # odd-indexed items of the list. The python zip function puts
@@ -609,6 +612,9 @@ def team_calculations(timds):
 
     # Find the average of different calculated timd data points using
     # the AVERAGE_DATA_FIELDS dictionary.
+    # average_data_field is the calculated team data field, and
+    # timd_data_field is the respective data point in calculated
+    # timd data.
     for average_data_field, timd_data_field in AVERAGE_DATA_FIELDS:
         calculated_data[average_data_field] = avg([timd[
             'calculatedData'].get(timd_data_field) for timd in timds])
@@ -647,6 +653,9 @@ def team_calculations(timds):
         timds]))
 
     # Repeats all the previous calculations for only the last four timds.
+    # lfm_average_data_field is the calculated team data field, and
+    # timd_data_field is the respective data point in calculated
+    # timd data.
     for lfm_average_data_field, timd_data_field in LFM_AVERAGE_DATA_FIELDS:
         calculated_data[lfm_average_data_field] = avg([
             timd['calculatedData'].get(timd_data_field) for timd in
@@ -682,6 +691,9 @@ def team_calculations(timds):
 
     # Finds the standard deviations of all the previous average data
     # fields.
+    # sd_data_field is the calculated team data field, and
+    # timd_data_field is the respective data point in calculated
+    # timd data.
     # TODO: Change name of sd avg data fields to be sd data fields
     for sd_data_field, timd_data_field in SD_DATA_FIELDS:
         calculated_data[sd_data_field] = np.std([
@@ -695,7 +707,10 @@ def team_calculations(timds):
 
     # Finds the upper half average of all the previously calculated data
     # points.
-    for p75_average_data_field, timd_data_field in P75_AVERAGE_DATA_FIELDS:
+    # p75_average_data_field is the calculated team data field, and
+    # timd_data_field is the respective data point in calculated
+    # timd data.
+    for p75_average_data_field, timd_data_field in P75_DATA_FIELDS:
         calculated_data[p75_average_data_field] = p75([
             timd['calculatedData'].get(timd_data_field) for timd in
             timds])
