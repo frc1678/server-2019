@@ -13,6 +13,8 @@ import numpy as np
 # Internal imports
 import utils
 
+# Name of team calculated average data field to the respective timd data
+# field.
 AVERAGE_DATA_FIELDS = {
     'avgOrangesScored': 'orangesScored',
     'avgLemonsScored': 'lemonsScored',
@@ -31,6 +33,8 @@ AVERAGE_DATA_FIELDS = {
     'avgTimeClimbing': 'timeClimbing',
 }
 
+# Name of team calculated average data field of the last four matches to
+# the respective timd data field.
 LFM_AVERAGE_DATA_FIELDS = {
     'lfmAvgOrangesScored': 'orangesScored',
     'lfmAvgLemonsScored': 'lemonsScored',
@@ -41,6 +45,8 @@ LFM_AVERAGE_DATA_FIELDS = {
     'lfmAvgTimeClimbing': 'timeClimbing',
 }
 
+# Name of team calculated standard deviation data field to the
+# respective timd data field.
 SD_DATA_FIELDS = {
     'sdAvgOrangesScored': 'orangesScored',
     'sdAvgLemonsScored': 'lemonsScored',
@@ -51,6 +57,8 @@ SD_DATA_FIELDS = {
     'sdAvgTimeClimbing': 'timeClimbing',
 }
 
+# Name of team calculated upper half average data field to the
+# respective timd data field.
 P75_DATA_FIELDS = {
     'p75AvgOrangesScored': 'orangesScored',
     'p75AvgLemonsScored': 'lemonsScored',
@@ -61,6 +69,8 @@ P75_DATA_FIELDS = {
     'p75AvgTimeClimbing': 'timeClimbing',
 }
 
+# Name of the team calculated success data field to the respective timd
+# data field.
 SUCCESS_DATA_FIELDS = {
     'lemonLoadSuccess': {
         'type': 'intake',
@@ -118,6 +128,8 @@ SUCCESS_DATA_FIELDS = {
         'side': ('near', True)},
 }
 
+# Name of the team calculated success data field of the last four
+# matches to the respective timd data field.
 LFM_SUCCESS_DATA_FIELDS = {
     'lfmLemonLoadSuccess': {
         'type': 'intake',
@@ -175,6 +187,8 @@ LFM_SUCCESS_DATA_FIELDS = {
         'side': ('near', True)},
 }
 
+# Name of the team calculated average cycle time data field to the
+# timeline filters specified.
 CYCLE_DATA_FIELDS = {
     'orangeCycleAll': {
         'piece': 'orange'},
@@ -200,6 +214,8 @@ CYCLE_DATA_FIELDS = {
         'level': 3},
 }
 
+# Name of the team calculated standard deviation cycle time data field
+# to the timeline filters specified.
 SD_CYCLE_DATA_FIELDS = {
     'sdOrangeCycleAll': {
         'piece': 'orange'},
@@ -225,6 +241,8 @@ SD_CYCLE_DATA_FIELDS = {
         'level': 3},
 }
 
+# Name of the team calculated upper half average cycle time data field
+# to the timeline filters specified.
 P75_CYCLE_DATA_FIELDS = {
     'p75OrangeCycleAll': {
         'piece': 'orange'},
@@ -250,6 +268,8 @@ P75_CYCLE_DATA_FIELDS = {
         'level': 3},
 }
 
+# Name of the team calculated average cycle time data field of the last
+# four matches to the timeline filters specified.
 LFM_CYCLE_DATA_FIELDS = {
     'lfmOrangeCycleAll': {
         'piece': 'orange'},
