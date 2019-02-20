@@ -162,7 +162,7 @@ LFM_SUCCESS_DATA_FIELDS = {
     'lfmOrangeSuccessUndefended': {
         'type': 'placement',
         'piece': 'orange',
-        'wasDefended': 'False',
+        'wasDefended': False,
         },
     'lfmOrangeSuccessL1': {
         'type': 'placement',
@@ -191,7 +191,7 @@ LFM_SUCCESS_DATA_FIELDS = {
     'lfmLemonSuccessUndefended': {
         'type': 'placement',
         'piece': 'lemon',
-        'wasDefended': 'False',
+        'wasDefended': False,
         },
     'lfmLemonSuccessL1': {
         'type': 'placement',
@@ -431,10 +431,9 @@ def p75(lis, exception=0.0, cycles=False):
         # the list, which are the faster cycle times.
         if cycles is True:
             upper_half = lis[:(round(len(lis) / 2))]
-            return sum(upper_half) / len(upper_half)
         else:
             upper_half = lis[-(round(len(lis) / 2)):]
-            return sum(upper_half) / len(upper_half)
+        return sum(upper_half) / len(upper_half)
 
 
 def avg(lis, exception=0.0):
