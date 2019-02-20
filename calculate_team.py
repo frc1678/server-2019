@@ -29,17 +29,17 @@ def first_pick_ability(calculated_data):
     # constants that determine how much each score is weighted
     # in determining first pick ability
     # TODO(Emily): Give the constants descriptive names
-    a = 1  # how much we care about teams scoring on lvl 1
-    b = 1  # how much we care about teams scoring on lvl 2
-    c = 1  # how much we care about teams scoring on lvl 3
-    w = 1  # something to do with robots climbing solo or with us
+    level_1_weight = 1  # how much we care about teams scoring on lvl 1
+    level_2_weight = 1  # how much we care about teams scoring on lvl 2
+    level_3_weight = 1  # how much we care about teams scoring on lvl 3
+    clibing_weight = 1  # something to do with robots climbing solo or with us
 
     level_1_teleop_score = ((2 * calculated_data['lemonsScoredTeleL1']
-        + 3 * calculated_data['orangesScoredTeleL1']) * a
+        + 3 * calculated_data['orangesScoredTeleL1']) * level_1_weight
     level_2_teleop_score = ((2 * calculated_data['lemonsScoredTeleL2']
-        + 3 * calculated_data['orangesScoredTeleL2']) * b
+        + 3 * calculated_data['orangesScoredTeleL2']) * level_2_weight
     level_3_teleop_score = ((2 * calculated_data['lemonsScoredTeleL3']
-        + 3 * calculated_data['orangesScoredTeleL3']) * c
+        + 3 * calculated_data['orangesScoredTeleL3']) * level_3_weight
 
     sand_score = calculated_data['HabCrossSuccessRate']
     sand_score += calculated_data['DidDoLevel2'] * 3
@@ -49,8 +49,8 @@ def first_pick_ability(calculated_data):
     end_game_score = 3 * calculated_data['ClimbSuccessesLevel1']
     end_game_score += 6 * calculated_data['ClimbSuccessesLevel2']
     end_game_score += 12 * calculated_data['ClimbSuccessesLevel3']
-    end_game_score *= w
-    #end_game_score += (1 - w) * calculated_data['ClimbCompatibility']
+    end_game_score *= climbing_weight
+    #end_game_score += (1 - climbing_weight) * calculated_data['ClimbCompatibility']
     #    * 12 * calculated_data['SuccessRate']
 
     pick_ability = sand_score + end_game_score
@@ -62,34 +62,35 @@ def second_pick_ability(calculated_data):
 
     calculated_data is the dictionary of calculated_data calculated for
     a team."""
-    w = 1  # something to do with robots climbing solo or with us
-    j = 1  # how much we care about driver ability
-    k = 1  # how much we prioritize speed over agility
-    z = 1  # how much we want second picks to be scoring oranges
-    y = 1  # how much we want second picks to be scoring lemons
-    Q = 1  # how much we want second picks to be defending
+    # TODO(Emily): Give the constants descriptive names
+    climbing_weight = 1  # something to do with robots climbing solo or with us
+    driving_weight = 1  # how much we care about driver ability
+    speed_weight = 1  # how much we prioritize speed over agility
+    oranges_weight = 1  # how much we want second picks to be scoring oranges
+    lemons_weight = 1  # how much we want second picks to be scoring lemons
+    defense_weight = 1  # how much we want second picks to be defending
 
     sand_score = calculated_data['HabCrossSuccessRate']
     sand_score += calculated_data['DidDoLevel2'] * 3
     sand_score += calculated_data['lemonsScoredSandstorm'] * 5
     sand_score += calculated_data['orangesScoredSandstorm'] * 3
 
-    level_1_teleop_score = calculated_data['LemonsScoredTeleL1'] * 2 * y
-    level_1_teleop_score += calculated_data['OrangesScoredTeleL1'] * 3 * z
+    level_1_teleop_score = calculated_data['LemonsScoredTeleL1'] * 2 * lemons_weight
+    level_1_teleop_score += calculated_data['OrangesScoredTeleL1'] * 3 * oranges_weight
 
     end_game_score = 3 * calculated_data['ClimbSuccessesLevel1']
     end_game_score += 6 * calculated_data['ClimbSuccessesLevel2']
     end_game_score += 12 * calculated_data['ClimbSuccessesLevel3']
-    end_game_score *= w
-    #end_game_score += (1 - w) * calculated_data['ClimbCompatibility']
+    end_game_score *= climbing_weight
+    #end_game_score += (1 - climbing_weight) * calculated_data['ClimbCompatibility']
     #    * 12 * calculated_data['SuccessRate']
 
-    driver_ability = k * calculated_data['Speed']
-    driver_ability += (1 - k) * calculated_data['Agility']
-    driver_ability *= j
+    driver_ability = speed_weight * calculated_data['Speed']
+    driver_ability += (1 - speed_weight) * calculated_data['Agility']
+    driver_ability *= driving_weight
 
 #TODO(Emily)    defense_ability = Knocking * numKnocks * (OpposingAllianceDrops - AvgOpposingAllianceDrops) + Docking * SecondsAddedtoCycle * PointsPerCyclePerSecond + PathBlocking * SecondAddedtoCycle * PointsperCycleperSecond
-    defense_ability *= Q
+    defense_ability *= defense_weight
 
     pick_ability = ?????????
     return pick_ability
