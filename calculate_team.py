@@ -89,7 +89,7 @@ SUCCESS_DATA_FIELDS = {
     'orangeSuccessUndefended': {
         'type': 'placement',
         'piece': 'orange',
-        'wasDefended': 'False',
+        'wasDefended': False,
         },
     'orangeSuccessL1': {
         'type': 'placement',
@@ -118,7 +118,7 @@ SUCCESS_DATA_FIELDS = {
     'lemonSuccessUndefended': {
         'type': 'placement',
         'piece': 'lemon',
-        'wasDefended': 'False',
+        'wasDefended': False,
         },
     'lemonSuccessL1': {
         'type': 'placement',
