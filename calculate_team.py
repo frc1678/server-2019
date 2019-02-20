@@ -502,10 +502,8 @@ def filter_timeline_actions(timds, filters):
                 else:
                     requirement = rough_requirement
                     opposite = False
-                # If the data_field requirement is level 1, it uses .get
-                # with the exception of level 1, because level isn't
-                # given if the placement is on the cargo ship, which still
-                # is considered level 1.
+                # If 'level' is not in the dictionary, it is a cargo
+                # ship placement and considered to be at level 1.
                 if data_field == 'level' and requirement == 1:
                     if opposite is False:
                         if action.get('level', 1) != 1:
@@ -554,10 +552,8 @@ def filter_cycles(cycle_list, filters):
     # specifications are met, it adds it to the filtered cycles.
     for cycle in cycle_list:
         for data_field, requirement in filters.items():
-            # If the data_field requirement is level 1, it uses .get
-            # with the exception of level 1, because level isn't
-            # given if the placement is on the cargo ship, which still
-            # is considered level 1.
+            # If 'level' is not in the dictionary, it is a cargo
+            # ship placement and considered to be at level 1.
             if data_field == 'level' and requirement == 1:
                 if cycle[1].get('level', 1) != 1:
                     break
