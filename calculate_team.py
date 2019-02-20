@@ -13,6 +13,268 @@ import numpy as np
 # Internal imports
 import utils
 
+AVERAGE_DATA_FIELDS = {
+    'avgOrangesScored': 'orangesScored',
+    'avgLemonsScored': 'lemonsScored',
+    'avgOrangesFouls': 'orangeFouls',
+    'avgLemonsSpilled': 'lemonsSpilled',
+    'avgOrangesScoredSandstorm': 'orangesScoredSandstorm',
+    'avgLemonsScoredSandstorm': 'lemonsScoredSandstorm',
+    'avgOrangesScoredTeleL1': 'orangesScoredTeleL1',
+    'avgOrangesScoredTeleL2': 'orangesScoredTeleL2',
+    'avgOrangesScoredTeleL3': 'orangesScoredTeleL3',
+    'avgLemonsScoredTeleL1': 'lemonsScoredTeleL1',
+    'avgLemonsScoredTeleL2': 'lemonsScoredTeleL2',
+    'avgLemonsScoredTeleL3': 'lemonsScoredTeleL3',
+    'avgTimeIncap': 'timeIncap',
+    'avgTimeImpaired': 'timeImpaired',
+    'avgTimeClimbing': 'timeClimbing',
+}
+
+LFM_AVERAGE_DATA_FIELDS = {
+    'lfmAvgOrangesScored': 'orangesScored',
+    'lfmAvgLemonsScored': 'lemonsScored',
+    'lfmAvgOrangesFouls': 'orangeFouls',
+    'lfmAvgLemonsSpilled': 'lemonsSpilled',
+    'lfmAvgTimeIncap': 'timeIncap',
+    'lfmAvgTimeImpaired': 'timeImpaired',
+    'lfmAvgTimeClimbing': 'timeClimbing',
+}
+
+SD_DATA_FIELDS = {
+    'sdAvgOrangesScored': 'orangesScored',
+    'sdAvgLemonsScored': 'lemonsScored',
+    'sdAvgOrangesFouls': 'orangeFouls',
+    'sdAvgLemonsSpilled': 'lemonsSpilled',
+    'sdAvgTimeIncap': 'timeIncap',
+    'sdAvgTimeImpaired': 'timeImpaired',
+    'sdAvgTimeClimbing': 'timeClimbing',
+}
+
+P75_DATA_FIELDS = {
+    'p75AvgOrangesScored': 'orangesScored',
+    'p75AvgLemonsScored': 'lemonsScored',
+    'p75AvgOrangesFouls': 'orangeFouls',
+    'p75AvgLemonsSpilled': 'lemonsSpilled',
+    'p75AvgTimeIncap': 'timeIncap',
+    'p75AvgTimeImpaired': 'timeImpaired',
+    'p75AvgTimeClimbing': 'timeClimbing',
+}
+
+SUCCESS_DATA_FIELDS = {
+    'lemonLoadSuccess': {
+        'type': 'intake',
+        'piece': 'lemon',
+        'zone': 'loadingStation'},
+    'orangeSuccessAll': {
+        'type': 'placement',
+        'piece': 'orange'},
+    'orangeSuccessDefended': {
+        'type': 'placement',
+        'piece': 'orange',
+        'wasDefended': True},
+    'orangeSuccessUndefended': {
+        'type': 'placement',
+        'piece': 'orange',
+        'wasDefended': 'False'},
+    'orangeSuccessL1': {
+        'type': 'placement',
+        'piece': 'orange',
+        'level': 1},
+    'orangeSuccessL2': {
+        'type': 'placement',
+        'piece': 'orange',
+        'level': 2},
+    'orangeSuccessL3': {
+        'type': 'placement',
+        'piece': 'orange',
+        'level': 3},
+    'lemonSuccessAll': {
+        'type': 'placement',
+        'piece': 'lemon'},
+    'lemonSuccessDefended': {
+        'type': 'placement',
+        'piece': 'lemon',
+        'wasDefended': True},
+    'lemonSuccessUndefended': {
+        'type': 'placement',
+        'piece': 'lemon',
+        'wasDefended': 'False'},
+    'lemonSuccessL1': {
+        'type': 'placement',
+        'piece': 'lemon',
+        'level': 1},
+    'lemonSuccessL2': {
+        'type': 'placement',
+        'piece': 'lemon',
+        'level': 2},
+    'lemonSuccessL3': {
+        'type': 'placement',
+        'piece': 'lemon',
+        'level': 3},
+    'lemonSuccessFromSide': {
+        'type': 'placement',
+        'piece': 'lemon',
+        'side': ('near', True)},
+}
+
+LFM_SUCCESS_DATA_FIELDS = {
+    'lfmLemonLoadSuccess': {
+        'type': 'intake',
+        'piece': 'lemon',
+        'zone': 'loadingStation'},
+    'lfmOrangeSuccessAll': {
+        'type': 'placement',
+        'piece': 'orange'},
+    'lfmOrangeSuccessDefended': {
+        'type': 'placement',
+        'piece': 'orange',
+        'wasDefended': True},
+    'lfmOrangeSuccessUndefended': {
+        'type': 'placement',
+        'piece': 'orange',
+        'wasDefended': 'False'},
+    'lfmOrangeSuccessL1': {
+        'type': 'placement',
+        'piece': 'orange',
+        'level': 1},
+    'lfmOrangeSuccessL2': {
+        'type': 'placement',
+        'piece': 'orange',
+        'level': 2},
+    'lfmOrangeSuccessL3': {
+        'type': 'placement',
+        'piece': 'orange',
+        'level': 3},
+    'lfmLemonSuccessAll': {
+        'type': 'placement',
+        'piece': 'lemon'},
+    'lfmLemonSuccessDefended': {
+        'type': 'placement',
+        'piece': 'lemon',
+        'wasDefended': True},
+    'lfmLemonSuccessUndefended': {
+        'type': 'placement',
+        'piece': 'lemon',
+        'wasDefended': 'False'},
+    'lfmLemonSuccessL1': {
+        'type': 'placement',
+        'piece': 'lemon',
+        'level': 1},
+    'lfmLemonSuccessL2': {
+        'type': 'placement',
+        'piece': 'lemon',
+        'level': 2},
+    'lfmLemonSuccessL3': {
+        'type': 'placement',
+        'piece': 'lemon',
+        'level': 3},
+    'lfmLemonSuccessFromSide': {
+        'type': 'placement',
+        'piece': 'lemon',
+        'side': ('near', True)},
+}
+
+CYCLE_DATA_FIELDS = {
+    'orangeCycleAll': {
+        'piece': 'orange'},
+    'orangeCycleL1': {
+        'piece': 'orange',
+        'level': 1},
+    'orangeCycleL2': {
+        'piece': 'orange',
+        'level': 2},
+    'orangeCycleL3': {
+        'piece': 'orange',
+        'level': 3},
+    'lemonCycleAll': {
+        'piece': 'lemon'},
+    'lemonCycleL1': {
+        'piece': 'lemon',
+        'level': 1},
+    'lemonCycleL2': {
+        'piece': 'lemon',
+        'level': 2},
+    'lemonCycleL3': {
+        'piece': 'lemon',
+        'level': 3},
+}
+
+SD_CYCLE_DATA_FIELDS = {
+    'sdOrangeCycleAll': {
+        'piece': 'orange'},
+    'sdOrangeCycleL1': {
+        'piece': 'orange',
+        'level': 1},
+    'sdOrangeCycleL2': {
+        'piece': 'orange',
+        'level': 2},
+    'sdOrangeCycleL3': {
+        'piece': 'orange',
+        'level': 3},
+    'sdLemonCycleAll': {
+        'piece': 'lemon'},
+    'sdLemonCycleL1': {
+        'piece': 'lemon',
+        'level': 1},
+    'sdLemonCycleL2': {
+        'piece': 'lemon',
+        'level': 2},
+    'sdLemonCycleL3': {
+        'piece': 'lemon',
+        'level': 3},
+}
+
+P75_CYCLE_DATA_FIELDS = {
+    'p75OrangeCycleAll': {
+        'piece': 'orange'},
+    'p75OrangeCycleL1': {
+        'piece': 'orange',
+        'level': 1},
+    'p75OrangeCycleL2': {
+        'piece': 'orange',
+        'level': 2},
+    'p75OrangeCycleL3': {
+        'piece': 'orange',
+        'level': 3},
+    'p75LemonCycleAll': {
+        'piece': 'lemon'},
+    'p75LemonCycleL1': {
+        'piece': 'lemon',
+        'level': 1},
+    'p75LemonCycleL2': {
+        'piece': 'lemon',
+        'level': 2},
+    'p75LemonCycleL3': {
+        'piece': 'lemon',
+        'level': 3},
+}
+
+LFM_CYCLE_DATA_FIELDS = {
+    'lfmOrangeCycleAll': {
+        'piece': 'orange'},
+    'lfmOrangeCycleL1': {
+        'piece': 'orange',
+        'level': 1},
+    'lfmOrangeCycleL2': {
+        'piece': 'orange',
+        'level': 2},
+    'lfmOrangeCycleL3': {
+        'piece': 'orange',
+        'level': 3},
+    'lfmLemonCycleAll': {
+        'piece': 'lemon'},
+    'lfmLemonCycleL1': {
+        'piece': 'lemon',
+        'level': 1},
+    'lfmLemonCycleL2': {
+        'piece': 'lemon',
+        'level': 2},
+    'lfmLemonCycleL3': {
+        'piece': 'lemon',
+        'level': 3},
+}
+
 def first_pick_ability(calculated_data):
     """Calculates the relative first pick score for a team.
 
@@ -67,20 +329,33 @@ def calculate_p75_cycle_time(cycles):
     for cycle in cycles:
         cycle_times.append(cycle[0].get('time') -
                            cycle[1].get('time'))
-    return p75(cycle_times)
+    return p75(cycle_times, cycles=True)
 
-def p75(lis, exception=0.0):
+def p75(lis, exception=0.0, cycles=False):
     """Calculates the average of the upper half of a list.
 
     lis is the list that is averaged.
     exception is returned if there is a divide by zero error. The
     default is 0.0 because the main usage in in percentage calculations.
+    cycles is whether or not the data set is cycle times. If it is, it
+    takes the bottom half of the list, rather than the upper half,
+    because the lower half is the faster cycle times.
     """
+    # Removes the Nones from the list because if they are part of the
+    # list, it returns an error.
+    lis = [item for item in lis if item is not None]
     if len(lis) == 0:
         return exception
     else:
-        upper_half = lis[-(round(len(lis) / 2)):]
-        return sum(upper_half) / len(upper_half)
+        # If the cycles specifcation is true, it takes the lower half of
+        # the list, which are the faster cycle times.
+        if cycles is True:
+            upper_half = lis[:(round(len(lis) / 2))]
+            return sum(upper_half) / len(upper_half)
+        else:
+            upper_half = lis[-(round(len(lis) / 2)):]
+            return sum(upper_half) / len(upper_half)
+
 
 def avg(lis, exception=0.0):
     """Calculates the average of a list.
@@ -89,6 +364,9 @@ def avg(lis, exception=0.0):
     exception is returned if there is a divide by zero error. The
     default is 0.0 because the main usage in in percentage calculations.
     """
+    # Removes the Nones from the list because if they are part of the
+    # list, it returns an error.
+    lis = [item for item in lis if item is not None]
     if len(lis) == 0:
         return exception
     else:
@@ -98,26 +376,26 @@ def avg_percent_success(actions):
     """Finds the percent of times didSucceed is true in a list of actions.
 
     actions is the list of actions that can either succeed or fail."""
-    successes = [action.get('didSucceed') for action in actions]
+    successes = [action['didSucceed'] for action in actions]
     return round(100 * avg(successes))
 
 def sd_percent_success(actions):
     """Finds the percent of times didSucceed is true in a list of actions.
 
     actions is the list of actions that can either succeed or fail."""
-    successes = [action.get('didSucceed') for action in actions]
+    successes = [action['didSucceed'] for action in actions]
     return round(100 * np.std(successes))
 
 def p75_percent_success(actions):
     """Finds the percent of times didSucceed is true in a list of actions.
 
     actions is the list of actions that can either succeed or fail."""
-    successes = [action.get('didSucceed') for action in actions]
+    successes = [action['didSucceed'] for action in actions]
     return round(100 * p75(successes))
 
-def filter_timeline_actions(timds, **filters):
+def filter_timeline_actions(timds, filters):
     """Puts a timeline through a filter to use for calculations.
-    
+
     timds are the timds that data is calculated from.
     filters are the specifications that certain data points inside the
     timeline must fit to be included in the returned timeline. The value
@@ -134,18 +412,20 @@ def filter_timeline_actions(timds, **filters):
             for data_field, rough_requirement in filters.items():
                 # Tests if the rough_requirement is a tuple or not. If
                 # it is a tuple, the second item in the tuple is a bool
-                # showing whether or not opposite is True. If opposite
-                # is True, it validates that the specification is not
-                # met, rather than is met.
+                # showing whether or not 'opposite' is True. If opposite
+                # is True, it returns everything that does *not* meet
+                # the specified key:value pair criteria, rather than
+                # returning everything that meets the criteria.
                 if type(rough_requirement) == tuple:
                     requirement = rough_requirement[0]
                     opposite = rough_requirement[1]
                 else:
                     requirement = rough_requirement
                     opposite = False
-                # If the data_field requirement is level 1, it instead
-                # checks for it not being level 2 or 3, because level 1
-                # can encompass all non-level 2 or 3 placement.
+                # If the data_field requirement is level 1, it uses .get
+                # with the exception of level 1, because level isn't
+                # given if the placement is on the cargo ship, which still
+                # is considered level 1.
                 if data_field == 'level' and requirement == 1:
                     if opposite is False:
                         if action.get('level', 1) != 1:
@@ -180,11 +460,12 @@ def filter_timeline_actions(timds, **filters):
                 filtered_timeline.append(action)
     return filtered_timeline
 
-def filter_cycles(cycle_list, **filters):
+def filter_cycles(cycle_list, filters):
     """Puts cycles through filters to meet specific requirements.
 
     cycle_list is a list of tuples where the first item is an intake and
-    the second action is the placement or drop.
+    the second action is the placement or drop. When judging the
+    filters, the placement is always the one used to filter.
     filters are the specifications that certain data points inside the
     cycles must fit to be included in the returned cycles."""
     filtered_cycles = []
@@ -193,9 +474,10 @@ def filter_cycles(cycle_list, **filters):
     # specifications are met, it adds it to the filtered cycles.
     for cycle in cycle_list:
         for data_field, requirement in filters.items():
-            # If the data_field requirement is level 1, it instead
-            # checks for it not being level 2 or 3, because level 1 can
-            # encompass all non-level 2 or 3 placement.
+            # If the data_field requirement is level 1, it uses .get
+            # with the exception of level 1, because level isn't
+            # given if the placement is on the cargo ship, which still
+            # is considered level 1.
             if data_field == 'level' and requirement == 1:
                 if cycle[1].get('level', 1) != 1:
                     break
@@ -210,7 +492,7 @@ def filter_cycles(cycle_list, **filters):
     return filtered_cycles
 
 def make_paired_cycle_list(cycle_list):
-    """Pairs up cycles together into tuples.
+    """Pairs up cycles together into tuples of intakes and outakes.
 
     cycle_list is the list of actions that need to be paired up."""
     # [::2] are the even-indexed items of the list, [1::2] are the
@@ -222,26 +504,25 @@ def team_calculations(timds):
     """Calculates all the calculated data for one team.
 
     Uses a team's timds to make many calculations and return them in a
-    dictionary of calculatedData, the same that is used when exporting
-    to the firebase later on.
+    dictionary.
 
-    timds is the list of timds that a team has participated in, this is
-    where the data comes from when making calculations."""
+    timds is the list of each match that a team has participated in."""
     calculated_data = {}
 
-    # The list of the last four timds used for lfm calculations.
+    # The list of the last four timds used for lfm (last four matches)
+    # calculations.
     lfm_timds = sorted(timds, key=lambda timd: timd.get('matchNumber'))[-4:]
 
     # If the robot has ground intaked a piece at any point in the
     # competition, the respective hasGroundIntake data point is true.
     calculated_data['hasOrangeGroundIntake'] = True if \
-        filter_timeline_actions(timds, type='intake', piece='orange', \
-        zone=('loadingStation', True)) else False
+        len(filter_timeline_actions(timds, {'type': 'intake', 'piece': \
+        'orange', 'zone': ('loadingStation', True)})) > 0 else False
     calculated_data['hasLemonGroundIntake'] = True if \
-        filter_timeline_actions(timds, type='intake', piece='lemon', \
-        zone=('loadingStation', True)) else False
+        len(filter_timeline_actions(timds, {'type': 'intake', 'piece': \
+        'orange', 'zone': ('loadingStation', True)})) > 0 else False
 
-    # If the robot has ever preloaded each game piece type.
+    # If the robot has ever preloaded the game piece type.
     calculated_data['didPreloadOrange'] = True if [
         timd for timd in timds if timd.get('preload') == 'orange'
         ] else False
@@ -249,75 +530,19 @@ def team_calculations(timds):
         timd for timd in timds if timd.get('preload') == 'lemon'
         ] else False
 
-    # Find the average of different calculated timd data points.
-    calculated_data['avgOrangesScored'] = avg([timd[
-        'calculatedData'].get('orangesScored') for timd in timds])
-    calculated_data['avgLemonsScored'] = avg([timd[
-        'calculatedData'].get('lemonsScored') for timd in timds])
-    calculated_data['avgOrangesFouls'] = avg([timd[
-        'calculatedData'].get('orangeFouls') for timd in timds])
-    calculated_data['avgLemonsSpilled'] = avg([timd[
-        'calculatedData'].get('lemonsSpilled') for timd in timds])
-    calculated_data['avgOrangesScoredSandstorm'] = avg([timd[
-        'calculatedData'].get('orangesScoredSandstorm') for timd in timds])
-    calculated_data['avgLemonsScoredSandstorm'] = avg([timd[
-        'calculatedData'].get('lemonsScoredSandstorm') for timd in timds])
-    calculated_data['avgOrangesScoredTeleL1'] = avg([timd[
-        'calculatedData'].get('orangesScoredTeleL1') for timd in timds])
-    calculated_data['avgOrangesScoredTeleL2'] = avg([timd[
-        'calculatedData'].get('orangesScoredTeleL2') for timd in timds])
-    calculated_data['avgOrangesScoredTeleL3'] = avg([timd[
-        'calculatedData'].get('orangesScoredTeleL3') for timd in timds])
-    calculated_data['avgLemonsScoredTeleL1'] = avg([timd[
-        'calculatedData'].get('lemonsScoredTeleL1') for timd in timds])
-    calculated_data['avgLemonsScoredTeleL2'] = avg([timd[
-        'calculatedData'].get('lemonsScoredTeleL2') for timd in timds])
-    calculated_data['avgLemonsScoredTeleL3'] = avg([timd[
-        'calculatedData'].get('lemonsScoredTeleL3') for timd in timds])
+    # Find the average of different calculated timd data points using
+    # the AVERAGE_DATA_FIELDS dictionary.
+    for average_data_field, timd_data_field in AVERAGE_DATA_FIELDS:
+        calculated_data[average_data_field] = avg([timd[
+            'calculatedData'].get(timd_data_field) for timd in timds])
 
-    # Calculations for percent successes for different actions.
-    calculated_data['lemonLoadSuccess'] = avg_percent_success(
-        filter_timeline_actions(timds, type='intake', piece='lemon', \
-        zone='leftLoadingStation'))
-    calculated_data['orangeSuccessAll'] = avg_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='orange'))
-    calculated_data['orangeSuccessDefended'] = avg_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='orange', wasDefended='True'))
-    calculated_data['orangeSuccessUndefended'] = avg_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='orange', wasDefended='False'))
-    calculated_data['orangeSuccessL1'] = avg_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='orange', level=1))
-    calculated_data['orangeSuccessL2'] = avg_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='orange', level=2))
-    calculated_data['orangeSuccessL3'] = avg_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='orange', level=3))
-    calculated_data['lemonSuccessAll'] = avg_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='lemon'))
-    calculated_data['lemonSuccessDefended'] = avg_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='lemon', wasDefended='True'))
-    calculated_data['lemonSuccessUndefended'] = avg_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='lemon', wasDefended='False'))
-    calculated_data['lemonSuccessL1'] = avg_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='lemon', level=1))
-    calculated_data['lemonSuccessL2'] = avg_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='lemon', level=2))
-    calculated_data['lemonSuccessL3'] = avg_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='lemon', level=3))
-    calculated_data['lemonSuccessFromSide'] = avg_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='lemon', side=('near', True)))
+    # Calculations for percent successes for different actions using the
+    # SUCCESS_DATA_FIELDS dictionary.
+    for success_data_field, specifications in SUCCESS_DATA_FIELDS:
+        calculated_data[success_data_field] = avg_percent_success(
+            filter_timeline_actions(timds, specifications))
+
+    # Percentages of hab line successes.
     calculated_data['habLineSuccessL1'] = round(100 * avg([
         timd['crossedHabLine'] for timd in timds if
         timd.get('startingLevel') == 1]))
@@ -331,21 +556,13 @@ def team_calculations(timds):
     calculated_data['avgBadDecisions'] = avg([
         timd.get('numBadDecisions') for timd in timds])
 
-    # Finds the averages of different calculated times in timds.
-    calculated_data['avgTimeIncap'] = avg([
-        timd['calculatedData'].get('timeIncap') for timd in timds])
-    calculated_data['avgTimeImpaired'] = avg([
-        timd['calculatedData'].get('timeImpaired') for timd in timds])
-    calculated_data['avgTimeClimbing'] = avg([
-        timd['calculatedData'].get('timeClimbing') for timd in timds])
-
     # Finds the percent of matches a team was incap, impaired, and no show.
     calculated_data['percentIncap'] = round(100 * avg([
-        True if timd['calculatedData'].get('timeIncap') > 0.0 else
-        False for timd in timds]))
+        True if timd['calculatedData']['timeIncap'] > 0.0 else False for
+        timd in timds]))
     calculated_data['percentImpaired'] = round(100 * avg([
-        True if timd['calculatedData'].get('timeImpaired') > 0.0 else
-        False for timd in timds]))
+        True if timd['calculatedData']['timeImpaired'] > 0.0 else False
+        for timd in timds]))
     calculated_data['percentNoShow'] = round(100 * avg([
         timd.get('isNoShow') for timd in timds]))
     calculated_data['percentIncapEntireMatch'] = round(100 * avg([
@@ -353,61 +570,15 @@ def team_calculations(timds):
         timds]))
 
     # Repeats all the previous calculations for only the last four timds.
-    calculated_data['lfmAvgOrangesScored'] = avg([
-        timd['calculatedData'].get('orangesScored') for timd in
-        lfm_timds])
-    calculated_data['lfmAvgLemonsScored'] = avg([
-        timd['calculatedData'].get('lemonsScored') for timd in
-        lfm_timds])
-    calculated_data['lfmAvgOrangesFouls'] = avg([
-        timd['calculatedData'].get('orangeFouls') for timd in
-        lfm_timds])
-    calculated_data['lfmAvgLemonsSpilled'] = avg([
-        timd['calculatedData'].get('lemonsSpilled') for timd in
-        lfm_timds])
+    for lfm_average_data_field, timd_data_field in LFM_AVERAGE_DATA_FIELDS:
+        calculated_data[lfm_average_data_field] = avg([
+            timd['calculatedData'].get(timd_data_field) for timd in
+            lfm_timds])
 
-    calculated_data['lfmLemonLoadSuccess'] = avg_percent_success(
-        filter_timeline_actions(lfm_timds, type='intake', \
-        piece='lemon', zone='loadingStation'))
-    calculated_data['lfmOrangeSuccessAll'] = avg_percent_success(
-        filter_timeline_actions(lfm_timds, type='placement', \
-        piece='orange'))
-    calculated_data['lfmOrangeSuccessDefended'] = avg_percent_success(
-        filter_timeline_actions(lfm_timds, type='placement', \
-        piece='orange', wasDefended=True))
-    calculated_data['lfmOrangeSuccessUndefended'] = avg_percent_success(
-        filter_timeline_actions(lfm_timds, type='placement', \
-        piece='orange', wasDefended=False))
-    calculated_data['lfmOrangeSuccessL1'] = avg_percent_success(
-        filter_timeline_actions(lfm_timds, type='placement', \
-        piece='orange', level=1))
-    calculated_data['lfmOrangeSuccessL2'] = avg_percent_success(
-        filter_timeline_actions(lfm_timds, type='placement', \
-        piece='orange', level=2))
-    calculated_data['lfmOrangeSuccessL3'] = avg_percent_success(
-        filter_timeline_actions(lfm_timds, type='placement', \
-        piece='orange', level=3))
-    calculated_data['lfmLemonSuccessAll'] = avg_percent_success(
-        filter_timeline_actions(lfm_timds, type='placement', \
-        piece='lemon'))
-    calculated_data['lfmLemonSuccessDefended'] = avg_percent_success(
-        filter_timeline_actions(lfm_timds, type='placement', \
-        piece='lemon', wasDefended=True))
-    calculated_data['lfmLemonSuccessUndefended'] = avg_percent_success(
-        filter_timeline_actions(lfm_timds, type='placement', \
-        piece='lemon', wasDefended=False))
-    calculated_data['lfmLemonSuccessL1'] = avg_percent_success(
-        filter_timeline_actions(lfm_timds, type='placement', \
-        piece='lemon', level=1))
-    calculated_data['lfmLemonSuccessL2'] = avg_percent_success(
-        filter_timeline_actions(lfm_timds, type='placement', \
-        piece='lemon', level=2))
-    calculated_data['lfmLemonSuccessL3'] = avg_percent_success(
-        filter_timeline_actions(lfm_timds, type='placement', \
-        piece='lemon', level=3))
-    calculated_data['lfmLemonSuccessFromSide'] = avg_percent_success(
-        filter_timeline_actions(lfm_timds, type='placement', \
-        piece='lemon', side=('near', True)))
+    for lfm_success_data_field, specifications in LFM_SUCCESS_DATA_FIELDS:
+        calculated_data[lfm_success_data_field] = avg_percent_success(
+            filter_timeline_actions(lfm_timds, specifications))
+
     calculated_data['lfmHabLineSuccessL1'] = round(100 * avg([
         timd['crossedHabLine'] for timd in lfm_timds if
         timd.get('startingLevel') == 1]))
@@ -420,195 +591,42 @@ def team_calculations(timds):
     calculated_data['lfmAvgBadDecisions'] = avg([
         timd.get('numBadDecisions') for timd in lfm_timds])
 
-    calculated_data['lfmAvgTimeIncap'] = avg([
-        timd['calculatedData'].get('timeIncap') for timd in
-        lfm_timds])
-    calculated_data['lfmAvgTimeImpaired'] = avg([
-        timd['calculatedData'].get('timeImpaired') for timd in
-        lfm_timds])
-    calculated_data['lfmAvgTimeClimbing'] = avg([
-        timd['calculatedData'].get('timeClimbing') for timd in
-        lfm_timds])
-
     calculated_data['lfmPercentIncap'] = round(100 * avg([
-        True if timd['calculatedData'].get('timeIncap') > 0.0 else
+        True if timd['calculatedData']['timeIncap'] > 0.0 else
         False for timd in lfm_timds]))
     calculated_data['lfmPercentImpaired'] = round(100 * avg([
-        True if timd['calculatedData'].get('timeImpaired') > 0.0 else
-        False for timd in lfm_timds]))
+        True if timd['calculatedData']['timeImpaired'] > 0.0
+        else False for timd in lfm_timds]))
     calculated_data['lfmPercentNoShow'] = round(100 * avg([
         timd.get('isNoShow') for timd in lfm_timds]))
     calculated_data['lfmPercentIncapEntireMatch'] = round(100 * avg([
         timd['calculatedData'].get('isIncapEntireMatch') for timd in
         lfm_timds]))
 
-    # Finds the standard deviations of all the previous calculations
-    # instead of averages.
-    calculated_data['sdAvgOrangesScored'] = np.std([
-        timd['calculatedData'].get('orangesScored') for timd in timds])
-    calculated_data['sdAvgLemonsScored'] = np.std([
-        timd['calculatedData'].get('lemonsScored') for timd in timds])
-    calculated_data['sdAvgOrangesFouls'] = np.std([
-        timd['calculatedData'].get('orangeFouls') for timd in timds])
-    calculated_data['sdAvgLemonsSpilled'] = np.std([
-        timd['calculatedData'].get('lemonsSpilled') for timd in timds])
-
-    calculated_data['sdLemonLoadSuccess'] = sd_percent_success(
-        filter_timeline_actions(timds, type='intake', piece='lemon', \
-        zone='loadingStation'))
-    calculated_data['sdOrangeSuccessAll'] = sd_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='orange'))
-    calculated_data['sdOrangeSuccessDefended'] = sd_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='orange', wasDefended=True))
-    calculated_data['sdOrangeSuccessUndefended'] = sd_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='orange', wasDefended=False))
-    calculated_data['sdOrangeSuccessL1'] = sd_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='orange', level=1))
-    calculated_data['sdOrangeSuccessL2'] = sd_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='orange', level=2))
-    calculated_data['sdOrangeSuccessL3'] = sd_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='orange', level=3))
-    calculated_data['sdLemonSuccessAll'] = sd_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='lemon'))
-    calculated_data['sdLemonSuccessDefended'] = sd_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='lemon', wasDefended=True))
-    calculated_data['sdLemonSuccessUndefended'] = sd_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='lemon', wasDefended=False))
-    calculated_data['sdLemonSuccessL1'] = sd_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='lemon', level=1))
-    calculated_data['sdLemonSuccessL2'] = sd_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='lemon', level=2))
-    calculated_data['sdLemonSuccessL3'] = sd_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='lemon', level=3))
-    calculated_data['sdLemonSuccessFromSide'] = sd_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='lemon', side=('near', True)))
-    calculated_data['sdHabLineSuccessL1'] = round(100 * np.std([
-        timd['crossedHabLine'] for timd in timds if
-        timd.get('startingLevel') == 1]))
-    calculated_data['sdHabLineSuccessL2'] = round(100 * np.std([
-        timd['crossedHabLine'] for timd in timds if
-        timd.get('startingLevel') == 2]))
+    # Finds the standard deviations of all the previous average data
+    # fields.
+    # TODO: Change name of sd avg data fields to be sd data fields
+    for sd_data_field, timd_data_field in SD_DATA_FIELDS:
+        calculated_data[sd_data_field] = np.std([
+            timd['calculatedData'].get(timd_data_field) for timd in
+            timds])
 
     calculated_data['sdAvgGoodDecisions'] = np.std([
         timd.get('numGoodDecisions') for timd in timds])
     calculated_data['sdAvgBadDecisions'] = np.std([
         timd.get('numBadDecisions') for timd in timds])
 
-    calculated_data['sdAvgTimeIncap'] = np.std([
-        timd['calculatedData'].get('timeIncap') for timd in timds])
-    calculated_data['sdAvgTimeImpaired'] = np.std([
-        timd['calculatedData'].get('timeImpaired') for timd in timds])
-    calculated_data['sdAvgTimeClimbing'] = np.std([
-        timd['calculatedData'].get('timeClimbing') for timd in timds])
-
-    calculated_data['sdPercentIncap'] = round(100 * np.std([
-        True if timd['calculatedData'].get('timeIncap') > 0.0 else
-        False for timd in timds]))
-    calculated_data['sdPercentImpaired'] = round(100 * np.std([
-        True if timd['calculatedData'].get('timeImpaired') > 0.0 else
-        False for timd in timds]))
-    calculated_data['sdPercentNoShow'] = round(100 * np.std([
-        timd.get('isNoShow') for timd in timds]))
-    calculated_data['sdPercentIncapEntireMatch'] = round(100 * np.std([
-        timd['calculatedData'].get('isIncapEntireMatch') for timd in
-        timds]))
-
     # Finds the upper half average of all the previously calculated data
     # points.
-    calculated_data['p75AvgOrangesScored'] = p75([
-        timd['calculatedData'].get('orangesScored') for timd in timds])
-    calculated_data['p75AvgLemonsScored'] = p75([
-        timd['calculatedData'].get('lemonsScored') for timd in timds])
-    calculated_data['p75AvgOrangesFouls'] = p75([
-        timd['calculatedData'].get('orangeFouls') for timd in timds])
-    calculated_data['p75AvgLemonsSpilled'] = p75([
-        timd['calculatedData'].get('lemonsSpilled') for timd in timds])
-
-    calculated_data['p75LemonLoadSuccess'] = p75_percent_success(
-        filter_timeline_actions(timds, type='intake', piece='lemon', \
-        zone='loadingStation'))
-    calculated_data['p75OrangeSuccessAll'] = p75_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='orange'))
-    calculated_data['p75OrangeSuccessDefended'] = p75_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='orange', wasDefended=True))
-    calculated_data['p75OrangeSuccessUndefended'] = p75_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='orange', wasDefended=False))
-    calculated_data['p75OrangeSuccessL1'] = p75_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='orange', level=1))
-    calculated_data['p75OrangeSuccessL2'] = p75_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='orange', level=2))
-    calculated_data['p75OrangeSuccessL3'] = p75_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='orange', level=3))
-    calculated_data['p75LemonSuccessAll'] = p75_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='lemon'))
-    calculated_data['p75LemonSuccessDefended'] = p75_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='lemon', wasDefended=True))
-    calculated_data['p75LemonSuccessUndefended'] = p75_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='lemon', wasDefended=False))
-    calculated_data['p75LemonSuccessL1'] = p75_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='lemon', level=1))
-    calculated_data['p75LemonSuccessL2'] = p75_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='lemon', level=2))
-    calculated_data['p75LemonSuccessL3'] = p75_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='lemon', level=3))
-    calculated_data['p75LemonSuccessFromSide'] = p75_percent_success(
-        filter_timeline_actions(timds, type='placement', \
-        piece='lemon', side=('near', True)))
-    calculated_data['p75HabLineSuccessL1'] = round(100 * p75([
-        timd['crossedHabLine'] for timd in timds if
-        timd.get('startingLevel') == 1]))
-    calculated_data['p75HabLineSuccessL2'] = round(100 * p75([
-        timd['crossedHabLine'] for timd in timds if
-        timd.get('startingLevel') == 2]))
+    for p75_average_data_field, timd_data_field in P75_AVERAGE_DATA_FIELDS:
+        calculated_data[p75_average_data_field] = p75([
+            timd['calculatedData'].get(timd_data_field) for timd in
+            timds])
 
     calculated_data['p75AvgGoodDecisions'] = p75([
         timd.get('numGoodDecisions') for timd in timds])
     calculated_data['p75AvgBadDecisions'] = p75([
         timd.get('numBadDecisions') for timd in timds])
-
-    calculated_data['p75AvgTimeIncap'] = p75([
-        timd['calculatedData'].get('timeIncap') for timd in timds])
-    calculated_data['p75AvgTimeImpaired'] = p75([
-        timd['calculatedData'].get('timeImpaired') for timd in timds])
-    calculated_data['p75AvgTimeClimbing'] = p75([
-        timd['calculatedData'].get('timeClimbing') for timd in timds])
-
-    calculated_data['p75PercentIncap'] = round(100 * p75([
-        True if timd['calculatedData'].get('timeIncap') > 0.0 else
-        False for timd in timds]))
-    calculated_data['p75PercentImpaired'] = round(100 * p75([
-        True if timd['calculatedData'].get('timeImpaired') > 0.0 else
-        False for timd in timds]))
-    calculated_data['p75PercentNoShow'] = round(100 * p75([
-        timd.get('isNoShow') for timd in timds]))
-    calculated_data['p75PercentIncapEntireMatch'] = round(100 * p75([
-        timd['calculatedData'].get('isIncapEntireMatch') for timd in
-        timds]))
 
     # Takes out all the cycles in all the timds for a team. These will
     # be used for average cycle time calculations.
@@ -632,58 +650,20 @@ def team_calculations(timds):
             total_cycle_list += paired_cycle_list
 
     # Calculates the average cycle time for each cycle type.
-    calculated_data['orangeCycleAll'] = calculate_avg_cycle_time(
-        filter_cycles(total_cycle_list, piece='orange'))
-    calculated_data['orangeCycleL1'] = calculate_avg_cycle_time(
-        filter_cycles(total_cycle_list, piece='orange', level=1))
-    calculated_data['orangeCycleL2'] = calculate_avg_cycle_time(
-        filter_cycles(total_cycle_list, piece='orange', level=2))
-    calculated_data['orangeCycleL3'] = calculate_avg_cycle_time(
-        filter_cycles(total_cycle_list, piece='orange', level=3))
-    calculated_data['lemonCycleAll'] = calculate_avg_cycle_time(
-        filter_cycles(total_cycle_list, piece='lemon'))
-    calculated_data['lemonCycleL1'] = calculate_avg_cycle_time(
-        filter_cycles(total_cycle_list, piece='lemon', level=1))
-    calculated_data['lemonCycleL2'] = calculate_avg_cycle_time(
-        filter_cycles(total_cycle_list, piece='lemon', level=2))
-    calculated_data['lemonCycleL3'] = calculate_avg_cycle_time(
-        filter_cycles(total_cycle_list, piece='lemon', level=3))
+    for cycle_data_field, specifications in CYCLE_DATA_FIELDS:
+        calculated_data[cycle_data_field] = calculate_avg_cycle_time(
+            filter_cycles(total_cycle_list, specifications))
 
     # Calculates the standard deviation cycle time for each cycle type.
-    calculated_data['sdOrangeCycleAll'] = calculate_std_cycle_time(
-        filter_cycles(total_cycle_list, piece='orange'))
-    calculated_data['sdOrangeCycleL1'] = calculate_std_cycle_time(
-        filter_cycles(total_cycle_list, piece='orange', level=1))
-    calculated_data['sdOrangeCycleL2'] = calculate_std_cycle_time(
-        filter_cycles(total_cycle_list, piece='orange', level=2))
-    calculated_data['sdOrangeCycleL3'] = calculate_std_cycle_time(
-        filter_cycles(total_cycle_list, piece='orange', level=3))
-    calculated_data['sdLemonCycleAll'] = calculate_std_cycle_time(
-        filter_cycles(total_cycle_list, piece='lemon'))
-    calculated_data['sdLemonCycleL1'] = calculate_std_cycle_time(
-        filter_cycles(total_cycle_list, piece='lemon', level=1))
-    calculated_data['sdLemonCycleL2'] = calculate_std_cycle_time(
-        filter_cycles(total_cycle_list, piece='lemon', level=2))
-    calculated_data['sdLemonCycleL3'] = calculate_std_cycle_time(
-        filter_cycles(total_cycle_list, piece='lemon', level=3))
+    for sd_cycle_data_field, specifications in SD_CYCLE_DATA_FIELDS:
+        calculated_data[sd_cycle_data_field] = calculate_std_cycle_time(
+            filter_cycles(total_cycle_list, specifications))
 
     # Finds the upper half average of each type of cycle.
-    calculated_data['p75OrangeCycleAll'] = calculate_p75_cycle_time(
-        filter_cycles(total_cycle_list, piece='orange'))
-    calculated_data['p75OrangeCycleL1'] = calculate_p75_cycle_time(
-        filter_cycles(total_cycle_list, piece='orange', level=1))
-    calculated_data['p75OrangeCycleL2'] = calculate_p75_cycle_time(
-        filter_cycles(total_cycle_list, piece='orange', level=2))
-    calculated_data['p75OrangeCycleL3'] = calculate_p75_cycle_time(
-        filter_cycles(total_cycle_list, piece='orange', level=3))
-    calculated_data['p75LemonCycleAll'] = calculate_p75_cycle_time(
-        filter_cycles(total_cycle_list, piece='lemon'))
-    calculated_data['p75LemonCycleL1'] = calculate_p75_cycle_time(
-        filter_cycles(total_cycle_list, piece='lemon', level=1))
-    calculated_data['p75LemonCycleL2'] = calculate_p75_cycle_time(
-        filter_cycles(total_cycle_list, piece='lemon', level=2))
-    calculated_data['p75LemonCycleL3'] = calculate_p75_cycle_time(
-        filter_cycles(total_cycle_list, piece='lemon', level=3))
+    for p75_cycle_data_field, specifications in P75_CYCLE_DATA_FIELDS:
+        calculated_data[p75_cycle_data_field] = \
+            calculate_p75_cycle_time(filter_cycles(total_cycle_list, \
+            specifications))
 
     # Repeats the process of gathering cycles for a team, except limited
     # to only the last four matches.
@@ -707,22 +687,10 @@ def team_calculations(timds):
             lfm_cycle_list += paired_cycle_list
 
     # Calculates the last four match average for each cycle type.
-    calculated_data['lfmOrangeCycleAll'] = calculate_avg_cycle_time(
-        filter_cycles(lfm_cycle_list, piece='orange'))
-    calculated_data['lfmOrangeCycleL1'] = calculate_avg_cycle_time(
-        filter_cycles(lfm_cycle_list, piece='orange', level=1))
-    calculated_data['lfmOrangeCycleL2'] = calculate_avg_cycle_time(
-        filter_cycles(lfm_cycle_list, piece='orange', level=2))
-    calculated_data['lfmOrangeCycleL3'] = calculate_avg_cycle_time(
-        filter_cycles(lfm_cycle_list, piece='orange', level=3))
-    calculated_data['lfmLemonCycleAll'] = calculate_avg_cycle_time(
-        filter_cycles(lfm_cycle_list, piece='lemon'))
-    calculated_data['lfmLemonCycleL1'] = calculate_avg_cycle_time(
-        filter_cycles(lfm_cycle_list, piece='lemon', level=1))
-    calculated_data['lfmLemonCycleL2'] = calculate_avg_cycle_time(
-        filter_cycles(lfm_cycle_list, piece='lemon', level=2))
-    calculated_data['lfmLemonCycleL3'] = calculate_avg_cycle_time(
-        filter_cycles(lfm_cycle_list, piece='lemon', level=3))
+    for lfm_cycle_data_field, specifications in LFM_CYCLE_DATA_FIELDS:
+        calculated_data[lfm_cycle_data_field] = \
+            calculate_avg_cycle_time(filter_cycles(lfm_cycle_list, \
+            specifications))
 
     # Calculates the first and second pick ability for the team based on
     # their previous calculated data. To see how these are calculated,
@@ -748,7 +716,7 @@ for timd in os.listdir(utils.create_file_path('data/cache/timds')):
     if TEAM_NUMBER in timd:
         with open(utils.create_file_path(
                 f'data/cache/timds/{timd}')) as timd_file:
-            TIMDS.append(timd_file.read())
+            TIMDS.append(json.load(timd_file))
 
 FINAL_TEAM_DATA = {'calculatedData': team_calculations(TIMDS)}
 
