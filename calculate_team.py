@@ -543,7 +543,8 @@ def filter_cycles(cycle_list, filters):
 
     cycle_list is a list of tuples where the first item is an intake and
     the second action is the placement or drop. When judging the
-    filters, the placement is always the one used to filter.
+    filters, the placement is always the one used to filter. Filters
+    are only applied to placements.
     filters are the specifications that certain data points inside the
     cycles must fit to be included in the returned cycles."""
     filtered_cycles = []
