@@ -694,7 +694,7 @@ def team_calculations(timds):
     # sd_data_field is the calculated team data field, and
     # timd_data_field is the respective data point in calculated
     # timd data.
-    # TODO: Change name of sd avg data fields to be sd data fields
+    # TODO: Change name of 'sdAvg...' data fields to 'sd...' data fields
     for sd_data_field, timd_data_field in SD_DATA_FIELDS:
         calculated_data[sd_data_field] = np.std([
             timd['calculatedData'].get(timd_data_field) for timd in
