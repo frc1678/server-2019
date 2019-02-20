@@ -75,57 +75,71 @@ SUCCESS_DATA_FIELDS = {
     'lemonLoadSuccess': {
         'type': 'intake',
         'piece': 'lemon',
-        'zone': 'loadingStation'},
+        'zone': 'loadingStation',
+        },
     'orangeSuccessAll': {
         'type': 'placement',
-        'piece': 'orange'},
+        'piece': 'orange',
+        },
     'orangeSuccessDefended': {
         'type': 'placement',
         'piece': 'orange',
-        'wasDefended': True},
+        'wasDefended': True,
+        },
     'orangeSuccessUndefended': {
         'type': 'placement',
         'piece': 'orange',
-        'wasDefended': 'False'},
+        'wasDefended': 'False',
+        },
     'orangeSuccessL1': {
         'type': 'placement',
         'piece': 'orange',
-        'level': 1},
+        'level': 1,
+        },
     'orangeSuccessL2': {
         'type': 'placement',
         'piece': 'orange',
-        'level': 2},
+        'level': 2,
+        },
     'orangeSuccessL3': {
         'type': 'placement',
         'piece': 'orange',
-        'level': 3},
+        'level': 3,
+        },
     'lemonSuccessAll': {
         'type': 'placement',
-        'piece': 'lemon'},
+        'piece': 'lemon',
+        },
     'lemonSuccessDefended': {
         'type': 'placement',
         'piece': 'lemon',
-        'wasDefended': True},
+        'wasDefended': True,
+        },
     'lemonSuccessUndefended': {
         'type': 'placement',
         'piece': 'lemon',
-        'wasDefended': 'False'},
+        'wasDefended': 'False',
+        },
     'lemonSuccessL1': {
         'type': 'placement',
         'piece': 'lemon',
-        'level': 1},
+        'level': 1,
+        },
     'lemonSuccessL2': {
         'type': 'placement',
         'piece': 'lemon',
-        'level': 2},
+        'level': 2,
+        },
     'lemonSuccessL3': {
         'type': 'placement',
         'piece': 'lemon',
-        'level': 3},
+        'level': 3,
+        },
     'lemonSuccessFromSide': {
         'type': 'placement',
         'piece': 'lemon',
-        'side': ('near', True)},
+        'side': ('near', True),
+        },
 }
 
 # Name of the team calculated success data field of the last four
@@ -134,165 +148,211 @@ LFM_SUCCESS_DATA_FIELDS = {
     'lfmLemonLoadSuccess': {
         'type': 'intake',
         'piece': 'lemon',
-        'zone': 'loadingStation'},
+        'zone': 'loadingStation',
+        },
     'lfmOrangeSuccessAll': {
         'type': 'placement',
-        'piece': 'orange'},
+        'piece': 'orange',
+        },
     'lfmOrangeSuccessDefended': {
         'type': 'placement',
         'piece': 'orange',
-        'wasDefended': True},
+        'wasDefended': True,
+        },
     'lfmOrangeSuccessUndefended': {
         'type': 'placement',
         'piece': 'orange',
-        'wasDefended': 'False'},
+        'wasDefended': 'False',
+        },
     'lfmOrangeSuccessL1': {
         'type': 'placement',
         'piece': 'orange',
-        'level': 1},
+        'level': 1,
+        },
     'lfmOrangeSuccessL2': {
         'type': 'placement',
         'piece': 'orange',
-        'level': 2},
+        'level': 2,
+        },
     'lfmOrangeSuccessL3': {
         'type': 'placement',
         'piece': 'orange',
-        'level': 3},
+        'level': 3,
+        },
     'lfmLemonSuccessAll': {
         'type': 'placement',
-        'piece': 'lemon'},
+        'piece': 'lemon',
+        },
     'lfmLemonSuccessDefended': {
         'type': 'placement',
         'piece': 'lemon',
-        'wasDefended': True},
+        'wasDefended': True,
+        },
     'lfmLemonSuccessUndefended': {
         'type': 'placement',
         'piece': 'lemon',
-        'wasDefended': 'False'},
+        'wasDefended': 'False',
+        },
     'lfmLemonSuccessL1': {
         'type': 'placement',
         'piece': 'lemon',
-        'level': 1},
+        'level': 1,
+        },
     'lfmLemonSuccessL2': {
         'type': 'placement',
         'piece': 'lemon',
-        'level': 2},
+        'level': 2,
+        },
     'lfmLemonSuccessL3': {
         'type': 'placement',
         'piece': 'lemon',
-        'level': 3},
+        'level': 3,
+        },
     'lfmLemonSuccessFromSide': {
         'type': 'placement',
         'piece': 'lemon',
-        'side': ('near', True)},
+        'side': ('near', True),
+        },
 }
 
 # Name of the team calculated average cycle time data field to the
 # timeline filters specified.
 CYCLE_DATA_FIELDS = {
     'orangeCycleAll': {
-        'piece': 'orange'},
+        'piece': 'orange',
+        },
     'orangeCycleL1': {
         'piece': 'orange',
-        'level': 1},
+        'level': 1,
+        },
     'orangeCycleL2': {
         'piece': 'orange',
-        'level': 2},
+        'level': 2,
+        },
     'orangeCycleL3': {
         'piece': 'orange',
-        'level': 3},
+        'level': 3,
+        },
     'lemonCycleAll': {
-        'piece': 'lemon'},
+        'piece': 'lemon',
+        },
     'lemonCycleL1': {
         'piece': 'lemon',
-        'level': 1},
+        'level': 1,
+        },
     'lemonCycleL2': {
         'piece': 'lemon',
-        'level': 2},
+        'level': 2,
+        },
     'lemonCycleL3': {
         'piece': 'lemon',
-        'level': 3},
+        'level': 3,
+        },
 }
 
 # Name of the team calculated standard deviation cycle time data field
 # to the timeline filters specified.
 SD_CYCLE_DATA_FIELDS = {
     'sdOrangeCycleAll': {
-        'piece': 'orange'},
+        'piece': 'orange',
+        },
     'sdOrangeCycleL1': {
         'piece': 'orange',
-        'level': 1},
+        'level': 1,
+        },
     'sdOrangeCycleL2': {
         'piece': 'orange',
-        'level': 2},
+        'level': 2,
+        },
     'sdOrangeCycleL3': {
         'piece': 'orange',
-        'level': 3},
+        'level': 3,
+        },
     'sdLemonCycleAll': {
-        'piece': 'lemon'},
+        'piece': 'lemon',
+        },
     'sdLemonCycleL1': {
         'piece': 'lemon',
-        'level': 1},
+        'level': 1,
+        },
     'sdLemonCycleL2': {
         'piece': 'lemon',
-        'level': 2},
+        'level': 2,
+        },
     'sdLemonCycleL3': {
         'piece': 'lemon',
-        'level': 3},
+        'level': 3,
+        },
 }
 
 # Name of the team calculated upper half average cycle time data field
 # to the timeline filters specified.
 P75_CYCLE_DATA_FIELDS = {
     'p75OrangeCycleAll': {
-        'piece': 'orange'},
+        'piece': 'orange',
+        },
     'p75OrangeCycleL1': {
         'piece': 'orange',
-        'level': 1},
+        'level': 1,
+        },
     'p75OrangeCycleL2': {
         'piece': 'orange',
-        'level': 2},
+        'level': 2,
+        },
     'p75OrangeCycleL3': {
         'piece': 'orange',
-        'level': 3},
+        'level': 3,
+        },
     'p75LemonCycleAll': {
-        'piece': 'lemon'},
+        'piece': 'lemon',
+        },
     'p75LemonCycleL1': {
         'piece': 'lemon',
-        'level': 1},
+        'level': 1,
+        },
     'p75LemonCycleL2': {
         'piece': 'lemon',
-        'level': 2},
+        'level': 2,
+        },
     'p75LemonCycleL3': {
         'piece': 'lemon',
-        'level': 3},
+        'level': 3,
+        },
 }
 
 # Name of the team calculated average cycle time data field of the last
 # four matches to the timeline filters specified.
 LFM_CYCLE_DATA_FIELDS = {
     'lfmOrangeCycleAll': {
-        'piece': 'orange'},
+        'piece': 'orange',
+        },
     'lfmOrangeCycleL1': {
         'piece': 'orange',
-        'level': 1},
+        'level': 1,
+        },
     'lfmOrangeCycleL2': {
         'piece': 'orange',
-        'level': 2},
+        'level': 2,
+        },
     'lfmOrangeCycleL3': {
         'piece': 'orange',
-        'level': 3},
+        'level': 3,
+        },
     'lfmLemonCycleAll': {
-        'piece': 'lemon'},
+        'piece': 'lemon',
+        },
     'lfmLemonCycleL1': {
         'piece': 'lemon',
-        'level': 1},
+        'level': 1,
+        },
     'lfmLemonCycleL2': {
         'piece': 'lemon',
-        'level': 2},
+        'level': 2,
+        },
     'lfmLemonCycleL3': {
         'piece': 'lemon',
-        'level': 3},
+        'level': 3,
+        },
 }
 
 def first_pick_ability(calculated_data):
