@@ -92,7 +92,8 @@ def second_pick_ability(calculated_data):
 #TODO(Emily)    defense_ability = Knocking * numKnocks * (OpposingAllianceDrops - AvgOpposingAllianceDrops) + Docking * SecondsAddedtoCycle * PointsPerCyclePerSecond + PathBlocking * SecondAddedtoCycle * PointsperCycleperSecond
     defense_ability *= defense_weight
 
-    pick_ability = ?????????
+    pick_ability = sand_score + level_1_teleop_score + end_game_score
+    pick_ability += driver_ability + defense_ability
     return pick_ability
 
 def calculate_avg_cycle_time(cycles):
@@ -225,9 +226,6 @@ def filter_timeline_actions(timds, **filters):
                                 'rightLoadingStation':
                             break
 
- 
- 
-more rows at bottom.
                     else:
                         if action.get('zone') == 'leftLoadingStation' \
                                 or action.get('zone') == \
