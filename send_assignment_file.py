@@ -1,3 +1,4 @@
+#!/usr/bin/python3.6
 """Sends assignment file to scout tablets over ADB.
 
 Verifies that the file is successfully transfered.
