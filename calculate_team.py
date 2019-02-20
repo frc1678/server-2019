@@ -621,9 +621,9 @@ def team_calculations(timds):
 
     # Calculations for percent successes for different actions using the
     # SUCCESS_DATA_FIELDS dictionary.
-    for success_data_field, specifications in SUCCESS_DATA_FIELDS:
+    for success_data_field, filters_ in SUCCESS_DATA_FIELDS:
         calculated_data[success_data_field] = avg_percent_success(
-            filter_timeline_actions(timds, specifications))
+            filter_timeline_actions(timds, filters_))
 
     # Percentages of hab line successes.
     calculated_data['habLineSuccessL1'] = round(100 * avg([
@@ -661,9 +661,9 @@ def team_calculations(timds):
             timd['calculatedData'].get(timd_data_field) for timd in
             lfm_timds])
 
-    for lfm_success_data_field, specifications in LFM_SUCCESS_DATA_FIELDS:
+    for lfm_success_data_field, filters_ in LFM_SUCCESS_DATA_FIELDS:
         calculated_data[lfm_success_data_field] = avg_percent_success(
-            filter_timeline_actions(lfm_timds, specifications))
+            filter_timeline_actions(lfm_timds, filters_))
 
     calculated_data['lfmHabLineSuccessL1'] = round(100 * avg([
         timd['crossedHabLine'] for timd in lfm_timds if
@@ -742,20 +742,20 @@ def team_calculations(timds):
             total_cycle_list += paired_cycle_list
 
     # Calculates the average cycle time for each cycle type.
-    for cycle_data_field, specifications in CYCLE_DATA_FIELDS:
+    for cycle_data_field, filters_ in CYCLE_DATA_FIELDS:
         calculated_data[cycle_data_field] = calculate_avg_cycle_time(
-            filter_cycles(total_cycle_list, specifications))
+            filter_cycles(total_cycle_list, filters_))
 
     # Calculates the standard deviation cycle time for each cycle type.
-    for sd_cycle_data_field, specifications in SD_CYCLE_DATA_FIELDS:
+    for sd_cycle_data_field, filters_ in SD_CYCLE_DATA_FIELDS:
         calculated_data[sd_cycle_data_field] = calculate_std_cycle_time(
-            filter_cycles(total_cycle_list, specifications))
+            filter_cycles(total_cycle_list, filters_))
 
     # Finds the upper half average of each type of cycle.
-    for p75_cycle_data_field, specifications in P75_CYCLE_DATA_FIELDS:
+    for p75_cycle_data_field, filters_ in P75_CYCLE_DATA_FIELDS:
         calculated_data[p75_cycle_data_field] = \
             calculate_p75_cycle_time(filter_cycles(total_cycle_list, \
-            specifications))
+            filters_))
 
     # Repeats the process of gathering cycles for a team, except limited
     # to only the last four matches.
@@ -779,10 +779,10 @@ def team_calculations(timds):
             lfm_cycle_list += paired_cycle_list
 
     # Calculates the last four match average for each cycle type.
-    for lfm_cycle_data_field, specifications in LFM_CYCLE_DATA_FIELDS:
+    for lfm_cycle_data_field, filters_ in LFM_CYCLE_DATA_FIELDS:
         calculated_data[lfm_cycle_data_field] = \
             calculate_avg_cycle_time(filter_cycles(lfm_cycle_list, \
-            specifications))
+            filters_))
 
     # Calculates the first and second pick ability for the team based on
     # their previous calculated data. To see how these are calculated,
