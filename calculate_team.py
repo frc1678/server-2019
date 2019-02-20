@@ -478,10 +478,11 @@ def filter_timeline_actions(timds, filters):
     timds are the timds that data is calculated from.
     filters are the specifications that certain data points inside the
     timeline must fit to be included in the returned timeline. The value
-    in the filter can be a tuple with the first value of the filter and the
-    second value of if it is an opposite value, in which case it will be
-    tested if it is not that value. If it is not a tuple, then the value
-    will instead be interpreted as the requirement."""
+    in the filter can be a tuple with the first value of the filter and
+    the second value of if it is an opposite value, in which case it
+    will be tested if it is not that value. The 'opposite' argument is
+    optional, so if it is not a tuple, then the value will instead be
+    interpreted as the requirement."""
     filtered_timeline = []
     # For each action, if any of the specifications are not met, the
     # loop breaks and it moves on to the next action, but if all the
