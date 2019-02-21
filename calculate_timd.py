@@ -71,7 +71,7 @@ def filter_cycles(cycle_list, **filters):
                     break
             # Otherwise, it checks the requirement normally
             else:
-                if cycle[1][data_field] != requirement:
+                if cycle[1].get(data_field) != requirement:
                     break
         # If all the requirements are met, it adds the cycle to the
         # returned filtered cycles.
