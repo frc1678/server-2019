@@ -50,8 +50,8 @@ def first_pick_ability(calculated_data):
     end_game_score += 6 * calculated_data['ClimbSuccessesLevel2']
     end_game_score += 12 * calculated_data['ClimbSuccessesLevel3']
     end_game_score *= climbing_weight
-    #end_game_score += (1 - climbing_weight) * calculated_data['ClimbCompatibility']
-    #    * 12 * calculated_data['SuccessRate']
+    end_game_score += (1 - climbing_weight) * calculated_data['ClimbCompatibility']
+        * 12 * calculated_data['SuccessRate']
 
     pick_ability = sand_score + end_game_score
         Level1TeleopScore + Level2TeleopScore + Level3TeleopScore
@@ -82,8 +82,8 @@ def second_pick_ability(calculated_data):
     end_game_score += 6 * calculated_data['ClimbSuccessesLevel2']
     end_game_score += 12 * calculated_data['ClimbSuccessesLevel3']
     end_game_score *= climbing_weight
-    #end_game_score += (1 - climbing_weight) * calculated_data['ClimbCompatibility']
-    #    * 12 * calculated_data['SuccessRate']
+    end_game_score += (1 - climbing_weight) * calculated_data['ClimbCompatibility']
+        * 12 * calculated_data['SuccessRate']
 
     driver_ability = speed_weight * calculated_data['Speed']
     driver_ability += (1 - speed_weight) * calculated_data['Agility']
