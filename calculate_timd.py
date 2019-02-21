@@ -121,7 +121,7 @@ def filter_timeline_actions(timd, **filters):
     # For each action, if any of the specifications are not met, the
     # loop breaks and it moves on to the next action, but if all the
     # specifications are met, it adds it to the filtered timeline.
-    for action in timd.get('timeline'):
+    for action in timd.get('timeline', []):
         for data_field, requirement in filters.items():
             # If the data_field requirement is level 1, it instead
             # checks for it not being level 2 or 3, because level 1 can
