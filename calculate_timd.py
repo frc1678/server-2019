@@ -121,7 +121,7 @@ def filter_timeline_actions(timd, **filters):
     # For each action, if any of the specifications are not met, the
     # loop breaks and it moves on to the next action, but if all the
     # specifications are met, it adds it to the filtered timeline.
-    for action in timd.get('timeline'):
+    for action in timd.get('timeline', []):
         for data_field, requirement in filters.items():
             # If the data_field requirement is level 1, it instead
             # checks for it not being level 2 or 3, because level 1 can
@@ -222,7 +222,7 @@ def calculate_timd_data(timd):
     # first item and the placement or drop is the second. This is used
     # when calculating cycle times.
     cycle_list = []
-    for action in timd.get('timeline'):
+    for action in timd.get('timeline', []):
         if action.get('type') in ['intake', 'placement', 'drop']:
             cycle_list.append(action)
 
@@ -260,7 +260,7 @@ def calculate_timd_data(timd):
     # by checking if they have any actions in the match other than incap
     # and unincap. If they don't have any other actions, they were incap
     # the entire match.
-    for action in timd.get('timeline'):
+    for action in timd.get('timeline', []):
         if action.get('type') not in ['incap', 'unincap'] and \
                 action.get('time') <= 135.0:
             calculated_data['isIncapEntireMatch'] = False
@@ -271,13 +271,13 @@ def calculate_timd_data(timd):
     # Creates a list of the climb dictionary or nothing if there is no
     # climb. If there is a climb, the time of the climb is the amount
     # of time they spent climbing.
-    for action in timd.get('timeline'):
+    for action in timd.get('timeline', []):
         if action['type'] == 'climb':
             calculated_data['timeClimbing'] = action['time']
 
     # Creates a list of all the incap and unincap actions in the timeline.
     incap_and_impaired_items = []
-    for action in timd.get('timeline'):
+    for action in timd.get('timeline', []):
         if action.get('type') in ['incap', 'unincap']:
             incap_and_impaired_items.append(action)
     if len(incap_and_impaired_items) > 0:
