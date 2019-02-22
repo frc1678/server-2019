@@ -28,11 +28,10 @@ def first_pick_ability(calculated_data):
     a team."""
     # constants that determine how much each score is weighted
     # in determining first pick ability
-    # TODO(Emily): Give the constants descriptive names
     level_1_weight = 1  # how much we care about teams scoring on lvl 1
     level_2_weight = 1  # how much we care about teams scoring on lvl 2
     level_3_weight = 1  # how much we care about teams scoring on lvl 3
-    clibing_weight = 1  # something to do with robots climbing solo or with us
+    climbing_weight = 1  # how much we want alliance partners to solo climb
 
     level_1_teleop_score = ((2 * calculated_data['lemonsScoredTeleL1']
         + 3 * calculated_data['orangesScoredTeleL1']) * level_1_weight
@@ -54,7 +53,7 @@ def first_pick_ability(calculated_data):
         * 12 * calculated_data['SuccessRate']
 
     pick_ability = sand_score + end_game_score
-        Level1TeleopScore + Level2TeleopScore + Level3TeleopScore
+        + Level1TeleopScore + Level2TeleopScore + Level3TeleopScore
     return pick_ability
 
 def second_pick_ability(calculated_data):
@@ -62,13 +61,14 @@ def second_pick_ability(calculated_data):
 
     calculated_data is the dictionary of calculated_data calculated for
     a team."""
-    # TODO(Emily): Give the constants descriptive names
-    climbing_weight = 1  # something to do with robots climbing solo or with us
+    climbing_weight = 1  # how much we want alliance partners to solo climb
     driving_weight = 1  # how much we care about driver ability
     speed_weight = 1  # how much we prioritize speed over agility
     oranges_weight = 1  # how much we want second picks to be scoring oranges
     lemons_weight = 1  # how much we want second picks to be scoring lemons
     defense_weight = 1  # how much we want second picks to be defending
+    docking_weight = 1  # how much we care about defending by blocking scoring structures
+    path_blocking_weight = 1  # how much we care about defending by getting in the way
 
     sand_score = calculated_data['HabCrossSuccessRate']
     sand_score += calculated_data['DidDoLevel2'] * 3
@@ -89,8 +89,9 @@ def second_pick_ability(calculated_data):
     driver_ability += (1 - speed_weight) * calculated_data['Agility']
     driver_ability *= driving_weight
 
-#TODO(Emily)    defense_ability = Knocking * numKnocks * (OpposingAllianceDrops - AvgOpposingAllianceDrops) + Docking * SecondsAddedtoCycle * PointsPerCyclePerSecond + PathBlocking * SecondAddedtoCycle * PointsperCycleperSecond
-    defense_ability *= defense_weight
+    defense_ability = calculated_data['SecondsAddedToCycle']
+        * calculated_data['PointsPerCyclePerSecond']
+    defense_ability *= defense_weight * (docking_weight + path_blocking_weight)
 
     pick_ability = sand_score + level_1_teleop_score + end_game_score
     pick_ability += driver_ability + defense_ability
