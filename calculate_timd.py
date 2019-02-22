@@ -224,12 +224,16 @@ def calculate_timd_data(timd):
     cycle_list = []
     for action in timd.get('timeline', []):
         if action.get('type') in ['intake', 'placement', 'drop']:
-            cycle_list.append(action)
+            # If the action is a failed loading station intake, it
+            # shouldn't play a part in cycles, so it is filtered out.
+            if not (action.get('type') == 'intake' and
+                    action.get('didSucceed') is False):
+                cycle_list.append(action)
 
     if len(cycle_list) > 0:
         # If the first action in the list is a placement, it is a
         # preload, which doesn't count when calculating cycle times.
-        if cycle_list[0].get('type') == 'placement':
+        if cycle_list[0].get('type') in ['placement', 'drop']:
             cycle_list.pop(0)
         # If the last action in the list is an intake, it means the
         # robot finished with a game object, in which the cycle was
