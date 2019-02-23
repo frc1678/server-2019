@@ -244,6 +244,10 @@ def climb_consolidation(input_timelines, sprking):
             if action.get('type') == 'climb':
                 simplified_timelines[scout] = action
 
+    # Returns None if no climb was recorded.
+    if simplified_timelines == {}:
+        return None
+
     final_simplified_timd = {'type': 'climb', 'attempted': {}, 'actual': {}}
 
     # Consolidates time first
@@ -325,7 +329,9 @@ def consolidate_temp_timds(temp_timds):
                 # seperate it from intakes and placements. Climb needs a
                 # seperate function because of its relatively strange
                 # structure.
-                final_timeline.append(climb_consolidation(timelines, sprking))
+                climb = climb_consolidation(timelines, sprking)
+                if climb is not None:
+                    final_timeline.append(climb)
 
                 # Once the timeline is finally completed, it is sorted
                 # by time, and added to the final timd.
