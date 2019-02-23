@@ -367,17 +367,17 @@ def first_pick_ability(calculated_data):
     level_3_weight = 1  # how much we care about teams scoring on lvl 3
     climbing_weight = 1  # how much we want alliance partners to solo climb
 
-    level_1_teleop_score = (2 * calculated_data['lemonsScoredTeleL1']
-        + 3 * calculated_data['orangesScoredTeleL1']) * level_1_weight
-    level_2_teleop_score = (2 * calculated_data['lemonsScoredTeleL2']
-        + 3 * calculated_data['orangesScoredTeleL2']) * level_2_weight
-    level_3_teleop_score = (2 * calculated_data['lemonsScoredTeleL3']
-        + 3 * calculated_data['orangesScoredTeleL3']) * level_3_weight
+    level_1_teleop_score = (2 * calculated_data['avgLemonsScoredTeleL1']
+        + 3 * calculated_data['avgOrangesScoredTeleL1']) * level_1_weight
+    level_2_teleop_score = (2 * calculated_data['avgLemonsScoredTeleL2']
+        + 3 * calculated_data['avgOrangesScoredTeleL2']) * level_2_weight
+    level_3_teleop_score = (2 * calculated_data['avgLemonsScoredTeleL3']
+        + 3 * calculated_data['avgOrangesScoredTeleL3']) * level_3_weight
 
-    sand_score = calculated_data['HabCrossSuccessRate']
-    sand_score += calculated_data['DidDoLevel2'] * 3
-    sand_score += calculated_data['lemonsScoredSandstorm'] * 5
-    sand_score += calculated_data['orangesScoredSandstorm'] * 3
+    sand_score = calculated_data['habLineSuccessL1'] * 3
+    sand_score += calculated_data['habLineSuccessL2'] * 6
+    sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
+    sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
 
     end_game_score = 3 * calculated_data['ClimbSuccessesLevel1']
     end_game_score += 6 * calculated_data['ClimbSuccessesLevel2']
@@ -407,8 +407,8 @@ def second_pick_ability(calculated_data):
     sand_score += calculated_data['lemonsScoredSandstorm'] * 5
     sand_score += calculated_data['orangesScoredSandstorm'] * 3
 
-    level_1_teleop_score = calculated_data['LemonsScoredTeleL1'] * 2 * lemons_weight
-    level_1_teleop_score += calculated_data['OrangesScoredTeleL1'] * 3 * oranges_weight
+    level_1_teleop_score = calculated_data['avgLemonsScoredTeleL1'] * 2 * lemons_weight
+    level_1_teleop_score += calculated_data['avgOrangesScoredTeleL1'] * 3 * oranges_weight
 
     end_game_score = 3 * calculated_data['ClimbSuccessesLevel1']
     end_game_score += 6 * calculated_data['ClimbSuccessesLevel2']

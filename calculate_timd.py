@@ -175,6 +175,23 @@ def calculate_timd_data(timd):
     calculated_data['lemonsSpilled'] = len(filter_timeline_actions(
         timd, type='spill'))
 
+    calculated_data['habCrossSuccessRate'] = avg(1 if
+        filter_timeline_actions(timd, crossedHabLine=True) else 0)
+
+    #TODO(Nathan): filter when time<=135 to make sure it actually is in tele
+    calculated_data['orangesScoredTeleL1'] = len(filter_timeline_actions(timd,
+        type='placement', piece='orange', level=1, didSucceed=True))
+    calculated_data['orangesScoredTeleL2'] = len(filter_timeline_actions(timd,
+        type='placement', piece='orange', level=2, didSucceed=True))
+    calculated_data['orangesScoredTeleL3'] = len(filter_timeline_actions(timd,
+        type='placement', piece='orange', level=3, didSucceed=True))
+    calculated_data['lemonsScoredTeleL1'] = len(filter_timeline_actions(timd,
+        type='placement', piece='lemon', level=1, didSucceed=True))
+    calculated_data['lemonsScoredTeleL2'] = len(filter_timeline_actions(timd,
+        type='placement', piece='lemon', level=2, didSucceed=True))
+    calculated_data['lemonsScoredTeleL3'] = len(filter_timeline_actions(timd,
+        type='placement', piece='lemon', level=3, didSucceed=True))
+
     # The next set of calculated data points are the success
     # percentages, these are the percentages (displayed as an integer)
     # of didSucceed for certain actions, such as the percentage of
