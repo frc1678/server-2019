@@ -578,7 +578,6 @@ def filter_timeline_actions(timds, filters):
                         if action['zone'] not in ['leftLoadingStation',
                                                   'rightLoadingStation']:
                             break
-
                     else:
                         if action['zone'] in ['leftLoadingStation',
                                               'rightLoadingStation']:
