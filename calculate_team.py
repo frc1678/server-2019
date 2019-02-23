@@ -571,8 +571,8 @@ def filter_cycles(cycle_list, filters):
 def make_paired_cycle_list(cycle_list):
     """Pairs up cycles together into tuples of intakes and outakes.
 
-    Intakes are the first items and outakes are the second items in the
-    cycle tuples.
+    Intakes are the first items and outakes are the second items in each
+    cycle tuple.
 
     cycle_list is the list of actions that need to be paired up."""
     # [::2] are the even-indexed items of the list, [1::2] are the
