@@ -78,7 +78,7 @@ TEMP_TIMD_COMPRESSION_VALUES = {
     'j': 'tippedOver',
     'k': 'brokenMechanism',
     'm': 'stuckOnObject',
-    'n': 'stuchOnHab',
+    'n': 'stuckOnHab',
     'p': 'emergencyStop',
     'q': 'noControl',
     'r': 'twoGamePieces',
