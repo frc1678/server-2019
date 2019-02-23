@@ -289,7 +289,7 @@ def calculate_timd_data(timd):
         # finished the match incap, so it adds an unincap at the end of
         # the timeline.
         if incap_and_impaired_items[-1]['type'] == 'incap':
-            incap_and_impaired_items.append({'type': 'unincap', 'time' : 0.0})
+            incap_and_impaired_items.append({'type': 'unincap', 'time': 0.0})
         paired_incap_list = make_paired_cycle_list(incap_and_impaired_items)
 
         # Calculates the timeImpaired and timeIncap by calculating the

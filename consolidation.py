@@ -113,7 +113,7 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
 
     # The dictionary of three timelines with only the types specified
     # in the function.
-    simplified_timelines = {scout : [] for scout in temp_timd_timelines.keys()}
+    simplified_timelines = {scout: [] for scout in temp_timd_timelines.keys()}
 
     # Takes the three different timelines and cuts out any types of
     # data points which are not the specified types.
@@ -124,7 +124,7 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
 
     # Scouts to the amount of actions of the specified type are in the
     # timeline.
-    count_timelines = {scout : len(timeline) for
+    count_timelines = {scout: len(timeline) for
                        scout, timeline in simplified_timelines.items()}
 
     # Finds the majority amount of actions in the timeline to see
@@ -187,13 +187,13 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
     final_simplified_timd = [{} for action in range(majority_length)]
     # Iterates through the sprking's timeline to compare all the actions.
     for action_index, action in enumerate(correct_length_timelines[sprking]):
-        comparison_dict = {scout : timeline[action_index] for scout,
+        comparison_dict = {scout: timeline[action_index] for scout,
                            timeline in correct_length_timelines.items()}
         for key in comparison_dict[sprking].keys():
             # For every key that isn't time, which can't realistically
             # have a majority, the majority opinion is set to the final
             # timd.
-            scout_to_keys = {scout : action.get(key) for scout,
+            scout_to_keys = {scout: action.get(key) for scout,
                              action in comparison_dict.items()}
 
             if key == 'time':
