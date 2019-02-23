@@ -101,8 +101,9 @@ for temp_super_file in TEMP_SUPER_FILES:
         'blueScore': 'blueActualScore',
     }
     for super_field_name, match_field_name in header_conversion.items():
-        temp_super_headers[match_field_name] = temp_super_headers.pop(
-            super_field_name)
+        if temp_super_headers.get(super_field_name) is not None:
+            temp_super_headers[match_field_name] = temp_super_headers.pop(
+                super_field_name)
 
     # Sends 'temp_super_headers' to Matches local cache and Firebase.
     match_file_path = f'data/cache/matches/{match_number}.json'
@@ -127,7 +128,7 @@ for temp_super_file in TEMP_SUPER_FILES:
     with open(utils.create_file_path(match_file_path), 'w') as file:
         json.dump(match_data, file)
 
-    # Saves *changes* to data in upload queue
+    # Saves complete data in upload queue
     with open(utils.create_file_path(
             f'data/upload_queue/matches/{match_number}.json'), 'w') as file:
-        json.dump(changes_to_upload, file)
+        json.dump(match_data, file)
