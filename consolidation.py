@@ -316,8 +316,7 @@ def consolidate_temp_timds(temp_timds):
                 # structure.
                 final_timeline.append(climb_consolidation(timelines, sprking))
 
-                # After all the timeline actions are added, if there are
-                # any blank actions, it deletes them.
+                # Deletes any blank actions.
                 final_timeline = [action for action in final_timeline if
                                   action != {}]
 
