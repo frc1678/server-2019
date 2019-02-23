@@ -233,7 +233,7 @@ def climb_consolidation(input_timelines, sprking):
             if action.get('type') == 'climb':
                 simplified_timelines[scout] = action
 
-    # If there was no climb recorded returns None instead.
+    # Returns None if no climb was recorded.
     if simplified_timelines == {}:
         return None
 
