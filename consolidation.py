@@ -29,7 +29,7 @@ def consolidate_times(times, sprking):
     # If the standard deviation is zero, all the times are the same, so
     # it just returns the mean.
     if std == 0:
-        return float(format(mean, '.1f'))
+        return round(mean, 1)
 
     # Creates a list of tuples with the first item as the time and the
     # second item as the weight (squared reciprocal of the z-score for
@@ -51,7 +51,7 @@ def consolidate_times(times, sprking):
     weighted_average = sum(weighted_times) / sum(reciprocal_zscores)
 
     # Formats each average to a float with one decimal place.
-    return float(format(weighted_average, '.1f'))
+    return round(weighted_average, 1)
 
 def convert_float_time(time):
     """Converts a time from a string to a float.
