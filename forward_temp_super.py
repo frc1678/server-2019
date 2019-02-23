@@ -113,16 +113,11 @@ for temp_super_file in TEMP_SUPER_FILES:
     except FileNotFoundError:
         match_data = {}
 
-    # Stores any changes made to 'match_data' (which will become the
-    # local cache) to send to Firebase later
-    changes_to_upload = {}
-
     for key, value in temp_super_headers.items():
         # If the data field does not exist we should update it since we
         # have not received data from TBA for the data field.
         if match_data.get(key) is None:
             match_data[key] = value
-            changes_to_upload[key] = value
 
     # Saves complete data to local cache
     with open(utils.create_file_path(match_file_path), 'w') as file:
