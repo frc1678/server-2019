@@ -31,6 +31,7 @@ def avg(lis, exception=0.0):
     exception is returned if there is a divide by zero error. The
     default is 0.0 because the main usage in in percentage calculations.
     """
+    lis = [item for item in lis if item is not None]
     if len(lis) == 0:
         return exception
     else:
