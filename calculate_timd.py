@@ -230,10 +230,7 @@ def calculate_timd_data(timd):
                     action.get('didSucceed') is False):
                 cycle_list.append(action)
 
-    # If the cycle_list is more than one, then it does calculations on
-    # the cycle list. The reason it is greater than one and not greater
-    # than zero is because if the cycle_list is only one, there are no
-    # cycles in it.
+    # There must be at least 2 actions to have a cycle
     if len(cycle_list) > 1:
         # If the first action in the list is a placement, it is a
         # preload, which doesn't count when calculating cycle times.
