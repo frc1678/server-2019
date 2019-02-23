@@ -63,7 +63,7 @@ def convert_float_time(time):
     # time in sandstorm, and vice versa for when the time is in
     # sandstorm.
     if '*' in time:
-        if float(time.split('*')[0]) >= 135.1:
+        if float(time[:-1]) >= 135.1:
             return 135.0
         else:
             return 135.1
