@@ -86,6 +86,7 @@ def max_occurrences(comparison_list, sprking):
     # Uses the collections module to count how many appearances each
     # item has in the list.
     occurence_list = dict(collections.Counter(comparison_list.values()))
+
     # Handling for an empty occurrence list.
     if len(occurence_list.values()) == 0:
         return None
