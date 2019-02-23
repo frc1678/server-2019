@@ -333,6 +333,10 @@ def consolidate_temp_timds(temp_timds):
                 if climb is not None:
                     final_timeline.append(climb)
 
+                # Deletes any blank actions.
+                final_timeline = [action for action in final_timeline if
+                                  action != {}]
+
                 # Once the timeline is finally completed, it is sorted
                 # by time, and added to the final timd.
                 final_timd['timeline'] = sorted(final_timeline, \
