@@ -230,7 +230,8 @@ def calculate_timd_data(timd):
                     action.get('didSucceed') is False):
                 cycle_list.append(action)
 
-    if len(cycle_list) > 0:
+    # There must be at least 2 actions to have a cycle
+    if len(cycle_list) > 1:
         # If the first action in the list is a placement, it is a
         # preload, which doesn't count when calculating cycle times.
         if cycle_list[0].get('type') in ['placement', 'drop']:
