@@ -12,7 +12,7 @@ def consolidate_times(times, sprking):
 
     times is a dictionary of each scout to their respective time value."""
 
-    times = {scout: time for scout, time in times.keys() if time != None}
+    times = {scout: time for scout, time in times.items() if time is not None}
 
     # Creates a list of the times in the form of floats instead of their
     # tempTIMD format of strings. Does this in order to  use them for
