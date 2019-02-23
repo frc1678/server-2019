@@ -316,6 +316,11 @@ def consolidate_temp_timds(temp_timds):
                 # structure.
                 final_timeline.append(climb_consolidation(timelines, sprking))
 
+                # After all the timeline actions are added, if there are
+                # any blank actions, it deletes them.
+                final_timeline = [action for action in final_timeline if
+                                  action != {}]
+
                 # Once the timeline is finally completed, it is sorted
                 # by time, and added to the final timd.
                 final_timd['timeline'] = sorted(final_timeline, \
