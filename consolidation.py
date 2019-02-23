@@ -64,7 +64,8 @@ def consolidate_times(times, sprking):
     # Adds up all the weighted times and divides it by the sum of the
     # reciprocal_zscore_list. Does this in order to get a reasonable
     # time, if this step is not taken, the weighted time makes no sense.
-    weighted_average = sum(weighted_times) / sum(reciprocal_zscores)
+    weighted_average = sum(weighted_times) / sum([zscore[1] for zscore \
+        in reciprocal_zscores])
 
     # Formats each average to a float with one decimal place.
     return format(weighted_average, '.1f')
@@ -93,6 +94,9 @@ def max_occurrences(comparison_list, sprking):
     # item has in the list.
     occurence_list = dict(collections.Counter(comparison_list.values()))
 
+    # Handling for an empty occurrence list.
+    if len(occurence_list.values()) == 0:
+        return None
     # If the highest occurence on the occurence list is the same as
     # the lowest occurence, the correct value for the datapoint is
     # the value output by the scout with the best spr. This triggers
@@ -101,7 +105,7 @@ def max_occurrences(comparison_list, sprking):
     # different (The max and min are both 1). In the case of any
     # other scenario, the max is trusted because it would suggest
     # the max is the 2 in a 2 scout versus 1 split decision.
-    if max(occurence_list.values()) == min(occurence_list.values()):
+    elif max(occurence_list.values()) == min(occurence_list.values()):
         return comparison_list[correct_scout]
     else:
         return max(occurence_list, key=occurence_list.get)
