@@ -319,7 +319,7 @@ def consolidate_temp_timds(temp_timds):
                 # Once the timeline is finally completed, it is sorted
                 # by time, and added to the final timd.
                 final_timd['timeline'] = sorted(final_timeline, \
-                    key=lambda action: float(action.get('time')))
+                    key=lambda action: action['time'], reverse=True)
 
         # When consolidating non-timed keys, it is easy to consolidate
         # them, as you can simply find which value is the most common in
