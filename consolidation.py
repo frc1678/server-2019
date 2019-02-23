@@ -82,6 +82,13 @@ def max_occurrences(comparison_list, sprking):
     sprking is the scout with the best spr out of the scouts, used if
     there is no clear majority."""
 
+    # If the sprking is not part of the comparison_list, another scout
+    # is randomly selected.
+    if sprking not in list(comparison_list.keys()):
+        correct_scout = list(comparison_list.keys())[-1]
+    else:
+        correct_scout = sprking
+
     # Each item in the list to how many times it appeared in the list.
     # Uses the collections module to count how many appearances each
     # item has in the list.
@@ -99,7 +106,7 @@ def max_occurrences(comparison_list, sprking):
     # other scenario, the max is trusted because it would suggest
     # the max is the 2 in a 2 scout versus 1 split decision.
     elif max(occurence_list.values()) == min(occurence_list.values()):
-        return comparison_list[sprking]
+        return comparison_list[correct_scout]
     else:
         return max(occurence_list, key=occurence_list.get)
 
