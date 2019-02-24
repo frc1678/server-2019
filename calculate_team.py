@@ -9,6 +9,7 @@ Called by server.py with the number of the Team to be calculated."""
 import json
 import os
 import sys
+import math
 import numpy as np
 # Internal imports
 import utils
@@ -430,9 +431,9 @@ def p75(lis, exception=0.0, cycles=False):
         # If the cycles specifcation is true, it takes the lower half of
         # the list, which are the faster cycle times.
         if cycles is True:
-            upper_half = lis[:int(np.ceil(len(lis) / 2))]
+            upper_half = lis[:math.ceil(len(lis) / 2)]
         else:
-            upper_half = lis[-int(np.floor(len(lis) / 2)):]
+            upper_half = lis[-math.floor(len(lis) / 2):]
         return sum(upper_half) / len(upper_half)
 
 
