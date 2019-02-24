@@ -802,7 +802,8 @@ def team_calculations(timds):
 # Check to ensure Team number is being passed as an argument
 if len(sys.argv) == 2:
     # Extract Team number from system argument
-    TEAM_NUMBER = int(sys.argv[1])
+    # Team number is a string
+    TEAM_NUMBER = sys.argv[1]
 else:
     print('Error: Team number not being passed as an argument. Exiting...')
     sys.exit(0)
