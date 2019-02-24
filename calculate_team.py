@@ -430,9 +430,9 @@ def p75(lis, exception=0.0, cycles=False):
         # If the cycles specifcation is true, it takes the lower half of
         # the list, which are the faster cycle times.
         if cycles is True:
-            upper_half = lis[:(round(len(lis) / 2))]
+            upper_half = lis[:int(np.ceil(len(lis) / 2))]
         else:
-            upper_half = lis[-(round(len(lis) / 2)):]
+            upper_half = lis[-int(np.floor(len(lis) / 2)):]
         return sum(upper_half) / len(upper_half)
 
 
