@@ -237,7 +237,7 @@ def climb_consolidation(input_timelines, sprking):
 
     # Consolidates time first
     final_simplified_timd['time'] = consolidate_times({
-        scout: climb['time'] for scout,
+        scout: convert_float_time(climb['time']) for scout,
         climb in simplified_timelines.items()})
 
     for key in ['attempted', 'actual']:
