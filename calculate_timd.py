@@ -336,7 +336,7 @@ TEMP_TIMDS = {}
 # key and their decompressed tempTIMD as a value. Does this in order to
 # have a proper input to the consolidation function.
 for temp_timd in os.listdir(utils.create_file_path('data/cache/temp_timds')):
-    if TIMD_NAME in temp_timd:
+    if TIMD_NAME == temp_timd.split('-')[0]:
         file_path = utils.create_file_path(
             f'data/cache/temp_timds/{temp_timd}')
         with open(file_path, 'r') as file:
