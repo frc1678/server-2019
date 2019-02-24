@@ -615,13 +615,13 @@ def team_calculations(timds):
     # average_data_field is the calculated team data field, and
     # timd_data_field is the respective data point in calculated
     # timd data.
-    for average_data_field, timd_data_field in AVERAGE_DATA_FIELDS:
+    for average_data_field, timd_data_field in AVERAGE_DATA_FIELDS.items():
         calculated_data[average_data_field] = avg([timd[
             'calculatedData'].get(timd_data_field) for timd in timds])
 
     # Calculations for percent successes for different actions using the
     # SUCCESS_DATA_FIELDS dictionary.
-    for success_data_field, filters_ in SUCCESS_DATA_FIELDS:
+    for success_data_field, filters_ in SUCCESS_DATA_FIELDS.items():
         calculated_data[success_data_field] = avg_percent_success(
             filter_timeline_actions(timds, filters_))
 
@@ -656,12 +656,12 @@ def team_calculations(timds):
     # lfm_average_data_field is the calculated team data field, and
     # timd_data_field is the respective data point in calculated
     # timd data.
-    for lfm_average_data_field, timd_data_field in LFM_AVERAGE_DATA_FIELDS:
+    for lfm_average_data_field, timd_data_field in LFM_AVERAGE_DATA_FIELDS.items():
         calculated_data[lfm_average_data_field] = avg([
             timd['calculatedData'].get(timd_data_field) for timd in
             lfm_timds])
 
-    for lfm_success_data_field, filters_ in LFM_SUCCESS_DATA_FIELDS:
+    for lfm_success_data_field, filters_ in LFM_SUCCESS_DATA_FIELDS.items():
         calculated_data[lfm_success_data_field] = avg_percent_success(
             filter_timeline_actions(lfm_timds, filters_))
 
@@ -695,7 +695,7 @@ def team_calculations(timds):
     # timd_data_field is the respective data point in calculated
     # timd data.
     # TODO: Change name of 'sdAvg...' data fields to 'sd...' data fields
-    for sd_data_field, timd_data_field in SD_DATA_FIELDS:
+    for sd_data_field, timd_data_field in SD_DATA_FIELDS.items():
         calculated_data[sd_data_field] = np.std([
             timd['calculatedData'].get(timd_data_field) for timd in
             timds])
@@ -710,7 +710,7 @@ def team_calculations(timds):
     # p75_average_data_field is the calculated team data field, and
     # timd_data_field is the respective data point in calculated
     # timd data.
-    for p75_average_data_field, timd_data_field in P75_DATA_FIELDS:
+    for p75_average_data_field, timd_data_field in P75_DATA_FIELDS.items():
         calculated_data[p75_average_data_field] = p75([
             timd['calculatedData'].get(timd_data_field) for timd in
             timds])
@@ -742,17 +742,17 @@ def team_calculations(timds):
             total_cycle_list += paired_cycle_list
 
     # Calculates the average cycle time for each cycle type.
-    for cycle_data_field, filters_ in CYCLE_DATA_FIELDS:
+    for cycle_data_field, filters_ in CYCLE_DATA_FIELDS.items():
         calculated_data[cycle_data_field] = calculate_avg_cycle_time(
             filter_cycles(total_cycle_list, filters_))
 
     # Calculates the standard deviation cycle time for each cycle type.
-    for sd_cycle_data_field, filters_ in SD_CYCLE_DATA_FIELDS:
+    for sd_cycle_data_field, filters_ in SD_CYCLE_DATA_FIELDS.items():
         calculated_data[sd_cycle_data_field] = calculate_std_cycle_time(
             filter_cycles(total_cycle_list, filters_))
 
     # Finds the upper half average of each type of cycle.
-    for p75_cycle_data_field, filters_ in P75_CYCLE_DATA_FIELDS:
+    for p75_cycle_data_field, filters_ in P75_CYCLE_DATA_FIELDS.items():
         calculated_data[p75_cycle_data_field] = \
             calculate_p75_cycle_time(filter_cycles(total_cycle_list, \
             filters_))
@@ -779,7 +779,7 @@ def team_calculations(timds):
             lfm_cycle_list += paired_cycle_list
 
     # Calculates the last four match average for each cycle type.
-    for lfm_cycle_data_field, filters_ in LFM_CYCLE_DATA_FIELDS:
+    for lfm_cycle_data_field, filters_ in LFM_CYCLE_DATA_FIELDS.items():
         calculated_data[lfm_cycle_data_field] = \
             calculate_avg_cycle_time(filter_cycles(lfm_cycle_list, \
             filters_))
