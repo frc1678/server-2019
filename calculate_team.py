@@ -725,7 +725,7 @@ def team_calculations(timds):
     total_cycle_list = []
     for cycle_timd in timds:
         cycle_list = []
-        for action in cycle_timd.get('timeline'):
+        for action in cycle_timd.get('timeline', []):
             if action['type'] in ['intake', 'placement', 'type']:
                 cycle_list.append(action)
         if len(cycle_list) > 0:
@@ -762,7 +762,7 @@ def team_calculations(timds):
     lfm_cycle_list = []
     for cycle_timd in lfm_timds:
         cycle_list = []
-        for action in cycle_timd.get('timeline'):
+        for action in cycle_timd.get('timeline', []):
             if action['type'] in ['intake', 'placement', 'type']:
                 cycle_list.append(action)
         if len(cycle_list) > 0:
