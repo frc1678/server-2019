@@ -431,8 +431,12 @@ def p75(lis, exception=0.0, cycles=False):
         # If the cycles specifcation is true, it takes the lower half of
         # the list, which are the faster cycle times.
         if cycles is True:
+            # math.ceil rounds the float up to be an int, does this to
+            # avoid errors when lis only has one item.
             upper_half = lis[:math.ceil(len(lis) / 2)]
         else:
+            # math.floor rounds the float down to be an int, does this
+            # to avoid errors when lis only has one item.
             upper_half = lis[-math.floor(len(lis) / 2):]
         return sum(upper_half) / len(upper_half)
 
