@@ -255,6 +255,9 @@ while True:
         if LATEST_CALCULATIONS_BY_TIMD.get(timd) != FILES_BY_TIMD[timd]:
             subprocess.call(f'python3 calculate_timd.py {timd}', shell=True)
             print(f"Did calculations for {timd}")
+            team = time.split('Q')[0]
+            subprocess.call(f'python3 calculate_team.py {team}', shell=True)
+            print(f"Did calculations for {team}")
             LATEST_CALCULATIONS_BY_TIMD[timd] = FILES_BY_TIMD[timd]
 
     # Forwards data from Cloud Firestore to Realtime Database.
