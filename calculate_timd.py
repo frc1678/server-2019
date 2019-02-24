@@ -336,7 +336,7 @@ TEMP_TIMDS = {}
 # key and their decompressed tempTIMD as a value. Does this in order to
 # have a proper input to the consolidation function.
 for temp_timd in os.listdir(utils.create_file_path('data/cache/temp_timds')):
-    if TIMD_NAME in temp_timd:
+    if temp_timd.split('-')[0] == TIMD_NAME:
         file_path = utils.create_file_path(
             f'data/cache/temp_timds/{temp_timd}')
         with open(file_path, 'r') as file:
@@ -349,6 +349,10 @@ for temp_timd in os.listdir(utils.create_file_path('data/cache/temp_timds')):
 # After the TEMP_TIMDS are decompressed, they are fed into the
 # consolidation script where they are returned as one final TIMD.
 FINAL_TIMD = consolidation.consolidate_temp_timds(TEMP_TIMDS)
+
+# Adds the matchNumber and teamNumber necessary for later team calcs.
+FINAL_TIMD['matchNumber'] = int(TIMD_NAME.split('Q')[1])
+FINAL_TIMD['teamNumber'] = int(TIMD_NAME.split('Q')[0])
 
 # Adds calculatedData to the FINAL_TIMD using the
 # add_calculated_data_to_timd function at the top of the file.

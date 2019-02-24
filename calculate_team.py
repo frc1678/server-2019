@@ -9,6 +9,7 @@ Called by server.py with the number of the Team to be calculated."""
 import json
 import os
 import sys
+import math
 import numpy as np
 # Internal imports
 import utils
@@ -430,9 +431,11 @@ def p75(lis, exception=0.0, cycles=False):
         # If the cycles specifcation is true, it takes the lower half of
         # the list, which are the faster cycle times.
         if cycles is True:
-            upper_half = lis[:(round(len(lis) / 2))]
+            # 'math.ceil()' rounds the float up to be an int.
+            upper_half = lis[:math.ceil(len(lis) / 2)]
         else:
-            upper_half = lis[-(round(len(lis) / 2)):]
+            # 'math.floor()' rounds the float down to be an int.
+            upper_half = lis[-math.floor(len(lis) / 2):]
         return sum(upper_half) / len(upper_half)
 
 
@@ -628,13 +631,13 @@ def team_calculations(timds):
     # average_data_field is the calculated team data field, and
     # timd_data_field is the respective data point in calculated
     # timd data.
-    for average_data_field, timd_data_field in AVERAGE_DATA_FIELDS:
+    for average_data_field, timd_data_field in AVERAGE_DATA_FIELDS.items():
         calculated_data[average_data_field] = avg([timd[
             'calculatedData'].get(timd_data_field) for timd in timds])
 
     # Calculations for percent successes for different actions using the
     # SUCCESS_DATA_FIELDS dictionary.
-    for success_data_field, filters_ in SUCCESS_DATA_FIELDS:
+    for success_data_field, filters_ in SUCCESS_DATA_FIELDS.items():
         calculated_data[success_data_field] = avg_percent_success(
             filter_timeline_actions(timds, filters_))
 
@@ -669,12 +672,12 @@ def team_calculations(timds):
     # lfm_average_data_field is the calculated team data field, and
     # timd_data_field is the respective data point in calculated
     # timd data.
-    for lfm_average_data_field, timd_data_field in LFM_AVERAGE_DATA_FIELDS:
+    for lfm_average_data_field, timd_data_field in LFM_AVERAGE_DATA_FIELDS.items():
         calculated_data[lfm_average_data_field] = avg([
             timd['calculatedData'].get(timd_data_field) for timd in
             lfm_timds])
 
-    for lfm_success_data_field, filters_ in LFM_SUCCESS_DATA_FIELDS:
+    for lfm_success_data_field, filters_ in LFM_SUCCESS_DATA_FIELDS.items():
         calculated_data[lfm_success_data_field] = avg_percent_success(
             filter_timeline_actions(lfm_timds, filters_))
 
@@ -708,7 +711,7 @@ def team_calculations(timds):
     # timd_data_field is the respective data point in calculated
     # timd data.
     # TODO: Change name of 'sdAvg...' data fields to 'sd...' data fields
-    for sd_data_field, timd_data_field in SD_DATA_FIELDS:
+    for sd_data_field, timd_data_field in SD_DATA_FIELDS.items():
         calculated_data[sd_data_field] = sd([
             timd['calculatedData'].get(timd_data_field) for timd in
             timds])
@@ -723,7 +726,7 @@ def team_calculations(timds):
     # p75_average_data_field is the calculated team data field, and
     # timd_data_field is the respective data point in calculated
     # timd data.
-    for p75_average_data_field, timd_data_field in P75_DATA_FIELDS:
+    for p75_average_data_field, timd_data_field in P75_DATA_FIELDS.items():
         calculated_data[p75_average_data_field] = p75([
             timd['calculatedData'].get(timd_data_field) for timd in
             timds])
@@ -738,10 +741,11 @@ def team_calculations(timds):
     total_cycle_list = []
     for cycle_timd in timds:
         cycle_list = []
-        for action in cycle_timd.get('timeline'):
+        for action in cycle_timd.get('timeline', []):
             if action['type'] in ['intake', 'placement', 'type']:
                 cycle_list.append(action)
-        if len(cycle_list) > 0:
+        # There must be at least 2 actions to have a cycle.
+        if len(cycle_list) > 1:
             # If the first action in the list is a placement, it is a
             # preload, which doesn't count when calculating cycle times.
             if cycle_list[0].get('type') == 'placement':
@@ -755,17 +759,17 @@ def team_calculations(timds):
             total_cycle_list += paired_cycle_list
 
     # Calculates the average cycle time for each cycle type.
-    for cycle_data_field, filters_ in CYCLE_DATA_FIELDS:
+    for cycle_data_field, filters_ in CYCLE_DATA_FIELDS.items():
         calculated_data[cycle_data_field] = calculate_avg_cycle_time(
             filter_cycles(total_cycle_list, filters_))
 
     # Calculates the standard deviation cycle time for each cycle type.
-    for sd_cycle_data_field, filters_ in SD_CYCLE_DATA_FIELDS:
+    for sd_cycle_data_field, filters_ in SD_CYCLE_DATA_FIELDS.items():
         calculated_data[sd_cycle_data_field] = calculate_std_cycle_time(
             filter_cycles(total_cycle_list, filters_))
 
     # Finds the upper half average of each type of cycle.
-    for p75_cycle_data_field, filters_ in P75_CYCLE_DATA_FIELDS:
+    for p75_cycle_data_field, filters_ in P75_CYCLE_DATA_FIELDS.items():
         calculated_data[p75_cycle_data_field] = \
             calculate_p75_cycle_time(filter_cycles(total_cycle_list, \
             filters_))
@@ -775,10 +779,11 @@ def team_calculations(timds):
     lfm_cycle_list = []
     for cycle_timd in lfm_timds:
         cycle_list = []
-        for action in cycle_timd.get('timeline'):
+        for action in cycle_timd.get('timeline', []):
             if action['type'] in ['intake', 'placement', 'type']:
                 cycle_list.append(action)
-        if len(cycle_list) > 0:
+        # There must be at least 2 actions to have a cycle.
+        if len(cycle_list) > 1:
             # If the first action in the list is a placement, it is a
             # preload, which doesn't count when calculating cycle times.
             if cycle_list[0].get('type') == 'placement':
@@ -792,7 +797,7 @@ def team_calculations(timds):
             lfm_cycle_list += paired_cycle_list
 
     # Calculates the last four match average for each cycle type.
-    for lfm_cycle_data_field, filters_ in LFM_CYCLE_DATA_FIELDS:
+    for lfm_cycle_data_field, filters_ in LFM_CYCLE_DATA_FIELDS.items():
         calculated_data[lfm_cycle_data_field] = \
             calculate_avg_cycle_time(filter_cycles(lfm_cycle_list, \
             filters_))
@@ -810,7 +815,8 @@ def team_calculations(timds):
 # Check to ensure Team number is being passed as an argument
 if len(sys.argv) == 2:
     # Extract Team number from system argument
-    TEAM_NUMBER = int(sys.argv[1])
+    # Team number is a string
+    TEAM_NUMBER = sys.argv[1]
 else:
     print('Error: Team number not being passed as an argument. Exiting...')
     sys.exit(0)
@@ -826,8 +832,8 @@ for timd in os.listdir(utils.create_file_path('data/cache/timds')):
 FINAL_TEAM_DATA = {'calculatedData': team_calculations(TIMDS)}
 
 # Save data in local cache
-with open(utils.create_file_path(f'data/teams/{TEAM_NUMBER}.json'),
-          'w') as file:
+with open(utils.create_file_path(
+        f'data/cache/teams/{TEAM_NUMBER}.json'), 'w') as file:
     json.dump(FINAL_TEAM_DATA, file)
 
 # Save data in Firebase upload queue
