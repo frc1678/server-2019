@@ -19,6 +19,7 @@ Called by server.py with the name of the TIMD to be calculated."""
 import json
 import os
 import sys
+import subprocess
 # Internal imports
 import consolidation
 import decompressor
@@ -362,3 +363,7 @@ with open(utils.create_file_path(f'data/cache/timds/{TIMD_NAME}.json'),
 with open(utils.create_file_path(
         f'data/upload_queue/timds/{TIMD_NAME}.json'), 'w') as file:
     json.dump(FINAL_TIMD, file)
+
+# After the timd is calculated, the team is calculated.
+TEAM = TIMD_NAME.split('Q')[0]
+subprocess.call(f'python3 calculate_team.py {TEAM}', shell=True)
