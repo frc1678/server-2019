@@ -350,6 +350,10 @@ for temp_timd in os.listdir(utils.create_file_path('data/cache/temp_timds')):
 # consolidation script where they are returned as one final TIMD.
 FINAL_TIMD = consolidation.consolidate_temp_timds(TEMP_TIMDS)
 
+# Adds the matchNumber and teamNumber necessary for later team calcs.
+FINAL_TIMD['matchNumber'] = int(TIMD_NAME.split('Q')[1])
+FINAL_TIMD['teamNumber'] = int(TIMD_NAME.split('Q')[0])
+
 # Adds calculatedData to the FINAL_TIMD using the
 # add_calculated_data_to_timd function at the top of the file.
 FINAL_TIMD['calculatedData'] = calculate_timd_data(FINAL_TIMD)
