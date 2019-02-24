@@ -809,9 +809,9 @@ for timd in os.listdir(utils.create_file_path('data/cache/timds')):
         with open(utils.create_file_path(
                 f'data/cache/timds/{timd}')) as timd_file:
             timd_data = json.load(timd_file)
-            # If there is no matchNumber in the timd, it hasn't been
+            # If there is no calculatedData in the timd, it hasn't been
             # calculated yet, so it shouldn't be used in calculations.
-            if timd_data.get('matchNumber') is not None:
+            if timd_data.get('calculatedData') is not None:
                 TIMDS.append(timd_data)
 
 FINAL_TEAM_DATA = {'calculatedData': team_calculations(TIMDS)}
