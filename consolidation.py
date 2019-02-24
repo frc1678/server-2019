@@ -7,7 +7,7 @@ import collections
 import numpy as np
 # No internal imports
 
-def consolidate_times(times, sprking):
+def consolidate_times(times):
     """Takes in multiple time options and consolidates them into one time.
 
     times is a dictionary of each scout to their respective time value."""
@@ -216,7 +216,7 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
                 # If the key is time, finds the correct time using the
                 # consolidate_times algorithm.
                 final_simplified_timd[action_index]['time'] = \
-                    consolidate_times(scout_to_keys, sprking)
+                    consolidate_times(scout_to_keys)
             else:
                 # For every key in the dictionary other than time, it just
                 # takes the majority value for the key.
@@ -258,7 +258,7 @@ def climb_consolidation(input_timelines, sprking):
     # Consolidates time first
     final_simplified_timd['time'] = consolidate_times({
         scout: convert_float_time(climb['time']) for scout,
-        climb in simplified_timelines.items()}, sprking)
+        climb in simplified_timelines.items()})
 
     for key in ['attempted', 'actual']:
         for robot in ['self', 'robot1', 'robot2']:
