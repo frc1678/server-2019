@@ -41,7 +41,7 @@ def register_modified_temp_timd(temp_timd_name):
     timd_name = temp_timd_name.split('-')[0]
     if LATEST_CALCULATIONS_BY_TIMD.get(timd_name) is not None:
         LATEST_CALCULATIONS_BY_TIMD[timd_name] = (
-            LATEST_CALCULATIONS_BY_TIMD[timd_name].pop(
+            LATEST_CALCULATIONS_BY_TIMD[timd_name].remove(
                 temp_timd_name))
         # TODO: If there is only one tempTIMD in the list, and it is
         # removed, the TIMD data will not be recalculated or deleted.
@@ -85,7 +85,7 @@ def temp_timd_stream_handler(snapshot):
         # format as data at the path '/'.  This allows us to use the
         # same code to save the data in our local cache later on.
         # The '[1:]' removes the slash at the beginning of the path
-        data = {path[1:] : data}
+        data = {path[1:]: data}
     # If there is more than 1 slash in the path, the data is multiple
     # children deep.  tempTIMDs are only one child deep and this will
     # only trigger if invalid data is sent to Firebase.
@@ -136,7 +136,7 @@ def temp_super_stream_handler(snapshot):
         # format as data at the path '/'.  This allows us to use the
         # same code to save the data in our local cache later on.
         # The '[1:]' removes the slash at the beginning of the path
-        data = {path[1:] : data}
+        data = {path[1:]: data}
     # If there is more than 1 slash in the path, the data is multiple
     # children deep.  tempSupers are only one child deep and this will
     # only trigger if invalid data is sent to Firebase.

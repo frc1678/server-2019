@@ -31,6 +31,7 @@ def avg(lis, exception=0.0):
     exception is returned if there is a divide by zero error. The
     default is 0.0 because the main usage in in percentage calculations.
     """
+    lis = [item for item in lis if item is not None]
     if len(lis) == 0:
         return exception
     else:
@@ -230,7 +231,8 @@ def calculate_timd_data(timd):
                     action.get('didSucceed') is False):
                 cycle_list.append(action)
 
-    if len(cycle_list) > 0:
+    # There must be at least 2 actions to have a cycle
+    if len(cycle_list) > 1:
         # If the first action in the list is a placement, it is a
         # preload, which doesn't count when calculating cycle times.
         if cycle_list[0].get('type') in ['placement', 'drop']:
@@ -289,7 +291,7 @@ def calculate_timd_data(timd):
         # finished the match incap, so it adds an unincap at the end of
         # the timeline.
         if incap_and_impaired_items[-1]['type'] == 'incap':
-            incap_and_impaired_items.append({'type': 'unincap', 'time' : 0.0})
+            incap_and_impaired_items.append({'type': 'unincap', 'time': 0.0})
         paired_incap_list = make_paired_cycle_list(incap_and_impaired_items)
 
         # Calculates the timeImpaired and timeIncap by calculating the
