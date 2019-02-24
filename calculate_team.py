@@ -728,6 +728,7 @@ def team_calculations(timds):
         for action in cycle_timd.get('timeline'):
             if action['type'] in ['intake', 'placement', 'type']:
                 cycle_list.append(action)
+        # There must be at least 2 actions to have a cycle.
         if len(cycle_list) > 1:
             # If the first action in the list is a placement, it is a
             # preload, which doesn't count when calculating cycle times.
@@ -765,6 +766,7 @@ def team_calculations(timds):
         for action in cycle_timd.get('timeline'):
             if action['type'] in ['intake', 'placement', 'type']:
                 cycle_list.append(action)
+        # There must be at least 2 actions to have a cycle.
         if len(cycle_list) > 1:
             # If the first action in the list is a placement, it is a
             # preload, which doesn't count when calculating cycle times.
