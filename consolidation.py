@@ -12,25 +12,7 @@ def consolidate_times(times, sprking):
 
     times is a dictionary of each scout to their respective time value."""
 
-    # If any time is in the wrong time period (has an *) it is not
-    # considered for time consolidation.
-    # Checks if all of the times end in an asterisk
-    if all([time[-1] == '*' for time in times.values()]):
-        # If all the times end in asterisks, they are in the wrong time
-        # period. To fix the time period, all wrong times in sandstorm
-        # (time >= 135.1) are set to teleop as 135.0, and all wrong
-        # times in teleop (time <= 135.0) are set to sandstorm as 135.1.
-        altered_asterisk_times = {}
-        for scout, time in times.items():
-            if float(time.split('*')[0]) >= 135.1:
-                altered_asterisk_times[scout] = 135.0
-            else:
-                altered_asterisk_times[scout] = 135.1
-        return max_occurrences(altered_asterisk_times, sprking)
-    else:
-        for scout, time in times.items():
-            if '*' in time:
-                times.pop(scout)
+    times = {scout: time for scout, time in times.items() if time is not None}
 
     # Creates a list of the times in the form of floats instead of their
     # tempTIMD format of strings. Does this in order to  use them for
@@ -45,7 +27,7 @@ def consolidate_times(times, sprking):
     # If the standard deviation is zero, all the times are the same, so
     # it just returns the mean.
     if std == 0:
-        return format(mean, '.1f')
+        return round(mean, 1)
 
     # Creates a list of tuples with the first item as the time and the
     # second item as the weight (squared reciprocal of the z-score for
@@ -68,7 +50,24 @@ def consolidate_times(times, sprking):
         in reciprocal_zscores])
 
     # Formats each average to a float with one decimal place.
-    return format(weighted_average, '.1f')
+    return round(weighted_average, 1)
+
+def convert_float_time(time):
+    """Converts a time from a string to a float.
+
+    time is the time that needs to be converted."""
+    # If an asterisk is in the time, the time is in the wrong time
+    # period. If the asterisk time is in teleop, the time period is
+    # supposed to be in sandstorm, so it sets the time to the lowest
+    # time in sandstorm, and vice versa for when the time is in
+    # sandstorm.
+    if '*' in time:
+        if float(time[:-1]) >= 135.1:
+            return 135.0
+        else:
+            return 135.1
+    else:
+        return float(time)
 
 def max_occurrences(comparison_list, sprking):
     """Takes in a dictionary of scouts to their value and returns the majority.
@@ -132,6 +131,12 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
         for action in timeline:
             if action.get('type') == action_type:
                 simplified_timelines[scout].append(action)
+
+    # For each action in each scouts list of actions, the time is
+    # converted from a string to a float.
+    for scout, simplified_timeline in simplified_timelines.items():
+        for action in simplified_timeline:
+            action['time'] = convert_float_time(action['time'])
 
     # Scouts to the amount of actions of the specified type are in the
     # timeline.
@@ -252,7 +257,7 @@ def climb_consolidation(input_timelines, sprking):
 
     # Consolidates time first
     final_simplified_timd['time'] = consolidate_times({
-        scout: climb['time'] for scout,
+        scout: convert_float_time(climb['time']) for scout,
         climb in simplified_timelines.items()}, sprking)
 
     for key in ['attempted', 'actual']:
