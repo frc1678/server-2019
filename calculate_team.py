@@ -396,7 +396,7 @@ def calculate_std_cycle_time(cycles):
     for cycle in cycles:
         cycle_times.append(cycle[0].get('time') -
                            cycle[1].get('time'))
-    return np.std(cycle_times)
+    return sd(cycle_times)
 
 def calculate_p75_cycle_time(cycles):
     """Calculates the upper half average time for a type of cycle.
@@ -454,6 +454,19 @@ def avg(lis, exception=0.0):
     else:
         return sum(lis) / len(lis)
 
+def sd(lis, exception=0.0):
+    """Calculates the standard deviation of a list.
+
+    lis is the list that the standard deviation is taken of.
+    exception is returned if there is a divide by zero error. The
+    default is 0.0 because if there is no data, there is no deviation.
+    """
+    lis = [item for item in lis if item is not None]
+    if len(lis) == 0:
+        return exception
+    else:
+        return np.std(lis)
+
 def avg_percent_success(actions):
     """Finds the percent of times didSucceed is true in a list of actions.
 
@@ -466,7 +479,7 @@ def sd_percent_success(actions):
 
     actions is the list of actions that can either succeed or fail."""
     successes = [action['didSucceed'] for action in actions]
-    return round(100 * np.std(successes))
+    return round(100 * sd(successes))
 
 def p75_percent_success(actions):
     """Finds the percent of times didSucceed is true in a list of actions.
@@ -699,13 +712,13 @@ def team_calculations(timds):
     # timd data.
     # TODO: Change name of 'sdAvg...' data fields to 'sd...' data fields
     for sd_data_field, timd_data_field in SD_DATA_FIELDS.items():
-        calculated_data[sd_data_field] = np.std([
+        calculated_data[sd_data_field] = sd([
             timd['calculatedData'].get(timd_data_field) for timd in
             timds])
 
-    calculated_data['sdAvgGoodDecisions'] = np.std([
+    calculated_data['sdAvgGoodDecisions'] = sd([
         timd.get('numGoodDecisions') for timd in timds])
-    calculated_data['sdAvgBadDecisions'] = np.std([
+    calculated_data['sdAvgBadDecisions'] = sd([
         timd.get('numBadDecisions') for timd in timds])
 
     # Finds the upper half average of all the previously calculated data
