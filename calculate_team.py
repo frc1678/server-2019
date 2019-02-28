@@ -786,11 +786,7 @@ def team_calculations(timds):
     # timd data.
     # TODO: Change name of 'sdAvg...' data fields to 'sd...' data fields
     for sd_data_field, timd_data_field in SD_DATA_FIELDS.items():
-<<<<<<< HEAD
-        calculated_data[sd_data_field] = np.std([
-=======
         calculated_data[sd_data_field] = sd([
->>>>>>> 89c3059e5f09e4c1909c0413cd4b193908835f92
             timd['calculatedData'].get(timd_data_field) for timd in
             timds])
 
