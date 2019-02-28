@@ -140,6 +140,18 @@ SUCCESS_DATA_FIELDS = {
         'piece': 'lemon',
         'side': ('near', True),
     },
+    'ClimbL1': {
+        'type': 'climb',
+        'level': 1,
+    },
+    'ClimbL2': {
+        'type': 'climb',
+        'level': 2,
+    },
+    'ClimbL3': {
+        'type': 'climb',
+        'level': 3,
+    },
 }
 
 # Name of the team calculated success data field of the last four
@@ -379,13 +391,14 @@ def first_pick_ability(calculated_data):
     sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
     sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
 
-    end_game_score = 3 * calculated_data['ClimbSuccessesLevel1']
-    end_game_score += 6 * calculated_data['ClimbSuccessesLevel2']
-    end_game_score += 12 * calculated_data['ClimbSuccessesLevel3']
+    end_game_score = 3 * calculated_data['ClimbL1']
+    end_game_score += 6 * calculated_data['ClimbL2']
+    end_game_score += 12 * calculated_data['ClimbL3']
     end_game_score *= climbing_weight
-    end_game_score += (1 - climbing_weight) * calculated_data['ClimbCompatibility'] * 12 * calculated_data['SuccessRate']
+    # TODO: Add pit scout communication to get ClimbCompatibility
+    # end_game_score += (1 - climbing_weight) * calculated_data['ClimbCompatibility'] * 12 * calculated_data['SuccessRate']
 
-    pick_ability = sand_score + end_game_score + Level1TeleopScore + Level2TeleopScore + Level3TeleopScore
+    pick_ability = sand_score + end_game_score + level_1_teleop_score + level_2_teleop_score + level_3_teleop_score
     return pick_ability
 
 def second_pick_ability(calculated_data):
@@ -402,25 +415,28 @@ def second_pick_ability(calculated_data):
     docking_weight = 1  # how much we care about defending by blocking scoring structures
     path_blocking_weight = 1  # how much we care about defending by getting in the way
 
-    sand_score = calculated_data['HabCrossSuccessRate']
-    sand_score += calculated_data['DidDoLevel2'] * 3
-    sand_score += calculated_data['lemonsScoredSandstorm'] * 5
-    sand_score += calculated_data['orangesScoredSandstorm'] * 3
+    sand_score = calculated_data['habLineSuccessL1'] * 3
+    sand_score += calculated_data['habLineSuccessL2'] * 6
+    sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
+    sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
 
     level_1_teleop_score = calculated_data['avgLemonsScoredTeleL1'] * 2 * lemons_weight
     level_1_teleop_score += calculated_data['avgOrangesScoredTeleL1'] * 3 * oranges_weight
 
-    end_game_score = 3 * calculated_data['ClimbSuccessesLevel1']
-    end_game_score += 6 * calculated_data['ClimbSuccessesLevel2']
-    end_game_score += 12 * calculated_data['ClimbSuccessesLevel3']
+    end_game_score = 3 * calculated_data['ClimbL1']
+    end_game_score += 6 * calculated_data['ClimbL2']
+    end_game_score += 12 * calculated_data['ClimbL3']
     end_game_score *= climbing_weight
-    end_game_score += (1 - climbing_weight) * calculated_data['ClimbCompatibility'] * 12 * calculated_data['SuccessRate']
+    # TODO: Add pit scout communication to get ClimbCompatibility
+    # end_game_score += (1 - climbing_weight) * calculated_data['ClimbCompatibility'] * 12 * calculated_data['SuccessRate']
 
-    driver_ability = speed_weight * calculated_data['Speed']
-    driver_ability += (1 - speed_weight) * calculated_data['Agility']
-    driver_ability *= driving_weight
+    # driver_ability = speed_weight * calculated_data['Speed']
+    # driver_ability += (1 - speed_weight) * calculated_data['Agility']
+    # driver_ability *= driving_weight
+    driver_ability = 0  # this is a placeholder
 
-    defense_ability = calculated_data['SecondsAddedToCycle'] * calculated_data['PointsPerCyclePerSecond']
+    # defense_ability = calculated_data['SecondsAddedToCycle'] * calculated_data['PointsPerCyclePerSecond']
+    defense_ability = 0  # this is placeholder
     defense_ability *= defense_weight * (docking_weight + path_blocking_weight)
 
     pick_ability = sand_score + level_1_teleop_score + end_game_score
