@@ -8,7 +8,7 @@ def configure_firebase(url=None):
 
     If no URL is given, the default URL is used."""
     if url is None:
-        url = 'scouting-2019-cvr-e4cf3'
+        url = 'field-test-2019'
     config = {
         'apiKey': 'mykey',
         'authDomain': url + '.firebaseapp.com',
