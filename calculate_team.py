@@ -9,6 +9,7 @@ Called by server.py with the number of the Team to be calculated."""
 import json
 import os
 import sys
+import math
 import numpy as np
 # Internal imports
 import utils
@@ -469,7 +470,7 @@ def calculate_std_cycle_time(cycles):
     for cycle in cycles:
         cycle_times.append(cycle[0].get('time') -
                            cycle[1].get('time'))
-    return np.std(cycle_times)
+    return sd(cycle_times)
 
 def calculate_p75_cycle_time(cycles):
     """Calculates the upper half average time for a type of cycle.
@@ -504,9 +505,11 @@ def p75(lis, exception=0.0, cycles=False):
         # If the cycles specifcation is true, it takes the lower half of
         # the list, which are the faster cycle times.
         if cycles is True:
-            upper_half = lis[:(round(len(lis) / 2))]
+            # 'math.ceil()' rounds the float up to be an int.
+            upper_half = lis[:math.ceil(len(lis) / 2)]
         else:
-            upper_half = lis[-(round(len(lis) / 2)):]
+            # 'math.floor()' rounds the float down to be an int.
+            upper_half = lis[-math.floor(len(lis) / 2):]
         return sum(upper_half) / len(upper_half)
 
 
@@ -525,6 +528,19 @@ def avg(lis, exception=0.0):
     else:
         return sum(lis) / len(lis)
 
+def sd(lis, exception=0.0):
+    """Calculates the standard deviation of a list.
+
+    lis is the list that the standard deviation is taken of.
+    exception is returned if there is a divide by zero error. The
+    default is 0.0 because if there is no data, there is no deviation.
+    """
+    lis = [item for item in lis if item is not None]
+    if len(lis) == 0:
+        return exception
+    else:
+        return np.std(lis)
+
 def avg_percent_success(actions):
     """Finds the percent of times didSucceed is true in a list of actions.
 
@@ -537,7 +553,7 @@ def sd_percent_success(actions):
 
     actions is the list of actions that can either succeed or fail."""
     successes = [action['didSucceed'] for action in actions]
-    return round(100 * np.std(successes))
+    return round(100 * sd(successes))
 
 def p75_percent_success(actions):
     """Finds the percent of times didSucceed is true in a list of actions.
@@ -770,13 +786,17 @@ def team_calculations(timds):
     # timd data.
     # TODO: Change name of 'sdAvg...' data fields to 'sd...' data fields
     for sd_data_field, timd_data_field in SD_DATA_FIELDS.items():
+<<<<<<< HEAD
         calculated_data[sd_data_field] = np.std([
+=======
+        calculated_data[sd_data_field] = sd([
+>>>>>>> 89c3059e5f09e4c1909c0413cd4b193908835f92
             timd['calculatedData'].get(timd_data_field) for timd in
             timds])
 
-    calculated_data['sdAvgGoodDecisions'] = np.std([
+    calculated_data['sdAvgGoodDecisions'] = sd([
         timd.get('numGoodDecisions') for timd in timds])
-    calculated_data['sdAvgBadDecisions'] = np.std([
+    calculated_data['sdAvgBadDecisions'] = sd([
         timd.get('numBadDecisions') for timd in timds])
 
     # Finds the upper half average of all the previously calculated data
@@ -799,10 +819,11 @@ def team_calculations(timds):
     total_cycle_list = []
     for cycle_timd in timds:
         cycle_list = []
-        for action in cycle_timd.get('timeline'):
+        for action in cycle_timd.get('timeline', []):
             if action['type'] in ['intake', 'placement', 'type']:
                 cycle_list.append(action)
-        if len(cycle_list) > 0:
+        # There must be at least 2 actions to have a cycle.
+        if len(cycle_list) > 1:
             # If the first action in the list is a placement, it is a
             # preload, which doesn't count when calculating cycle times.
             if cycle_list[0].get('type') == 'placement':
@@ -836,10 +857,11 @@ def team_calculations(timds):
     lfm_cycle_list = []
     for cycle_timd in lfm_timds:
         cycle_list = []
-        for action in cycle_timd.get('timeline'):
+        for action in cycle_timd.get('timeline', []):
             if action['type'] in ['intake', 'placement', 'type']:
                 cycle_list.append(action)
-        if len(cycle_list) > 0:
+        # There must be at least 2 actions to have a cycle.
+        if len(cycle_list) > 1:
             # If the first action in the list is a placement, it is a
             # preload, which doesn't count when calculating cycle times.
             if cycle_list[0].get('type') == 'placement':
@@ -871,7 +893,8 @@ def team_calculations(timds):
 # Check to ensure Team number is being passed as an argument
 if len(sys.argv) == 2:
     # Extract Team number from system argument
-    TEAM_NUMBER = int(sys.argv[1])
+    # Team number is a string
+    TEAM_NUMBER = sys.argv[1]
 else:
     print('Error: Team number not being passed as an argument. Exiting...')
     sys.exit(0)
@@ -882,13 +905,17 @@ for timd in os.listdir(utils.create_file_path('data/cache/timds')):
     if str(TEAM_NUMBER) in timd:
         with open(utils.create_file_path(
                 f'data/cache/timds/{timd}')) as timd_file:
-            TIMDS.append(json.load(timd_file))
+            timd_data = json.load(timd_file)
+            # If there is no calculatedData in the timd, it hasn't been
+            # calculated yet, so it shouldn't be used in calculations.
+            if timd_data.get('calculatedData') is not None:
+                TIMDS.append(timd_data)
 
 FINAL_TEAM_DATA = {'calculatedData': team_calculations(TIMDS)}
 
 # Save data in local cache
-with open(utils.create_file_path(f'data/teams/{TEAM_NUMBER}.json'),
-          'w') as file:
+with open(utils.create_file_path(
+        f'data/cache/teams/{TEAM_NUMBER}.json'), 'w') as file:
     json.dump(FINAL_TEAM_DATA, file)
 
 # Save data in Firebase upload queue

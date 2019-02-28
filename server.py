@@ -85,7 +85,7 @@ def temp_timd_stream_handler(snapshot):
         # format as data at the path '/'.  This allows us to use the
         # same code to save the data in our local cache later on.
         # The '[1:]' removes the slash at the beginning of the path
-        data = {path[1:] : data}
+        data = {path[1:]: data}
     # If there is more than 1 slash in the path, the data is multiple
     # children deep.  tempTIMDs are only one child deep and this will
     # only trigger if invalid data is sent to Firebase.
@@ -136,7 +136,7 @@ def temp_super_stream_handler(snapshot):
         # format as data at the path '/'.  This allows us to use the
         # same code to save the data in our local cache later on.
         # The '[1:]' removes the slash at the beginning of the path
-        data = {path[1:] : data}
+        data = {path[1:]: data}
     # If there is more than 1 slash in the path, the data is multiple
     # children deep.  tempSupers are only one child deep and this will
     # only trigger if invalid data is sent to Firebase.

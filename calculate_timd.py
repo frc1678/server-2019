@@ -19,6 +19,7 @@ Called by server.py with the name of the TIMD to be calculated."""
 import json
 import os
 import sys
+import subprocess
 # Internal imports
 import consolidation
 import decompressor
@@ -31,6 +32,7 @@ def avg(lis, exception=0.0):
     exception is returned if there is a divide by zero error. The
     default is 0.0 because the main usage in in percentage calculations.
     """
+    lis = [item for item in lis if item is not None]
     if len(lis) == 0:
         return exception
     else:
@@ -247,7 +249,8 @@ def calculate_timd_data(timd):
                     action.get('didSucceed') is False):
                 cycle_list.append(action)
 
-    if len(cycle_list) > 0:
+    # There must be at least 2 actions to have a cycle
+    if len(cycle_list) > 1:
         # If the first action in the list is a placement, it is a
         # preload, which doesn't count when calculating cycle times.
         if cycle_list[0].get('type') in ['placement', 'drop']:
@@ -306,7 +309,7 @@ def calculate_timd_data(timd):
         # finished the match incap, so it adds an unincap at the end of
         # the timeline.
         if incap_and_impaired_items[-1]['type'] == 'incap':
-            incap_and_impaired_items.append({'type': 'unincap', 'time' : 0.0})
+            incap_and_impaired_items.append({'type': 'unincap', 'time': 0.0})
         paired_incap_list = make_paired_cycle_list(incap_and_impaired_items)
 
         # Calculates the timeImpaired and timeIncap by calculating the
@@ -350,7 +353,7 @@ TEMP_TIMDS = {}
 # key and their decompressed tempTIMD as a value. Does this in order to
 # have a proper input to the consolidation function.
 for temp_timd in os.listdir(utils.create_file_path('data/cache/temp_timds')):
-    if TIMD_NAME in temp_timd:
+    if temp_timd.split('-')[0] == TIMD_NAME:
         file_path = utils.create_file_path(
             f'data/cache/temp_timds/{temp_timd}')
         with open(file_path, 'r') as file:
@@ -363,6 +366,10 @@ for temp_timd in os.listdir(utils.create_file_path('data/cache/temp_timds')):
 # After the TEMP_TIMDS are decompressed, they are fed into the
 # consolidation script where they are returned as one final TIMD.
 FINAL_TIMD = consolidation.consolidate_temp_timds(TEMP_TIMDS)
+
+# Adds the matchNumber and teamNumber necessary for later team calcs.
+FINAL_TIMD['matchNumber'] = int(TIMD_NAME.split('Q')[1])
+FINAL_TIMD['teamNumber'] = int(TIMD_NAME.split('Q')[0])
 
 # Adds calculatedData to the FINAL_TIMD using the
 # add_calculated_data_to_timd function at the top of the file.
@@ -377,3 +384,7 @@ with open(utils.create_file_path(f'data/cache/timds/{TIMD_NAME}.json'),
 with open(utils.create_file_path(
         f'data/upload_queue/timds/{TIMD_NAME}.json'), 'w') as file:
     json.dump(FINAL_TIMD, file)
+
+# After the timd is calculated, the team is calculated.
+TEAM = TIMD_NAME.split('Q')[0]
+subprocess.call(f'python3 calculate_team.py {TEAM}', shell=True)

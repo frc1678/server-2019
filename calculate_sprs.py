@@ -58,7 +58,7 @@ for temp_timd in TEMP_TIMDS:
     # tempTIMD specific data fields
     scout_name = temp_timd_data.pop('scoutName')
     assignment_mode = temp_timd_data.pop('assignmentMode')
-    cycle_number = temp_timd_data.pop('currentCycle')
+    cycle_number = temp_timd_data.pop('currentCycle', 0)
     app_version = temp_timd_data.pop('appVersion')
     assignment_file_timestamp = temp_timd_data.pop(
         'assignmentFileTimestamp')

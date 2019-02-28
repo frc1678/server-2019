@@ -7,30 +7,12 @@ import collections
 import numpy as np
 # No internal imports
 
-def consolidate_times(times, sprking):
+def consolidate_times(times):
     """Takes in multiple time options and consolidates them into one time.
 
     times is a dictionary of each scout to their respective time value."""
 
-    # If any time is in the wrong time period (has an *) it is not
-    # considered for time consolidation.
-    # Checks if all of the times end in an asterisk
-    if all([time[-1] == '*' for time in times.values()]):
-        # If all the times end in asterisks, they are in the wrong time
-        # period. To fix the time period, all wrong times in sandstorm
-        # (time >= 135.1) are set to teleop as 135.0, and all wrong
-        # times in teleop (time <= 135.0) are set to sandstorm as 135.1.
-        altered_asterisk_times = {}
-        for scout, time in times.items():
-            if float(time.split('*')[0]) >= 135.1:
-                altered_asterisk_times[scout] = 135.0
-            else:
-                altered_asterisk_times[scout] = 135.1
-        return max_occurrences(altered_asterisk_times, sprking)
-    else:
-        for scout, time in times.items():
-            if '*' in time:
-                times.pop(scout)
+    times = {scout: time for scout, time in times.items() if time is not None}
 
     # Creates a list of the times in the form of floats instead of their
     # tempTIMD format of strings. Does this in order to  use them for
@@ -45,7 +27,7 @@ def consolidate_times(times, sprking):
     # If the standard deviation is zero, all the times are the same, so
     # it just returns the mean.
     if std == 0:
-        return format(mean, '.1f')
+        return round(mean, 1)
 
     # Creates a list of tuples with the first item as the time and the
     # second item as the weight (squared reciprocal of the z-score for
@@ -68,7 +50,24 @@ def consolidate_times(times, sprking):
         in reciprocal_zscores])
 
     # Formats each average to a float with one decimal place.
-    return format(weighted_average, '.1f')
+    return round(weighted_average, 1)
+
+def convert_float_time(time):
+    """Converts a time from a string to a float.
+
+    time is the time that needs to be converted."""
+    # If an asterisk is in the time, the time is in the wrong time
+    # period. If the asterisk time is in teleop, the time period is
+    # supposed to be in sandstorm, so it sets the time to the lowest
+    # time in sandstorm, and vice versa for when the time is in
+    # sandstorm.
+    if '*' in time:
+        if float(time[:-1]) >= 135.1:
+            return 135.0
+        else:
+            return 135.1
+    else:
+        return float(time)
 
 def max_occurrences(comparison_list, sprking):
     """Takes in a dictionary of scouts to their value and returns the majority.
@@ -82,11 +81,21 @@ def max_occurrences(comparison_list, sprking):
     sprking is the scout with the best spr out of the scouts, used if
     there is no clear majority."""
 
+    # If the sprking is not part of the comparison_list, another scout
+    # is randomly selected.
+    if sprking not in list(comparison_list.keys()):
+        correct_scout = list(comparison_list.keys())[-1]
+    else:
+        correct_scout = sprking
+
     # Each item in the list to how many times it appeared in the list.
     # Uses the collections module to count how many appearances each
     # item has in the list.
     occurence_list = dict(collections.Counter(comparison_list.values()))
 
+    # Handling for an empty occurrence list.
+    if len(occurence_list.values()) == 0:
+        return None
     # If the highest occurence on the occurence list is the same as
     # the lowest occurence, the correct value for the datapoint is
     # the value output by the scout with the best spr. This triggers
@@ -95,8 +104,8 @@ def max_occurrences(comparison_list, sprking):
     # different (The max and min are both 1). In the case of any
     # other scenario, the max is trusted because it would suggest
     # the max is the 2 in a 2 scout versus 1 split decision.
-    if max(occurence_list.values()) == min(occurence_list.values()):
-        return comparison_list[sprking]
+    elif max(occurence_list.values()) == min(occurence_list.values()):
+        return comparison_list[correct_scout]
     else:
         return max(occurence_list, key=occurence_list.get)
 
@@ -114,7 +123,7 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
 
     # The dictionary of three timelines with only the types specified
     # in the function.
-    simplified_timelines = {scout : [] for scout in temp_timd_timelines.keys()}
+    simplified_timelines = {scout: [] for scout in temp_timd_timelines.keys()}
 
     # Takes the three different timelines and cuts out any types of
     # data points which are not the specified types.
@@ -123,9 +132,15 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
             if action.get('type') == action_type:
                 simplified_timelines[scout].append(action)
 
+    # For each action in each scouts list of actions, the time is
+    # converted from a string to a float.
+    for scout, simplified_timeline in simplified_timelines.items():
+        for action in simplified_timeline:
+            action['time'] = convert_float_time(action['time'])
+
     # Scouts to the amount of actions of the specified type are in the
     # timeline.
-    count_timelines = {scout : len(timeline) for
+    count_timelines = {scout: len(timeline) for
                        scout, timeline in simplified_timelines.items()}
 
     # Finds the majority amount of actions in the timeline to see
@@ -188,20 +203,20 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
     final_simplified_timd = [{} for action in range(majority_length)]
     # Iterates through the sprking's timeline to compare all the actions.
     for action_index, action in enumerate(correct_length_timelines[sprking]):
-        comparison_dict = {scout : timeline[action_index] for scout,
+        comparison_dict = {scout: timeline[action_index] for scout,
                            timeline in correct_length_timelines.items()}
         for key in comparison_dict[sprking].keys():
             # For every key that isn't time, which can't realistically
             # have a majority, the majority opinion is set to the final
             # timd.
-            scout_to_keys = {scout : action.get(key) for scout,
+            scout_to_keys = {scout: action.get(key) for scout,
                              action in comparison_dict.items()}
 
             if key == 'time':
                 # If the key is time, finds the correct time using the
                 # consolidate_times algorithm.
                 final_simplified_timd[action_index]['time'] = \
-                    consolidate_times(scout_to_keys, sprking)
+                    consolidate_times(scout_to_keys)
             else:
                 # For every key in the dictionary other than time, it just
                 # takes the majority value for the key.
@@ -234,12 +249,16 @@ def climb_consolidation(input_timelines, sprking):
             if action.get('type') == 'climb':
                 simplified_timelines[scout] = action
 
+    # Returns None if no climb was recorded.
+    if simplified_timelines == {}:
+        return None
+
     final_simplified_timd = {'type': 'climb', 'attempted': {}, 'actual': {}}
 
     # Consolidates time first
     final_simplified_timd['time'] = consolidate_times({
-        scout: climb['time'] for scout,
-        climb in simplified_timelines.items()}, sprking)
+        scout: convert_float_time(climb['time']) for scout,
+        climb in simplified_timelines.items()})
 
     for key in ['attempted', 'actual']:
         for robot in ['self', 'robot1', 'robot2']:
@@ -315,12 +334,18 @@ def consolidate_temp_timds(temp_timds):
                 # seperate it from intakes and placements. Climb needs a
                 # seperate function because of its relatively strange
                 # structure.
-                final_timeline.append(climb_consolidation(timelines, sprking))
+                climb = climb_consolidation(timelines, sprking)
+                if climb is not None:
+                    final_timeline.append(climb)
+
+                # Deletes any blank actions.
+                final_timeline = [action for action in final_timeline if
+                                  action != {}]
 
                 # Once the timeline is finally completed, it is sorted
                 # by time, and added to the final timd.
                 final_timd['timeline'] = sorted(final_timeline, \
-                    key=lambda action: float(action.get('time')))
+                    key=lambda action: action['time'], reverse=True)
 
         # When consolidating non-timed keys, it is easy to consolidate
         # them, as you can simply find which value is the most common in
