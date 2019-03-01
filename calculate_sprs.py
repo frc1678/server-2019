@@ -60,8 +60,8 @@ for temp_timd in TEMP_TIMDS:
     assignment_mode = temp_timd_data.pop('assignmentMode')
     cycle_number = temp_timd_data.pop('currentCycle', 0)
     app_version = temp_timd_data.pop('appVersion')
-    assignment_file_timestamp = temp_timd_data.pop(
-        'assignmentFileTimestamp')
+    #assignment_file_timestamp = temp_timd_data.pop(
+        #'assignmentFileTimestamp')
     for data_field in ['timerStarted', 'scoutID']:
         temp_timd_data.pop(data_field, None)
     # TIMD specific data fields
@@ -69,8 +69,8 @@ for temp_timd in TEMP_TIMDS:
         timd_data.pop(data_field, None)
 
     # Compares tempTIMD to TIMD
-    temp_timd_timeline = temp_timd_data.pop('timeline', None)
-    timd_timeline = timd_data.pop('timeline', None)
+    temp_timd_timeline = temp_timd_data.pop('timeline', [])
+    timd_timeline = timd_data.pop('timeline', [])
 
     # Compares non-timed data fields
     for key, value in temp_timd_data.items():
