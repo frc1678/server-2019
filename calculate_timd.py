@@ -177,9 +177,6 @@ def calculate_timd_data(timd):
     calculated_data['lemonsSpilled'] = len(filter_timeline_actions(
         timd, type='spill'))
 
-    calculated_data['habCrossSuccessRate'] = avg(1 if
-        filter_timeline_actions(timd, crossedHabLine=True) else 0)
-
     #TODO(Nathan): filter when time<=135 to make sure it actually is in tele
     calculated_data['orangesScoredTeleL1'] = len(filter_timeline_actions(timd,
         type='placement', piece='orange', level=1, didSucceed=True))
