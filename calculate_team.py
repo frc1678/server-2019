@@ -141,18 +141,6 @@ SUCCESS_DATA_FIELDS = {
         'piece': 'lemon',
         'side': ('near', True),
     },
-    'ClimbL1': {
-        'type': 'climb',
-        'level': 1,
-    },
-    'ClimbL2': {
-        'type': 'climb',
-        'level': 2,
-    },
-    'ClimbL3': {
-        'type': 'climb',
-        'level': 3,
-    },
 }
 
 # Name of the team calculated success data field of the last four
@@ -392,9 +380,9 @@ def first_pick_ability(calculated_data):
     sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
     sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
 
-    end_game_score = 3 * calculated_data['ClimbL1']
-    end_game_score += 6 * calculated_data['ClimbL2']
-    end_game_score += 12 * calculated_data['ClimbL3']
+    end_game_score = 3 * calculated_data['climbL1Success']
+    end_game_score += 6 * calculated_data['climbL2Success']
+    end_game_score += 12 * calculated_data['climbL3Success']
     end_game_score *= climbing_weight
     # TODO: Add pit scout communication to get ClimbCompatibility
     # end_game_score += (1 - climbing_weight) * calculated_data['ClimbCompatibility'] * 12 * calculated_data['SuccessRate']
@@ -424,9 +412,9 @@ def second_pick_ability(calculated_data):
     level_1_teleop_score = calculated_data['avgLemonsScoredTeleL1'] * 2 * lemons_weight
     level_1_teleop_score += calculated_data['avgOrangesScoredTeleL1'] * 3 * oranges_weight
 
-    end_game_score = 3 * calculated_data['ClimbL1']
-    end_game_score += 6 * calculated_data['ClimbL2']
-    end_game_score += 12 * calculated_data['ClimbL3']
+    end_game_score = 3 * calculated_data['climbL1Success']
+    end_game_score += 6 * calculated_data['climbL2Success']
+    end_game_score += 12 * calculated_data['climbL3Success']
     end_game_score *= climbing_weight
     # TODO: Add pit scout communication to get ClimbCompatibility
     # end_game_score += (1 - climbing_weight) * calculated_data['ClimbCompatibility'] * 12 * calculated_data['SuccessRate']
@@ -658,6 +646,19 @@ def filter_cycles(cycle_list, filters):
             filtered_cycles.append(cycle)
     return filtered_cycles
 
+def climbSuccessRate(timds, level):
+    climbs = filter_timeline_actions(timds, {'type': 'climb'})
+    attempts = 0
+    successes = 0
+    for climb in climbs:
+        if (climb['attempted']['self'] == level):
+            attempts += 1
+        if (climb['actual']['self'] == level):
+            successes += 1
+    if attempts == 0:
+        return 0
+    return round(100 * successes / attempts)
+
 def make_paired_cycle_list(cycle_list):
     """Pairs up cycles together into tuples of intakes and outakes.
 
@@ -761,6 +762,10 @@ def team_calculations(timds):
     calculated_data['lfmHabLineSuccessL2'] = round(100 * avg([
         timd['crossedHabLine'] for timd in lfm_timds if
         timd.get('startingLevel') == 2]))
+
+    calculated_data['climbL1Success'] = climbSuccessRate(timds, 1)
+    calculated_data['climbL2Success'] = climbSuccessRate(timds, 2)
+    calculated_data['climbL3Success'] = climbSuccessRate(timds, 3)
 
     calculated_data['lfmAvgGoodDecisions'] = avg([
         timd.get('numGoodDecisions') for timd in lfm_timds])
