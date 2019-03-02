@@ -69,8 +69,8 @@ for temp_timd in TEMP_TIMDS:
         timd_data.pop(data_field, None)
 
     # Compares tempTIMD to TIMD
-    temp_timd_timeline = temp_timd_data.pop('timeline', None)
-    timd_timeline = timd_data.pop('timeline', None)
+    temp_timd_timeline = temp_timd_data.pop('timeline', [])
+    timd_timeline = timd_data.pop('timeline', [])
 
     # Compares non-timed data fields
     for key, value in temp_timd_data.items():
