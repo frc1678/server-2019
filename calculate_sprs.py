@@ -16,11 +16,7 @@ TIMDS = os.listdir(utils.create_file_path('data/cache/timds'))
 
 # Scout name to SPR breakdown dictionary
 # Example format: 'Sam C': {'placement': {'correct': 3}, {'total': 10}}
-try:
-    with open(utils.create_file_path('data/sprs/sprs.json'), 'r') as file:
-        SPRS = json.load(file)
-except FileNotFoundError:
-    SPRS = {}
+SPRS = {}
 
 def register_value(scout_name_, data_field_, is_correct):
     """Registers correct or incorrect value in 'SPRS'."""
