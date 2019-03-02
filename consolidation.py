@@ -29,6 +29,11 @@ def consolidate_times(times):
     if std == 0:
         return round(mean, 1)
 
+    # If one of the float_list items is equivelent to the mean, it's
+    # weight will be undefined, so we can just return the mean.
+    if mean in float_list:
+        return mean
+
     # Creates a list of tuples with the first item as the time and the
     # second item as the weight (squared reciprocal of the z-score for
     # each time). These values are how much each time is weighted when
