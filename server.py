@@ -257,9 +257,6 @@ while True:
             print(f"Did calculations for {timd}")
             LATEST_CALCULATIONS_BY_TIMD[timd] = FILES_BY_TIMD[timd]
 
-    # Forwards data from Cloud Firestore to Realtime Database.
-    subprocess.call('python3 forward_firestore_data.py', shell=True)
-
     # Forwards tempSuper data to Matches and TIMDs.
     subprocess.call('python3 forward_temp_super.py', shell=True)
 
