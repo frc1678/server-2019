@@ -66,6 +66,7 @@ for temp_timd in TEMP_TIMDS:
         temp_timd_data.pop(data_field, None)
     # TIMD specific data fields
     for data_field in ['calculatedData', 'superNotes']:
+        timd_data.pop(data_field, None)
 
     # Compares tempTIMD to TIMD
     temp_timd_timeline = temp_timd_data.pop('timeline', [])
