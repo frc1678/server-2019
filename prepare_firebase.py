@@ -118,6 +118,7 @@ if FULL_WIPE is True:
         },
     })
     # Removes 'cache' and 'upload_queue' folders
+    # Which removes the oudated data 
     os.remove(utils.create_file_path('data/cache'))
     os.remove(utils.create_file_path('data/upload_queue'))
 
