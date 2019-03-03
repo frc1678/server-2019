@@ -297,11 +297,8 @@ def calculate_timd_data(timd):
 
         # Calculates the timeIncap by calculating the total amount of
         # time the robot spent incap during the match.
-        incapacitated_items = []
-        for cycle in paired_incap_list:
-            incapacitated_items.append(cycle)
         calculated_data['timeIncap'] = calculate_total_incap_time(
-            incapacitated_items)
+            paired_incap_list)
     else:
         # Otherwise, the time that the robot spent incap is naturally 0.
         calculated_data['timeIncap'] = 0.0
