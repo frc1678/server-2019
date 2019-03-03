@@ -391,8 +391,17 @@ def decompress_temp_super_teams(compressed_temp_super_teams):
             decompressed_key = TEMP_SUPER_COMPRESSION_KEYS[compressed_key]
             # Every character after the key is the value.
             compressed_value = team_item[1:]
+            if compressed_key == 'x':
+                compressed_value = compressed_value[1:-1]
+                for rank_defense in compressed_value:
+                    if isalpha(rank_defense) == True:
+                        rank_defense_key = TEMP_SUPER_COMPRESSION_KEYS[rank_defense]
+                    elif isdigit(rank_defense) == True:
+                        rank_defense_value = int(rank_defense)
+
+
             # Checks if the value is a letter that can be decompressed.
-            if compressed_value in TEMP_SUPER_COMPRESSION_VALUES:
+            elif compressed_value in TEMP_SUPER_COMPRESSION_VALUES:
                 # Decompresses the key and the value.
                 decompressed_value = TEMP_SUPER_COMPRESSION_VALUES[compressed_value]
             # Checks if the value only contains characters 0-9
