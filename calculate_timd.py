@@ -295,18 +295,15 @@ def calculate_timd_data(timd):
             incap_items.append({'type': 'unincap', 'time': 0.0})
         paired_incap_list = make_paired_cycle_list(incap_items)
 
-        # Calculates the timeImpaired and timeIncap by calculating the
-        # total amount of time the robot spent incap for either causes
-        # that indicate the robot was impaired, or causes that indicate
-        # the robot is incapacitated.
+        # Calculates the timeIncap by calculating the total amount of
+        # time the robot spent incap during the match.
         incapacitated_items = []
         for cycle in paired_incap_list:
             incapacitated_items.append(cycle)
         calculated_data['timeIncap'] = calculate_total_incap_time(
             incapacitated_items)
     else:
-        # Otherwise, the time that the robot spent impaired and incap is
-        # naturally 0.
+        # Otherwise, the time that the robot spent incap is naturally 0.
         calculated_data['timeIncap'] = 0.0
 
     return calculated_data
