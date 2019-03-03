@@ -5,7 +5,6 @@ Sends blank 'Teams' and 'Matches' to Realtime Database."""
 # External imports
 import json
 import sys
-import shutil
 # Internal imports
 import firebase_communicator
 import tba_communicator
@@ -118,10 +117,6 @@ if FULL_WIPE is True:
             'availability': {scout: 0 for scout in SCOUT_NAMES},
         },
     })
-
-    # Removes 'cache' and 'upload_queue' folders to remove outdated data
-    shutil.rmtree(utils.create_file_path('data/cache/'))
-    shutil.rmtree(utils.create_file_path('data/upload_queue/'))
 
 # Sends data to Firebase
 FIREBASE.update(FIREBASE_UPLOAD)
