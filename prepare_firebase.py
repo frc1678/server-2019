@@ -117,5 +117,9 @@ if FULL_WIPE is True:
         },
     })
 
+    # Removes 'cache' and 'upload_queue' folders to remove outdated data
+    shutil.rmtree(utils.create_file_path('data/cache/'))
+    shutil.rmtree(utils.create_file_path('data/upload_queue/'))
+
 # Sends data to Firebase
 FIREBASE.update(FIREBASE_UPLOAD)
