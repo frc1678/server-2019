@@ -3,12 +3,14 @@
 import pyrebase
 # No internal imports
 
+URL = 'scouting-2019-cvr-e4cf3'
+
 def configure_firebase(url=None):
     """Returns a firebase database instance based on a database URL.
 
     If no URL is given, the default URL is used."""
     if url is None:
-        url = 'scouting-2019-cvr-e4cf3'
+        url = URL
     config = {
         'apiKey': 'mykey',
         'authDomain': url + '.firebaseapp.com',

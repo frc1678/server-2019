@@ -58,6 +58,7 @@ else:
         sys.exit(0)
 
 # User confirmation
+print(f'\nURL: {firebase_communicator.URL}')
 print(f'\nWarning: {MESSAGE} will be wiped from Firebase!')
 CONFIRMATION = request_input("Type 'wipe' to continue: ", ['wipe'], [])
 
