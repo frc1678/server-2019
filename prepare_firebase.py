@@ -5,7 +5,6 @@ Sends blank 'Teams' and 'Matches' to Realtime Database."""
 # External imports
 import json
 import sys
-import shutil
 # Internal imports
 import firebase_communicator
 import tba_communicator
