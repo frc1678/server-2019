@@ -375,14 +375,14 @@ def first_pick_ability(calculated_data):
     level_3_teleop_score = (2 * calculated_data['avgLemonsScoredTeleL3']
         + 3 * calculated_data['avgOrangesScoredTeleL3']) * level_3_weight
 
-    sand_score = calculated_data['habLineSuccessL1'] * 3
-    sand_score += calculated_data['habLineSuccessL2'] * 6
+    sand_score = float(calculated_data['habLineSuccessL1']) * 3 / 100
+    sand_score += float(calculated_data['habLineSuccessL2']) * 6 / 100
     sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
     sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
 
-    end_game_score = 3 * calculated_data['climbL1Success']
-    end_game_score += 6 * calculated_data['climbL2Success']
-    end_game_score += 12 * calculated_data['climbL3Success']
+    end_game_score = 3 * float(calculated_data['climbL1Success']) / 100
+    end_game_score += 6 * float(calculated_data['climbL2Success']) / 100
+    end_game_score += 12 * float(calculated_data['climbL3Success']) / 100
     end_game_score *= climbing_weight
     # TODO: Add pit scout communication to get ClimbCompatibility
     # end_game_score += (1 - climbing_weight) * calculated_data['ClimbCompatibility'] * 12 * calculated_data['SuccessRate']
@@ -404,17 +404,17 @@ def second_pick_ability(calculated_data):
     docking_weight = 1  # how much we care about defending by blocking scoring structures
     path_blocking_weight = 1  # how much we care about defending by getting in the way
 
-    sand_score = calculated_data['habLineSuccessL1'] * 3
-    sand_score += calculated_data['habLineSuccessL2'] * 6
+    sand_score = float(calculated_data['habLineSuccessL1']) * 3 / 100
+    sand_score += float(calculated_data['habLineSuccessL2']) * 6 / 100
     sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
     sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
 
     level_1_teleop_score = calculated_data['avgLemonsScoredTeleL1'] * 2 * lemons_weight
     level_1_teleop_score += calculated_data['avgOrangesScoredTeleL1'] * 3 * oranges_weight
 
-    end_game_score = 3 * calculated_data['climbL1Success']
-    end_game_score += 6 * calculated_data['climbL2Success']
-    end_game_score += 12 * calculated_data['climbL3Success']
+    end_game_score = 3 * float(calculated_data['climbL1Success']) / 100
+    end_game_score += 6 * float(calculated_data['climbL2Success']) / 100
+    end_game_score += 12 * float(calculated_data['climbL3Success']) / 100
     end_game_score *= climbing_weight
     # TODO: Add pit scout communication to get ClimbCompatibility
     # end_game_score += (1 - climbing_weight) * calculated_data['ClimbCompatibility'] * 12 * calculated_data['SuccessRate']
