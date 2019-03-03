@@ -363,10 +363,10 @@ def first_pick_ability(calculated_data):
     a team."""
     # constants that determine how much each score is weighted
     # in determining first pick ability
-    level_1_weight = 1  # how much we care about teams scoring on lvl 1
-    level_2_weight = 1  # how much we care about teams scoring on lvl 2
-    level_3_weight = 1  # how much we care about teams scoring on lvl 3
-    climbing_weight = 1  # how much we want alliance partners to solo climb
+    level_1_weight = .9  # how much we care about teams scoring on lvl 1
+    level_2_weight = 1.1  # how much we care about teams scoring on lvl 2
+    level_3_weight = 1.1  # how much we care about teams scoring on lvl 3
+    climbing_weight = .2  # how much we want alliance partners to solo climb
 
     level_1_teleop_score = (2 * calculated_data['avgLemonsScoredTeleL1']
         + 3 * calculated_data['avgOrangesScoredTeleL1']) * level_1_weight
@@ -395,9 +395,9 @@ def second_pick_ability(calculated_data):
 
     calculated_data is the dictionary of calculated_data calculated for
     a team."""
-    climbing_weight = 1  # how much we want alliance partners to solo climb
-    driving_weight = 1  # how much we care about driver ability
-    speed_weight = 1  # how much we prioritize speed over agility
+    climbing_weight = .1  # how much we want alliance partners to solo climb
+    driving_weight = .2  # how much we care about driver ability
+    speed_weight = .5  # how much we prioritize speed over agility
     oranges_weight = 1  # how much we want second picks to be scoring oranges
     lemons_weight = 1  # how much we want second picks to be scoring lemons
     defense_weight = 1  # how much we want second picks to be defending
