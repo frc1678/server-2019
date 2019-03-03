@@ -651,7 +651,7 @@ def team_calculations(timds):
     calculated_data['avgBadDecisions'] = avg([
         timd.get('numBadDecisions') for timd in timds])
 
-    # Finds the percent of matches a team was incap, impaired, and no show.
+    # Finds the percent of matches a team was incap and no show.
     calculated_data['percentIncap'] = round(100 * avg([
         True if timd['calculatedData']['timeIncap'] > 0.0 else False for
         timd in timds]))
