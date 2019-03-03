@@ -30,7 +30,6 @@ AVERAGE_DATA_FIELDS = {
     'avgLemonsScoredTeleL2': 'lemonsScoredTeleL2',
     'avgLemonsScoredTeleL3': 'lemonsScoredTeleL3',
     'avgTimeIncap': 'timeIncap',
-    'avgTimeImpaired': 'timeImpaired',
     'avgTimeClimbing': 'timeClimbing',
 }
 
@@ -42,7 +41,6 @@ LFM_AVERAGE_DATA_FIELDS = {
     'lfmAvgOrangesFouls': 'orangeFouls',
     'lfmAvgLemonsSpilled': 'lemonsSpilled',
     'lfmAvgTimeIncap': 'timeIncap',
-    'lfmAvgTimeImpaired': 'timeImpaired',
     'lfmAvgTimeClimbing': 'timeClimbing',
 }
 
@@ -54,7 +52,6 @@ SD_DATA_FIELDS = {
     'sdAvgOrangesFouls': 'orangeFouls',
     'sdAvgLemonsSpilled': 'lemonsSpilled',
     'sdAvgTimeIncap': 'timeIncap',
-    'sdAvgTimeImpaired': 'timeImpaired',
     'sdAvgTimeClimbing': 'timeClimbing',
 }
 
@@ -66,7 +63,6 @@ P75_DATA_FIELDS = {
     'p75AvgOrangesFouls': 'orangeFouls',
     'p75AvgLemonsSpilled': 'lemonsSpilled',
     'p75AvgTimeIncap': 'timeIncap',
-    'p75AvgTimeImpaired': 'timeImpaired',
     'p75AvgTimeClimbing': 'timeClimbing',
 }
 
@@ -655,13 +651,10 @@ def team_calculations(timds):
     calculated_data['avgBadDecisions'] = avg([
         timd.get('numBadDecisions') for timd in timds])
 
-    # Finds the percent of matches a team was incap, impaired, and no show.
+    # Finds the percent of matches a team was incap or no show.
     calculated_data['percentIncap'] = round(100 * avg([
         True if timd['calculatedData']['timeIncap'] > 0.0 else False for
         timd in timds]))
-    calculated_data['percentImpaired'] = round(100 * avg([
-        True if timd['calculatedData']['timeImpaired'] > 0.0 else False
-        for timd in timds]))
     calculated_data['percentNoShow'] = round(100 * avg([
         timd.get('isNoShow') for timd in timds]))
     calculated_data['percentIncapEntireMatch'] = round(100 * avg([
@@ -696,9 +689,6 @@ def team_calculations(timds):
     calculated_data['lfmPercentIncap'] = round(100 * avg([
         True if timd['calculatedData']['timeIncap'] > 0.0 else
         False for timd in lfm_timds]))
-    calculated_data['lfmPercentImpaired'] = round(100 * avg([
-        True if timd['calculatedData']['timeImpaired'] > 0.0
-        else False for timd in lfm_timds]))
     calculated_data['lfmPercentNoShow'] = round(100 * avg([
         timd.get('isNoShow') for timd in lfm_timds]))
     calculated_data['lfmPercentIncapEntireMatch'] = round(100 * avg([
