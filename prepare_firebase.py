@@ -117,7 +117,7 @@ if FULL_WIPE is True:
             'availability': {scout: 0 for scout in SCOUT_NAMES},
         },
     })
-    # Removes cache, sprs, and upload_queue folders
+    # Removes 'cache' and 'upload_queue' folders
     os.remove(utils.create_file_path('data/cache'))
     os.remove(utils.create_file_path('data/upload_queue'))
 
