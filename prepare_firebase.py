@@ -58,6 +58,7 @@ else:
         sys.exit(0)
 
 # User confirmation
+print(f'\nURL: {firebase_communicator.URL}')
 print(f'\nWarning: {MESSAGE} will be wiped from Firebase!')
 CONFIRMATION = request_input("Type 'wipe' to continue: ", ['wipe'], [])
 
@@ -116,6 +117,9 @@ if FULL_WIPE is True:
             'availability': {scout: 0 for scout in SCOUT_NAMES},
         },
     })
+    # Removes cache, sprs, and upload_queue folders
+    os.remove(utils.create_file_path('data/cache'))
+    os.remove(utils.create_file_path('data/upload_queue'))
 
 # Sends data to Firebase
 FIREBASE.update(FIREBASE_UPLOAD)
