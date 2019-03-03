@@ -3,7 +3,7 @@
 import pyrebase
 # No internal imports
 
-URL = 'testing-firebase-eb37f'
+URL = 'scouting-2019-cvr-e4cf3'
 
 def configure_firebase(url=None):
     """Returns a firebase database instance based on a database URL.
