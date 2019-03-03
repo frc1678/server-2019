@@ -52,7 +52,6 @@ SD_DATA_FIELDS = {
     'sdAvgOrangesFouls': 'orangeFouls',
     'sdAvgLemonsSpilled': 'lemonsSpilled',
     'sdAvgTimeIncap': 'timeIncap',
-    'sdAvgTimeImpaired': 'timeImpaired',
     'sdAvgTimeClimbing': 'timeClimbing',
 }
 
