@@ -119,7 +119,8 @@ if FULL_WIPE is True:
             'availability': {scout: 0 for scout in SCOUT_NAMES},
         },
     })
-    # Removes cache, sprs, and upload_queue folders
+
+    # Removes 'cache' and 'upload_queue' folders to remove outdated data
     shutil.rmtree(utils.create_file_path('data/cache/'))
     shutil.rmtree(utils.create_file_path('data/upload_queue/'))
 
