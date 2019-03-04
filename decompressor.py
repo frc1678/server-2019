@@ -348,6 +348,8 @@ def decompress_temp_super_teams(compressed_temp_super_teams):
     # Splits the list of teams at each comma, ignoring commas inside of
     # super notes.  'compressed_teams' is the split list.
     compressed_teams = []
+    # 'curly_bracket_level' is the number of curly brackets deep the
+    # current character is
     curly_bracket_level = 0
     last_comma_index = None
     for index, character in enumerate(compressed_temp_super_teams):
