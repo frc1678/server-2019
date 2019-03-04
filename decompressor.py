@@ -348,7 +348,7 @@ def decompress_temp_super_teams(compressed_temp_super_teams):
     # Splits the list of teams at each comma, ignoring commas inside of
     # super notes.  'compressed_teams' is the split list.
     compressed_teams = []
-    inside_curly_brackets = False
+    curly_bracket_level = 0
     last_comma_index = None
     for index, character in enumerate(compressed_temp_super_teams):
         # Checks if the character is the last character.
@@ -358,10 +358,10 @@ def decompress_temp_super_teams(compressed_temp_super_teams):
         # Ignore commas inside team dictionaries (surrounded with curly
         # brackets)
         if character == '{':
-            inside_curly_brackets = True
+            curly_bracket_level += 1
         elif character == '}':
-            inside_curly_brackets = False
-        elif inside_curly_brackets is False and character == ',':
+            curly_bracket_level -= 1
+        elif curly_bracket_level == 0 and character == ',':
             # This comma separates two team dictionaries, and we should
             # split at this character.
             if last_comma_index is None:
