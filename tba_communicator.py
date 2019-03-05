@@ -2,6 +2,7 @@
 
 Caches data to prevent duplicate data retrieval from the TBA API."""
 # External imports
+import json
 import requests
 import time
 # Internal imports
@@ -15,12 +16,6 @@ with open(utils.create_file_path('data/api_keys/tba_key.txt')) as file:
 # Many file editors will automatically add a newline at the end of files.
 API_KEY = API_KEY.rstrip('\n')
 
-# This cache is used with TBA's 'Last-Modified' and 'If-Modified-Since'
-# headers to prevent duplicate data downloads.  If the data has not
-# changed since the last request, it will be pulled from the cache.
-# Documentation of the 'Last-Modified' and 'If-Modified-Since' headers:
-# https://www.thebluealliance.com/apidocs#apiv3
-CACHED_REQUESTS = {}
 def make_request(api_url):
     """Sends a single web request to the TBA API v3 and caches result.
 
@@ -29,9 +24,20 @@ def make_request(api_url):
     full_url = base_url + api_url
     request_headers = {'X-TBA-Auth-Key': API_KEY}
 
+    # This cache is used with TBA's 'Last-Modified' and 'If-Modified-Since'
+    # headers to prevent duplicate data downloads.  If the data has not
+    # changed since the last request, it will be pulled from the cache.
+    # Documentation of the 'Last-Modified' and 'If-Modified-Since' headers:
+    # https://www.thebluealliance.com/apidocs#apiv3
+    try:
+        with open(utils.create_file_path('data/cache/tba/tba.json'), 'r') as file_:
+            cached_requests = json.load(file_)
+    except FileNotFoundError:
+        cached_requests = {}
+
     # 'cache_last_modified' is the time that the data in the cache was
     # published to TBA's API.
-    cache_last_modified = CACHED_REQUESTS.get(api_url, {}).get('last_modified')
+    cache_last_modified = cached_requests.get(api_url, {}).get('last_modified')
     if cache_last_modified is not None:
         request_headers['If-Modified-Since'] = cache_last_modified
 
@@ -49,14 +55,17 @@ def make_request(api_url):
     # A 304 status code means the data was not modified since our last
     # request, and we can pull it from the cache.
     if request.status_code == 304:
-        return CACHED_REQUESTS[api_url]['data']
+        return cached_requests[api_url]['data']
     # A 200 status code means the request was successful
     elif request.status_code == 200:
         # Updates local cache
-        CACHED_REQUESTS[api_url] = {
+        cached_requests[api_url] = {
             'last_modified': request.headers['Last-Modified'],
             'data': request.json(),
         }
+        with open(utils.create_file_path('data/cache/tba/tba.json'), 'w') as file_:
+            json.dump(cached_requests, file_)
+
         return request.json()
     else:
         print(f'Request failed with status code {request.status_code}')
