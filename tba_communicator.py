@@ -7,7 +7,7 @@ import time
 # Internal imports
 import utils
 
-EVENT_CODE = '2019caoc'
+EVENT_CODE = '2019cafr'
 
 with open(utils.create_file_path('data/api_keys/tba_key.txt')) as file:
     API_KEY = file.read()
