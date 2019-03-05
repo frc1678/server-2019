@@ -279,6 +279,9 @@ TEMP_SUPER_COMPRESSION_KEYS = {
     'A': 'numGoodDecisions',
     'B': 'numBadDecisions',
     'j': 'wasHitDuringSandstorm',
+    'C': 'knocking',
+    'D': 'docking',
+    'E': 'pathBlocking',
 }
 # Compressed tempSuper value to uncompressed tempSuper value
 TEMP_SUPER_COMPRESSION_VALUES = {
@@ -393,14 +396,17 @@ def decompress_temp_super_teams(compressed_temp_super_teams):
             decompressed_key = TEMP_SUPER_COMPRESSION_KEYS[compressed_key]
             # Every character after the key is the value.
             compressed_value = team_item[1:]
-            if compressed_key == 'x':
+            if decompressed_key == 'rankDefense':
+                # Example 'compressed_value': "{C3D3E3}"
+                # Removes curly brackets
                 compressed_value = compressed_value[1:-1]
-                for rank_defense in compressed_value:
-                    if isalpha(rank_defense) == True:
-                        rank_defense_key = TEMP_SUPER_COMPRESSION_KEYS[rank_defense]
-                    elif isdigit(rank_defense) == True:
-                        rank_defense_value = int(rank_defense)
-
+                decompressed_value = {}
+                for character in compressed_value:
+                    if character.isalpha():
+                        rank_defense_key = TEMP_SUPER_COMPRESSION_KEYS[character]
+                    elif character.isdigit():
+                        rank_defense_value = int(character)
+                        decompressed_value[rank_defense_key] = rank_defense_value
 
             # Checks if the value is a letter that can be decompressed.
             elif compressed_value in TEMP_SUPER_COMPRESSION_VALUES:
