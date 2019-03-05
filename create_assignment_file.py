@@ -47,7 +47,7 @@ SCOUT_NAMES = [
     'Walsh', 'Caroline', 'Aakash', 'Emily', 'Nick', 'Gabi', 'Hanson',
     'Sam', 'Louise', 'Sofia', 'Ethan', 'Nathan', 'Andrew', 'Mohamed',
     'Justin', 'Jack D', 'Teo', 'Erik', 'Freddy', 'Aidan', 'Carter',
-    'Kate', 'Noemi', 'Nithmi', 'Anja', 'Brynne', 'Apurva',
+    'Brynne', 'Gemma',
     # '.zfill(2)' adds leading zeroes to 2 digits
     # (e.g. '7' becomes '07')
     # Used by the Scout app to alphabetize scout names
