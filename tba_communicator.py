@@ -24,9 +24,10 @@ def make_request(api_url):
     full_url = base_url + api_url
     request_headers = {'X-TBA-Auth-Key': API_KEY}
 
-    # This cache is used with TBA's 'Last-Modified' and 'If-Modified-Since'
-    # headers to prevent duplicate data downloads.  If the data has not
-    # changed since the last request, it will be pulled from the cache.
+    # This cache is used with TBA's 'Last-Modified' and
+    # 'If-Modified-Since' headers to prevent duplicate data downloads.
+    # If the data has not changed since the last request, it will be
+    # pulled from the cache.
     # Documentation of the 'Last-Modified' and 'If-Modified-Since' headers:
     # https://www.thebluealliance.com/apidocs#apiv3
     try:
