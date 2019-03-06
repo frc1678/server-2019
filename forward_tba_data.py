@@ -92,6 +92,11 @@ for match_key in MATCH_KEYS:
                     is_no_show = False
                     hab_line_crossed = alliance_score_breakdown[
                         f'habLineRobot{driver_station}']
+                    # Converts 'hab_line_crossed' to boolean
+                    if hab_line_crossed == 'CrossedHabLineInSandstorm':
+                        hab_line_crossed = True
+                    else:
+                        hab_line_crossed = False
                 timd_data = {
                     'driverStation': driver_station,
                     'startingLevel': starting_level,
