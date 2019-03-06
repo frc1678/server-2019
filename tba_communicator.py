@@ -72,6 +72,10 @@ def make_request(api_url):
         print(f'Request failed with status code {request.status_code}')
         return {}
 
+def request_rankings():
+    """Requests the team rankings for an event from the TBA API."""
+    return make_request(f'event/{EVENT_CODE}/rankings')
+
 def request_matches():
     """Requests the match schedule from the TBA API."""
     return make_request(f'event/{EVENT_CODE}/matches/simple')

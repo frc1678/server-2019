@@ -5,6 +5,7 @@ Called by server.py"""
 # External imports
 import json
 # Internal imports
+import tba_communicator
 import utils
 
 def update_json_file(file_path, updated_data):
@@ -39,4 +40,20 @@ def save_data(file_path, data):
     update_json_file(utils.create_file_path(f'data/cache/{file_path}'), data)
     update_json_file(utils.create_file_path(
         f'data/upload_queue/{file_path}'), data)
+
+
+# Team data
+RANKINGS = tba_communicator.request_rankings()['rankings']
+for team in RANKINGS:
+    # Removes preceding 'frc'
+    # (e.g. 'frc1678' becomes '1678')
+    team_number = team['team_key'][3:]
+    team_data = {
+        'actualRPs': team['extra_stats'][0],
+        'matchesPlayed': team['matches_played'],
+        'calculatedData': {
+            'actualSeed': team['rank'],
+        },
+    }
+    save_data(f'teams/{team_number}.json', team_data)
 
