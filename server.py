@@ -208,7 +208,7 @@ def handle_ctrl_c(*args):
     print('All streams closed.')
     sys.exit(0)
 
-# Deletes the entire cache to remove any old data.
+# Deletes the entire 'cache' directory to remove any old data.
 shutil.rmtree(utils.create_file_path(f'data/cache', False))
 
 # Detects when CTRL+C is pressed, then runs handle_ctrl_c
