@@ -210,6 +210,20 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
     for action_index, action in enumerate(correct_length_timelines[sprking]):
         comparison_dict = {scout: timeline[action_index] for scout,
                            timeline in correct_length_timelines.items()}
+        # Checks if the majority type for the action is None, if it is,
+        # the loop skips the rest of the code and the action is not
+        # real.
+        types = {scout: comparison_dict[scout].get('type') for scout in
+                 comparison_dict.keys()}
+        if max_occurrences(types, sprking) is None:
+            continue
+
+        # Otherwise, the comparison is continued with, deleting any
+        # scout who has a blank action.
+        for scout in list(comparison_dict):
+            if comparison_dict[scout] == {}:
+                comparison_dict.pop(scout)
+
         for key in comparison_dict[sprking].keys():
             # For every key that isn't time, which can't realistically
             # have a majority, the majority opinion is set to the final
@@ -227,6 +241,9 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
                 # takes the majority value for the key.
                 final_simplified_timd[action_index][key] = \
                     max_occurrences(scout_to_keys, sprking)
+
+        if list(action.keys()) == ['time']:
+            final_simplified_timd = {}
 
     # Returns the final created timeline
     return final_simplified_timd
