@@ -101,3 +101,22 @@ for match_key in MATCH_KEYS:
                 timd_name = f'{team_number}Q{match_number}'
                 save_data(f'timds/{timd_name}.json', timd_data)
 
+            # Match data
+            actual_score = alliance_score_breakdown['totalPoints']
+            foul_points = alliance_score_breakdown['foulPoints']
+            rocket_rp = alliance_score_breakdown['completeRocketRankingPoint']
+            climb_rp = alliance_score_breakdown['habDockingRankingPoint']
+            total_rps = alliance_score_breakdown['rp']
+            # TODO: Add cargo ship preload (requires position of
+            # scorekeeping table)
+            match_data = {
+                f'{alliance}ActualScore': actual_score,
+                f'{alliance}FoulPoints': foul_points,
+                f'{alliance}DidRocketRP': rocket_rp,
+                f'{alliance}DidClimbRP': climb_rp,
+                # TODO: Move actual RPs into non-calculated match data
+                'calculatedData': {
+                    f'{alliance}ActualRPs': total_rps,
+                }
+            }
+            save_data(f'matches/{match_number}.json', match_data)
