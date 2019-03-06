@@ -210,7 +210,14 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
     for action_index, action in enumerate(correct_length_timelines[sprking]):
         comparison_dict = {scout: timeline[action_index] for scout,
                            timeline in correct_length_timelines.items()}
-        for key in comparison_dict[sprking].keys():
+        # Creates a set of keys from all the keys possible for this
+        # action, then iterates through them.
+        keys = set()
+        for scout in comparison_dict.keys():
+            for key in comparison_dict[scout].keys():
+                keys.add(key)
+
+        for key in keys:
             # For every key that isn't time, which can't realistically
             # have a majority, the majority opinion is set to the final
             # timd.
