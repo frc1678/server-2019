@@ -814,7 +814,7 @@ else:
 # Uses the team number to find all the TIMDs for the passed team.
 TIMDS = []
 for timd in os.listdir(utils.create_file_path('data/cache/timds')):
-    if TEAM_NUMBER in timd:
+    if timd.split('Q')[0] == TEAM_NUMBER:
         with open(utils.create_file_path(
                 f'data/cache/timds/{timd}')) as timd_file:
             timd_data = json.load(timd_file)
