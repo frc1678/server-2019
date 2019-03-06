@@ -42,7 +42,7 @@ def make_request(api_url):
     if cache_last_modified is not None:
         request_headers['If-Modified-Since'] = cache_last_modified
 
-    print('Retrieving data from TBA...')
+    print(f'Retrieving data from TBA...\nURL: {api_url}')
     while True:
         try:
             request = requests.get(full_url, headers=request_headers)
