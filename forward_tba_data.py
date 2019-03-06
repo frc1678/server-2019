@@ -9,7 +9,7 @@ import tba_communicator
 import utils
 
 def update_json_file(file_path, updated_data):
-    """Updates file data in a JSON file.  (Preserves old data)
+    """Updates data in a JSON file.  (Preserves old data)
 
     file_path is the absolute path of the file to be updated (string)
     updated_data is the data to add to the JSON file (dict)"""
@@ -31,9 +31,9 @@ def update_json_file(file_path, updated_data):
 def save_data(file_path, data):
     """Saves data in 'cache' and 'upload_queue' directories.
 
-    file_path is the relative file path from inside the 'cache' or
-    'upload_queue' folder. (string)
-    data is the data to save."""
+    file_path is the relative file path to a JSON file from inside the
+    'cache' or 'upload_queue' folder. (string)
+    data is a dictionary that the JSON file is updated with."""
     # Removes preceding slash
     if file_path[0] == '/':
         file_path = file_path[1:]
@@ -51,6 +51,7 @@ for team in RANKINGS:
     team_data = {
         'actualRPs': team['extra_stats'][0],
         'matchesPlayed': team['matches_played'],
+        # TODO: Move actual seed into non-calculated match data
         'calculatedData': {
             'actualSeed': team['rank'],
         },
@@ -74,7 +75,7 @@ for match_key in MATCH_KEYS:
             teams = [int(team[3:]) for team in teams_by_alliance[alliance]]
             no_show_teams = []
             # 'teams' are ordered by driver station
-            # (e.g. in [1678, 3132, 1323], 1678 is driver station 1,
+            # (e.g. for [1678, 3132, 1323]; 1678 is driver station 1,
             # 3132 is driver station 2, and 1323 is driver station 3)
 
             # TIMD data
