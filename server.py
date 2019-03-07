@@ -260,6 +260,9 @@ while True:
             print(f"Did calculations for {timd}")
             LATEST_CALCULATIONS_BY_TIMD[timd] = FILES_BY_TIMD[timd]
 
+    # Forwards TBA data to Teams, TIMDs, and Matches.
+    subprocess.call('python3 forward_tba_data.py', shell=True)
+
     # Forwards tempSuper data to Matches and TIMDs.
     subprocess.call('python3 forward_temp_super.py', shell=True)
 
