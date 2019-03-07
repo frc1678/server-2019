@@ -1,3 +1,4 @@
+#!/usr/bin/python3.6
 """Calculate SPRs (Scout Precision Rankings).
 
 Used in consolidation and to identify and address issues with scouting.
