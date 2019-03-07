@@ -652,11 +652,11 @@ def team_calculations(timds):
         timd.get('numBadDecisions') for timd in timds])
 
     # Finds the percent of matches a team was incap or no show.
-    calculated_data['percentIncap'] = round(100 * avg([
-        True if timd['calculatedData']['timeIncap'] > 0.0 else False for
-        timd in timds]))
-    calculated_data['percentNoShow'] = round(100 * avg([
-        timd.get('isNoShow') for timd in timds]))
+    matches_incap = [True if timd['calculatedData']['timeIncap'] > 0.0
+                     else False for timd in timds]
+    matches_no_show = [timd.get('isNoShow') for timd in timds]
+    calculated_data['percentIncap'] = round(100 * avg(matches_incap))
+    calculated_data['percentNoShow'] = round(100 * avg(matches_no_show))
     calculated_data['percentIncapEntireMatch'] = round(100 * avg([
         timd['calculatedData'].get('isIncapEntireMatch') for timd in
         timds]))
