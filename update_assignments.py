@@ -29,8 +29,17 @@ AVAILABLE_SCOUTS = [scout for scout, availability in AVAILABILITY.items()
                     if availability == 1]
 
 ASSIGNMENT_STRING = f'{CYCLE_NUMBER}|'
-# Currently, this assigns in no particular order.
-# This is temporary until SPRs are implemented.
+
+with open(utils.create_file_path('data/sprs/sprs.json'), 'r') as file:
+    SPRS = json.load(file)
+
+# Sorts scouts from best SPR to worst SPR
+# Scouts without SPRs default to 0.0, since we want them to be placed
+# with other scouts.  (Scouts with a lower SPR are more likely to be in
+# groups of 3)
+AVAILABLE_SCOUTS.sort(key=lambda scout: SPRS.get(scout, {}).get(
+    'overall', 0.0), reverse=True)
+
 for scout in AVAILABLE_SCOUTS:
     ASSIGNMENT_STRING += LETTERS[scout]
 
