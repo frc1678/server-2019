@@ -28,7 +28,7 @@ AVAILABILITY = DB.child('scoutManagement/availability').get().val()
 AVAILABLE_SCOUTS = [scout for scout, availability in AVAILABILITY.items()
                     if availability == 1]
 
-ASSIGNMENT_STRING = CYCLE_NUMBER + '|'
+ASSIGNMENT_STRING = f'{CYCLE_NUMBER}|'
 
 with open(utils.create_file_path('data/sprs/sprs.json'), 'r') as file:
     SPRS = json.load(file)

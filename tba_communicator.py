@@ -42,7 +42,7 @@ def make_request(api_url):
     if cache_last_modified is not None:
         request_headers['If-Modified-Since'] = cache_last_modified
 
-    print('Retrieving data from TBA...')
+    print(f'Retrieving data from TBA...\nURL: {api_url}')
     while True:
         try:
             request = requests.get(full_url, headers=request_headers)
@@ -72,9 +72,27 @@ def make_request(api_url):
         print(f'Request failed with status code {request.status_code}')
         return {}
 
+def request_match(match_key):
+    """Requests data for a single match from the TBA API.
+
+    match_key is a string.  (e.g. '2019caoc_qm29', '2019caoc_qf3m1')"""
+    return make_request(f'match/{match_key}')
+
+def request_rankings():
+    """Requests the team rankings for an event from the TBA API."""
+    return make_request(f'event/{EVENT_CODE}/rankings')
+
 def request_matches():
     """Requests the match schedule from the TBA API."""
     return make_request(f'event/{EVENT_CODE}/matches/simple')
+
+def request_match_keys():
+    """Requests match keys (names) from the TBA API.
+
+    Match key format: {event_code}_{match_number}
+    (e.g. '2019caoc_qm29' [qualification match 29],
+    '2019caoc_qf3m1' [quarter finals 3-1])"""
+    return make_request(f'event/{EVENT_CODE}/matches/keys')
 
 def request_teams():
     """Requests the team list from the TBA API."""

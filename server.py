@@ -64,8 +64,8 @@ def cycle_num_stream_handler(snapshot):
         cycle_number = snapshot['data']
         if cycle_number is None:
             cycle_number = 0
-        subprocess.call('python3 update_assignments.py ' +
-                        str(cycle_number), shell=True)
+        subprocess.call(f'python3 update_assignments.py {cycle_number}',
+                        shell=True)
 
 def temp_timd_stream_handler(snapshot):
     """Runs when any new tempTIMDs are uploaded"""
@@ -259,6 +259,9 @@ while True:
             subprocess.call(f'python3 calculate_timd.py {timd}', shell=True)
             print(f"Did calculations for {timd}")
             LATEST_CALCULATIONS_BY_TIMD[timd] = FILES_BY_TIMD[timd]
+
+    # Forwards TBA data to Teams, TIMDs, and Matches.
+    subprocess.call('python3 forward_tba_data.py', shell=True)
 
     # Forwards tempSuper data to Matches and TIMDs.
     subprocess.call('python3 forward_temp_super.py', shell=True)
