@@ -72,6 +72,8 @@ for match_key in MATCH_KEYS:
         }
         for alliance in teams_by_alliance:
             alliance_score_breakdown = match['score_breakdown'][alliance]
+            # Removes preceding 'frc' and casts to int
+            # (e.g. 'frc1678' becomes 1678)
             teams = [int(team[3:]) for team in teams_by_alliance[alliance]]
             no_show_teams = []
             # 'teams' are ordered by driver station
