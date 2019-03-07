@@ -64,8 +64,8 @@ def cycle_num_stream_handler(snapshot):
         cycle_number = snapshot['data']
         if cycle_number is None:
             cycle_number = 0
-        subprocess.call('python3 update_assignments.py ' +
-                        str(cycle_number), shell=True)
+        subprocess.call(f'python3 update_assignments.py {cycle_number}',
+                        shell=True)
 
 def temp_timd_stream_handler(snapshot):
     """Runs when any new tempTIMDs are uploaded"""

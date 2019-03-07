@@ -28,7 +28,7 @@ AVAILABILITY = DB.child('scoutManagement/availability').get().val()
 AVAILABLE_SCOUTS = [scout for scout, availability in AVAILABILITY.items()
                     if availability == 1]
 
-ASSIGNMENT_STRING = CYCLE_NUMBER + '|'
+ASSIGNMENT_STRING = f'{CYCLE_NUMBER}|'
 # Currently, this assigns in no particular order.
 # This is temporary until SPRs are implemented.
 for scout in AVAILABLE_SCOUTS:
