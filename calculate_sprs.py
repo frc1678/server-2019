@@ -92,6 +92,15 @@ for temp_timd in TEMP_TIMDS:
         else:
             register_value(scout_name, type_, False)
 
+# Calculates overall SPR
+for scout_name, scout_breakdown in SPRS.items():
+    correct = 0
+    total = 0
+    for data_field in scout_breakdown.values():
+        correct += data_field['correct']
+        total += data_field['total']
+    SPRS[scout_name]['overall'] = correct / total
+
 # Saves SPRS
 with open(utils.create_file_path('data/sprs/sprs.json'), 'w') as file:
     json.dump(SPRS, file)
