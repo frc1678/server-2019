@@ -213,8 +213,8 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
         # Checks if the majority type for the action is None, if it is,
         # the loop skips the rest of the code and the action is not
         # real.
-        types = {scout: comparison_dict[scout].get('type') for scout in
-                 comparison_dict.keys()}
+        types = {scout: action.get('type') for scout, action in
+                 comparison_dict.items()}
         if max_occurrences(types, sprking) is None:
             # Skips current iteration
             continue
