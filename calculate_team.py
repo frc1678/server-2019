@@ -572,7 +572,7 @@ def filter_cycles(cycle_list, filters):
             filtered_cycles.append(cycle)
     return filtered_cycles
 
-def climb_success_rate(timds, level):
+def climb_success_rate(timds, level, string=False):
     """Calculates the success rate for climbs of a specific level.
 
     timds are the timds for a team.
@@ -585,9 +585,14 @@ def climb_success_rate(timds, level):
             attempts += 1
         if climb['actual']['self'] == level:
             successes += 1
-    if attempts == 0:
-        return 0
-    return round(100 * successes / attempts)
+    if string is True:
+        if attempts == 0:
+            return '0 / 0'
+        return f'{successes} / {attempts}'
+    else:
+        if attempts == 0:
+            return 0
+        return round(100 * successes / attempts)
 
 def make_paired_cycle_list(cycle_list):
     """Pairs up cycles together into tuples of intakes and outakes.
@@ -702,6 +707,13 @@ def team_calculations(timds, team_number):
     calculated_data['climbL1Success'] = climb_success_rate(timds, 1)
     calculated_data['climbL2Success'] = climb_success_rate(timds, 2)
     calculated_data['climbL3Success'] = climb_success_rate(timds, 3)
+
+    calculated_data['climbAttemptsL1'] = climb_success_rate(timds, 1, \
+        string=True)
+    calculated_data['climbAttemptsL2'] = climb_success_rate(timds, 2, \
+        string=True)
+    calculated_data['climbAttemptsL3'] = climb_success_rate(timds, 3, \
+        string=True)
 
     calculated_data['lfmAvgGoodDecisions'] = avg([
         timd.get('numGoodDecisions') for timd in lfm_timds])
