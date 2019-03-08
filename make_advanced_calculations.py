@@ -51,13 +51,20 @@ def first_pick_ability(calculated_data):
     # Adds all the previous scores together to get a full first pick score.
     return sand_score + end_game_score + level_1_teleop_score + level_2_teleop_score + level_3_teleop_score
 
-def second_pick_ability(calculated_data):
+def second_pick_ability(calculated_data, max_da):
     """Calculates the relative second pick score for a team.
 
     calculated_data is the dictionary of calculated_data calculated for
-    a team."""
+    a team.
+    max_da is the maximum driver ability in the competition, this is
+    used to weight driver ability."""
+    # If the max_da is 0.0, all the zscores are equal and there is no
+    # point to weighting it.
+    if max_da == 0.0:
+        driving_weight = 0.0
+    else:
+        driving_weight = 10.0 / max_da
     climbing_weight = .1  # How much we want alliance partners to solo climb
-    #driving_weight = 10  # How much we care about driver ability
     oranges_weight = 1  # How much we want second picks to be scoring oranges
     lemons_weight = 1  # How much we want second picks to be scoring lemons
 
@@ -79,9 +86,9 @@ def second_pick_ability(calculated_data):
 
     # Takes the previously calculated driverAbility and weights it into
     # the pick ability.
-    #driver_ability = calculated_data['driverAbility'] * driving_weight
+    driver_ability = calculated_data['driverAbility'] * driving_weight
 
-    return sand_score + level_1_teleop_score + end_game_score #+ driver_ability
+    return sand_score + level_1_teleop_score + end_game_score + driver_ability
 
 # Gathers the calculated data from all the teams.
 TEAMS = {}
@@ -115,10 +122,16 @@ for team, average in SPEEDS.items():
 for team in list(TEAMS.keys()):
     TEAMS[team]['calculatedData']['driverAbility'] = \
         calculate_driver_ability(TEAMS[team]['calculatedData'])
+
+# Calculates the highest driverAbility for any team and uses it to
+# weigh all other driverAbilities in secondPickAbility.
+MAX_DA = max([team['calculatedData']['driverAbility'] for team in
+              TEAMS.keys()])
+for team in list(TEAMS.keys()):
     TEAMS[team]['calculatedData']['firstPickAbility'] = \
         first_pick_ability(TEAMS[team]['calculatedData'])
     TEAMS[team]['calculatedData']['secondPickAbility'] = \
-        second_pick_ability(TEAMS[team]['calculatedData'])
+        second_pick_ability(TEAMS[team]['calculatedData'], MAX_DA)
 
 # After all the teams have been calculated, they can be put back in the cache.
 for team, data in TEAMS.items():
