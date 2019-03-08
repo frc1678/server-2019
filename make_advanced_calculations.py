@@ -88,7 +88,7 @@ def second_pick_ability(calculated_data, max_da, min_da):
     else:
         # Otherwise, takes the previously calculated driverAbility and
         # weights it into the pick ability. Scales all driverAbilities
-        # between 0 and driving_weight.
+        # between 0 and 'driving_weight'.
         driver_ability = driving_weight * \
             (calculated_data['driverAbility'] - min_da)/(max_da - min_da)
 
