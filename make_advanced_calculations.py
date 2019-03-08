@@ -123,7 +123,7 @@ for team, average in SPEEDS.items():
 # After the zscores are calculated for all the teams, other calculations
 # that use zscores can be calculated, like driverAbility and
 # firstPickAbility.
-for team in list(TEAMS.keys()):
+for team in TEAMS.keys():
     TEAMS[team]['calculatedData']['driverAbility'] = \
         calculate_driver_ability(TEAMS[team]['calculatedData'])
 
@@ -133,7 +133,7 @@ MAX_DA = max([team['calculatedData']['driverAbility'] for team in
               TEAMS.keys()])
 MIN_DA = min([team['calculatedData']['driverAbility'] for team in
               TEAMS.keys()])
-for team in list(TEAMS.keys()):
+for team in TEAMS.keys():
     TEAMS[team]['calculatedData']['firstPickAbility'] = \
         first_pick_ability(TEAMS[team]['calculatedData'])
     TEAMS[team]['calculatedData']['secondPickAbility'] = \
