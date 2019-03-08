@@ -224,7 +224,13 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
             if comparison_dict[scout] == {}:
                 comparison_dict.pop(scout)
 
-        for key in comparison_dict[sprking].keys():
+        # All of the possible keys for a tempTIMD for this action.
+        keys = set()
+        for action in comparison_dict.values():
+            for key in action.keys():
+                keys.add(key)
+
+        for key in keys:
             # For every key that isn't time, which can't realistically
             # have a majority, the majority opinion is set to the final
             # timd.
