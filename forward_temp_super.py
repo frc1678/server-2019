@@ -37,17 +37,10 @@ for temp_super_file in TEMP_SUPER_FILES:
     temp_super_headers = decompressed_temp_super[temp_super_key]
     temp_super_teams = {}
 
-    # HACK: 'teams' is not decompressed correctly, decompress 'teams' here.
-    temp_super_headers['teams'] = []
-
     for team in ['team1', 'team2', 'team3']:
         # Removes team data from 'temp_super_headers' and adds it to
         # 'temp_super_teams'
         temp_super_teams[team] = temp_super_headers.pop(team)
-
-        # HACK (cont): Adds team number to "decompress_temp_super['teams']"
-        temp_super_headers['teams'].append(
-            temp_super_teams[team]['teamNumber'])
 
     # Extracts 'match_number' from tempSuper key (e.g. 'S!Q1-B' to '1')
     # 'match_number' is a string
@@ -92,7 +85,6 @@ for temp_super_file in TEMP_SUPER_FILES:
         temp_super_headers.pop('cargoShipPreloads')
     temp_super_headers[f'{alliance}NoShowTeams'] = \
         temp_super_headers.pop('noShowTeams')
-    temp_super_headers[f'{alliance}Teams'] = temp_super_headers.pop('teams')
 
     # Re-structures tempSuper-specific data fields
     # tempSuper data field name to Match data field name

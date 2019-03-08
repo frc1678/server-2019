@@ -64,8 +64,8 @@ def cycle_num_stream_handler(snapshot):
         cycle_number = snapshot['data']
         if cycle_number is None:
             cycle_number = 0
-        subprocess.call('python3 update_assignments.py ' +
-                        str(cycle_number), shell=True)
+        subprocess.call(f'python3 update_assignments.py {cycle_number}',
+                        shell=True)
 
 def temp_timd_stream_handler(snapshot):
     """Runs when any new tempTIMDs are uploaded"""
@@ -208,6 +208,9 @@ def handle_ctrl_c(*args):
     print('All streams closed.')
     sys.exit(0)
 
+# Deletes the entire 'cache' directory to remove any old data.
+shutil.rmtree(utils.create_file_path('data/cache', False))
+
 # Detects when CTRL+C is pressed, then runs handle_ctrl_c
 signal.signal(signal.SIGINT, handle_ctrl_c)
 
@@ -257,8 +260,8 @@ while True:
             print(f"Did calculations for {timd}")
             LATEST_CALCULATIONS_BY_TIMD[timd] = FILES_BY_TIMD[timd]
 
-    # Forwards data from Cloud Firestore to Realtime Database.
-    subprocess.call('python3 forward_firestore_data.py', shell=True)
+    # Forwards TBA data to Teams, TIMDs, and Matches.
+    subprocess.call('python3 forward_tba_data.py', shell=True)
 
     # Runs advanced calculations for every team in the competition.
     subprocess.call('python3 make_advanced_calculations.py', shell=True)
