@@ -57,7 +57,7 @@ def second_pick_ability(calculated_data):
     calculated_data is the dictionary of calculated_data calculated for
     a team."""
     climbing_weight = .1  # How much we want alliance partners to solo climb
-    driving_weight = 10  # How much we care about driver ability
+    #driving_weight = 10  # How much we care about driver ability
     oranges_weight = 1  # How much we want second picks to be scoring oranges
     lemons_weight = 1  # How much we want second picks to be scoring lemons
 
@@ -79,9 +79,9 @@ def second_pick_ability(calculated_data):
 
     # Takes the previously calculated driverAbility and weights it into
     # the pick ability.
-    driver_ability = calculated_data['driverAbility'] * driving_weight
+    #driver_ability = calculated_data['driverAbility'] * driving_weight
 
-    return sand_score + level_1_teleop_score + end_game_score + driver_ability
+    return sand_score + level_1_teleop_score + end_game_score #+ driver_ability
 
 # Gathers the calculated data from all the teams.
 TEAMS = {}
