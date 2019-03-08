@@ -219,7 +219,7 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
             # Skips current iteration
             continue
 
-        # Change to Deletes scouts that did not record this action
+        # Deletes scouts that did not record this action.
         for scout in list(comparison_dict):
             if comparison_dict[scout] == {}:
                 comparison_dict.pop(scout)
@@ -241,11 +241,6 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
                 # takes the majority value for the key.
                 final_simplified_timd[action_index][key] = \
                     max_occurrences(scout_to_keys, sprking)
-
-        # If the action consolidates to only have time as a key, it is
-        # useless in the timeline.
-        if list(action.keys()) == ['time']:
-            final_simplified_timd = {}
 
     # Returns the final created timeline
     return final_simplified_timd
