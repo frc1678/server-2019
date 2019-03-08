@@ -36,7 +36,6 @@ AVERAGE_DATA_FIELDS = {
     'avgLemonsScoredL2': 'lemonsScoredL2',
     'avgLemonsScoredL3': 'lemonsScoredL3',
     'avgTimeIncap': 'timeIncap',
-    'avgTimeImpaired': 'timeImpaired',
     'avgTimeClimbing': 'timeClimbing',
 }
 
@@ -48,7 +47,6 @@ LFM_AVERAGE_DATA_FIELDS = {
     'lfmAvgOrangesFouls': 'orangeFouls',
     'lfmAvgLemonsSpilled': 'lemonsSpilled',
     'lfmAvgTimeIncap': 'timeIncap',
-    'lfmAvgTimeImpaired': 'timeImpaired',
     'lfmAvgTimeClimbing': 'timeClimbing',
 }
 
@@ -60,7 +58,6 @@ SD_DATA_FIELDS = {
     'sdAvgOrangesFouls': 'orangeFouls',
     'sdAvgLemonsSpilled': 'lemonsSpilled',
     'sdAvgTimeIncap': 'timeIncap',
-    'sdAvgTimeImpaired': 'timeImpaired',
     'sdAvgTimeClimbing': 'timeClimbing',
 }
 
@@ -72,7 +69,6 @@ P75_DATA_FIELDS = {
     'p75AvgOrangesFouls': 'orangeFouls',
     'p75AvgLemonsSpilled': 'lemonsSpilled',
     'p75AvgTimeIncap': 'timeIncap',
-    'p75AvgTimeImpaired': 'timeImpaired',
     'p75AvgTimeClimbing': 'timeClimbing',
 }
 
@@ -664,15 +660,17 @@ def team_calculations(timds, team_number):
     calculated_data['avgSpeed'] = avg([
         timd.get('rankSpeed') for timd in timds])
 
-    # Finds the percent of matches a team was incap, impaired, and no show.
-    calculated_data['percentIncap'] = round(100 * avg([
-        True if timd['calculatedData']['timeIncap'] > 0.0 else False for
-        timd in timds]))
-    calculated_data['percentImpaired'] = round(100 * avg([
-        True if timd['calculatedData']['timeImpaired'] > 0.0 else False
-        for timd in timds]))
-    calculated_data['percentNoShow'] = round(100 * avg([
-        timd.get('isNoShow') for timd in timds]))
+    # Percent of matches of incap, no-show, or dysfunctional
+    matches_incap = [True if timd['calculatedData']['timeIncap'] > 0.0
+                     else False for timd in timds]
+    matches_no_show = [timd.get('isNoShow') for timd in timds]
+    calculated_data['percentIncap'] = round(100 * avg(matches_incap))
+    calculated_data['percentNoShow'] = round(100 * avg(matches_no_show))
+    # 'percentDysfunctional' is the percent of matches a team is incap
+    # or no-show.
+    calculated_data['percentDysfunctional'] = round(100 * avg([
+        incap or no_show for incap, no_show in zip(matches_incap,
+                                                   matches_no_show)]))
     calculated_data['percentIncapEntireMatch'] = round(100 * avg([
         timd['calculatedData'].get('isIncapEntireMatch') for timd in
         timds]))
@@ -709,9 +707,6 @@ def team_calculations(timds, team_number):
     calculated_data['lfmPercentIncap'] = round(100 * avg([
         True if timd['calculatedData']['timeIncap'] > 0.0 else
         False for timd in lfm_timds]))
-    calculated_data['lfmPercentImpaired'] = round(100 * avg([
-        True if timd['calculatedData']['timeImpaired'] > 0.0
-        else False for timd in lfm_timds]))
     calculated_data['lfmPercentNoShow'] = round(100 * avg([
         timd.get('isNoShow') for timd in lfm_timds]))
     calculated_data['lfmPercentIncapEntireMatch'] = round(100 * avg([

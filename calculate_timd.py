@@ -335,37 +335,24 @@ def calculate_timd_data(timd):
             calculated_data['timeClimbing'] = action['time']
 
     # Creates a list of all the incap and unincap actions in the timeline.
-    incap_and_impaired_items = []
+    incap_items = []
     for action in timd.get('timeline', []):
         if action.get('type') in ['incap', 'unincap']:
-            incap_and_impaired_items.append(action)
-    if len(incap_and_impaired_items) > 0:
+            incap_items.append(action)
+    if len(incap_items) > 0:
         # If the last action in the list is an incap, it means they
         # finished the match incap, so it adds an unincap at the end of
         # the timeline.
-        if incap_and_impaired_items[-1]['type'] == 'incap':
-            incap_and_impaired_items.append({'type': 'unincap', 'time': 0.0})
-        paired_incap_list = make_paired_cycle_list(incap_and_impaired_items)
+        if incap_items[-1]['type'] == 'incap':
+            incap_items.append({'type': 'unincap', 'time': 0.0})
+        paired_incap_list = make_paired_cycle_list(incap_items)
 
-        # Calculates the timeImpaired and timeIncap by calculating the
-        # total amount of time the robot spent incap for either causes
-        # that indicate the robot was impaired, or causes that indicate
-        # the robot is incapacitated.
-        impaired_items = []
-        incapacitated_items = []
-        for cycle in paired_incap_list:
-            if cycle[0]['cause'] in ['brokenMechanism', 'twoGamePieces']:
-                impaired_items.append(cycle)
-            else:
-                incapacitated_items.append(cycle)
-        calculated_data['timeImpaired'] = calculate_total_incap_time(
-            impaired_items)
+        # Calculates the timeIncap by calculating the total amount of
+        # time the robot spent incap during the match.
         calculated_data['timeIncap'] = calculate_total_incap_time(
-            incapacitated_items)
+            paired_incap_list)
     else:
-        # Otherwise, the time that the robot spent impaired and incap is
-        # naturally 0.
-        calculated_data['timeImpaired'] = 0.0
+        # Otherwise, the time that the robot spent incap is naturally 0.
         calculated_data['timeIncap'] = 0.0
 
     return calculated_data

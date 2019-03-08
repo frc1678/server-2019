@@ -1,3 +1,4 @@
+#!/usr/bin/python3.6
 """Calculate SPRs (Scout Precision Rankings).
 
 Used in consolidation and to identify and address issues with scouting.
@@ -16,11 +17,7 @@ TIMDS = os.listdir(utils.create_file_path('data/cache/timds'))
 
 # Scout name to SPR breakdown dictionary
 # Example format: 'Sam C': {'placement': {'correct': 3}, {'total': 10}}
-try:
-    with open(utils.create_file_path('data/sprs/sprs.json'), 'r') as file:
-        SPRS = json.load(file)
-except FileNotFoundError:
-    SPRS = {}
+SPRS = {}
 
 def register_value(scout_name_, data_field_, is_correct):
     """Registers correct or incorrect value in 'SPRS'."""
@@ -69,8 +66,8 @@ for temp_timd in TEMP_TIMDS:
         timd_data.pop(data_field, None)
 
     # Compares tempTIMD to TIMD
-    temp_timd_timeline = temp_timd_data.pop('timeline', None)
-    timd_timeline = timd_data.pop('timeline', None)
+    temp_timd_timeline = temp_timd_data.pop('timeline', [])
+    timd_timeline = timd_data.pop('timeline', [])
 
     # Compares non-timed data fields
     for key, value in temp_timd_data.items():
@@ -95,6 +92,15 @@ for temp_timd in TEMP_TIMDS:
             register_value(scout_name, type_, True)
         else:
             register_value(scout_name, type_, False)
+
+# Calculates overall SPR
+for scout_name, scout_breakdown in SPRS.items():
+    correct = 0
+    total = 0
+    for data_field in scout_breakdown.values():
+        correct += data_field['correct']
+        total += data_field['total']
+    SPRS[scout_name]['overall'] = correct / total
 
 # Saves SPRS
 with open(utils.create_file_path('data/sprs/sprs.json'), 'w') as file:

@@ -43,8 +43,11 @@ def create_assignment_file(matches, scout_names):
 
 
 SCOUT_NAMES = [
-    'Sam C', 'Sam S', 'Carl', 'Ethan', 'John', 'Jack', 'Bob', 'Joe',
-    'Example', 'Running', 'Out', 'Of', 'Names', 'To', 'Use',
+    'Jude', 'Connor', 'Jack S', 'Zachary', 'Lasthenia', 'Ellie', 'Asha',
+    'Walsh', 'Caroline', 'Aakash', 'Emily', 'Nick', 'Gabi', 'Hanson',
+    'Sam', 'Louise', 'Sofia', 'Ethan', 'Nathan', 'Andrew', 'Mohamed',
+    'Justin', 'Jack D', 'Teo', 'Erik', 'Freddy', 'Aidan', 'Carter',
+    'Brynne', 'Gemma',
     # '.zfill(2)' adds leading zeroes to 2 digits
     # (e.g. '7' becomes '07')
     # Used by the Scout app to alphabetize scout names
