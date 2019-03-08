@@ -29,6 +29,12 @@ AVERAGE_DATA_FIELDS = {
     'avgLemonsScoredTeleL1': 'lemonsScoredTeleL1',
     'avgLemonsScoredTeleL2': 'lemonsScoredTeleL2',
     'avgLemonsScoredTeleL3': 'lemonsScoredTeleL3',
+    'avgOrangesScoredL1': 'orangesScoredL1',
+    'avgOrangesScoredL2': 'orangesScoredL2',
+    'avgOrangesScoredL3': 'orangesScoredL3',
+    'avgLemonsScoredL1': 'lemonsScoredL1',
+    'avgLemonsScoredL2': 'lemonsScoredL2',
+    'avgLemonsScoredL3': 'lemonsScoredL3',
     'avgTimeIncap': 'timeIncap',
     'avgTimeImpaired': 'timeImpaired',
     'avgTimeClimbing': 'timeClimbing',
@@ -356,82 +362,6 @@ LFM_CYCLE_DATA_FIELDS = {
     },
 }
 
-def first_pick_ability(calculated_data):
-    """Calculates the relative first pick score for a team.
-
-    calculated_data is the dictionary of calculated_data calculated for
-    a team."""
-    # constants that determine how much each score is weighted
-    # in determining first pick ability
-    level_1_weight = .9  # how much we care about teams scoring on lvl 1
-    level_2_weight = 1.1  # how much we care about teams scoring on lvl 2
-    level_3_weight = 1.1  # how much we care about teams scoring on lvl 3
-    climbing_weight = .2  # how much we want alliance partners to solo climb
-
-    level_1_teleop_score = (2 * calculated_data['avgLemonsScoredTeleL1']
-        + 3 * calculated_data['avgOrangesScoredTeleL1']) * level_1_weight
-    level_2_teleop_score = (2 * calculated_data['avgLemonsScoredTeleL2']
-        + 3 * calculated_data['avgOrangesScoredTeleL2']) * level_2_weight
-    level_3_teleop_score = (2 * calculated_data['avgLemonsScoredTeleL3']
-        + 3 * calculated_data['avgOrangesScoredTeleL3']) * level_3_weight
-
-    sand_score = float(calculated_data['habLineSuccessL1']) * 3 / 100
-    sand_score += float(calculated_data['habLineSuccessL2']) * 6 / 100
-    sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
-    sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
-
-    end_game_score = 3 * float(calculated_data['climbL1Success']) / 100
-    end_game_score += 6 * float(calculated_data['climbL2Success']) / 100
-    end_game_score += 12 * float(calculated_data['climbL3Success']) / 100
-    end_game_score *= climbing_weight
-    # TODO: Add pit scout communication to get ClimbCompatibility
-    # end_game_score += (1 - climbing_weight) * calculated_data['ClimbCompatibility'] * 12 * calculated_data['SuccessRate']
-
-    pick_ability = sand_score + end_game_score + level_1_teleop_score + level_2_teleop_score + level_3_teleop_score
-    return pick_ability
-
-def second_pick_ability(calculated_data):
-    """Calculates the relative second pick score for a team.
-
-    calculated_data is the dictionary of calculated_data calculated for
-    a team."""
-    climbing_weight = .1  # how much we want alliance partners to solo climb
-    driving_weight = .2  # how much we care about driver ability
-    speed_weight = .5  # how much we prioritize speed over agility
-    oranges_weight = 1  # how much we want second picks to be scoring oranges
-    lemons_weight = 1  # how much we want second picks to be scoring lemons
-    defense_weight = 1  # how much we want second picks to be defending
-    docking_weight = 1  # how much we care about defending by blocking scoring structures
-    path_blocking_weight = 1  # how much we care about defending by getting in the way
-
-    sand_score = float(calculated_data['habLineSuccessL1']) * 3 / 100
-    sand_score += float(calculated_data['habLineSuccessL2']) * 6 / 100
-    sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
-    sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
-
-    level_1_teleop_score = calculated_data['avgLemonsScoredTeleL1'] * 2 * lemons_weight
-    level_1_teleop_score += calculated_data['avgOrangesScoredTeleL1'] * 3 * oranges_weight
-
-    end_game_score = 3 * float(calculated_data['climbL1Success']) / 100
-    end_game_score += 6 * float(calculated_data['climbL2Success']) / 100
-    end_game_score += 12 * float(calculated_data['climbL3Success']) / 100
-    end_game_score *= climbing_weight
-    # TODO: Add pit scout communication to get ClimbCompatibility
-    # end_game_score += (1 - climbing_weight) * calculated_data['ClimbCompatibility'] * 12 * calculated_data['SuccessRate']
-
-    # driver_ability = speed_weight * calculated_data['Speed']
-    # driver_ability += (1 - speed_weight) * calculated_data['Agility']
-    # driver_ability *= driving_weight
-    driver_ability = 0  # this is a placeholder
-
-    # defense_ability = calculated_data['SecondsAddedToCycle'] * calculated_data['PointsPerCyclePerSecond']
-    defense_ability = 0  # this is placeholder
-    defense_ability *= defense_weight * (docking_weight + path_blocking_weight)
-
-    pick_ability = sand_score + level_1_teleop_score + end_game_score
-    pick_ability += driver_ability + defense_ability
-    return pick_ability
-
 def calculate_avg_cycle_time(cycles):
     """Calculates the average time for an action based on start and end times.
 
@@ -671,7 +601,7 @@ def make_paired_cycle_list(cycle_list):
     # matching-index items from two lists into tuples.
     return list(zip(cycle_list[::2], cycle_list[1::2]))
 
-def team_calculations(timds):
+def team_calculations(timds, team_number):
     """Calculates all the calculated data for one team.
 
     Uses a team's timds to make many calculations and return them in a
@@ -729,6 +659,10 @@ def team_calculations(timds):
         timd.get('numGoodDecisions') for timd in timds])
     calculated_data['avgBadDecisions'] = avg([
         timd.get('numBadDecisions') for timd in timds])
+    calculated_data['avgAgility'] = avg([
+        timd.get('rankAgility') for timd in timds])
+    calculated_data['avgSpeed'] = avg([
+        timd.get('rankSpeed') for timd in timds])
 
     # Finds the percent of matches a team was incap, impaired, and no show.
     calculated_data['percentIncap'] = round(100 * avg([
@@ -912,7 +846,7 @@ for timd in os.listdir(utils.create_file_path('data/cache/timds')):
             if timd_data.get('calculatedData') is not None:
                 TIMDS.append(timd_data)
 
-FINAL_TEAM_DATA = {'calculatedData': team_calculations(TIMDS)}
+FINAL_TEAM_DATA = {'calculatedData': team_calculations(TIMDS, TEAM_NUMBER)}
 
 # Save data in local cache
 with open(utils.create_file_path(

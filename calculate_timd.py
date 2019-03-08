@@ -139,6 +139,14 @@ def filter_timeline_actions(timd, **filters):
                 if action['zone'] not in ['leftLoadingStation',
                                           'rightLoadingStation']:
                     break
+            # If the filter specifies time, it can either specify
+            # sandstorm by making the requirement 'sand' or specify
+            # teleop by making the requirement 'tele'.
+            elif data_field == 'time':
+                if requirement == 'sand' and action['time'] <= 135.0:
+                    break
+                elif requirement == 'tele' and action['time'] > 135.0:
+                    break
             # Otherwise, it checks the requirement normally
             else:
                 if action.get(data_field) != requirement:
@@ -177,19 +185,49 @@ def calculate_timd_data(timd):
     calculated_data['lemonsSpilled'] = len(filter_timeline_actions(
         timd, type='spill'))
 
-    #TODO(Nathan): filter when time<=135 to make sure it actually is in tele
-    calculated_data['orangesScoredTeleL1'] = len(filter_timeline_actions(timd,
-        type='placement', piece='orange', level=1, didSucceed=True))
-    calculated_data['orangesScoredTeleL2'] = len(filter_timeline_actions(timd,
-        type='placement', piece='orange', level=2, didSucceed=True))
-    calculated_data['orangesScoredTeleL3'] = len(filter_timeline_actions(timd,
-        type='placement', piece='orange', level=3, didSucceed=True))
-    calculated_data['lemonsScoredTeleL1'] = len(filter_timeline_actions(timd,
-        type='placement', piece='lemon', level=1, didSucceed=True))
-    calculated_data['lemonsScoredTeleL2'] = len(filter_timeline_actions(timd,
-        type='placement', piece='lemon', level=2, didSucceed=True))
-    calculated_data['lemonsScoredTeleL3'] = len(filter_timeline_actions(timd,
-        type='placement', piece='lemon', level=3, didSucceed=True))
+    calculated_data['orangesScoredSandstorm'] = len(
+        filter_timeline_actions(timd, type='placement', piece='orange', \
+        didSucceed=True, time='sand'))
+    calculated_data['lemonsScoredSandstorm'] = len(
+        filter_timeline_actions(timd, type='placement', piece='lemon', \
+        didSucceed=True, time='sand'))
+    calculated_data['orangesScoredTeleL1'] = len(
+        filter_timeline_actions(timd, type='placement', piece='orange', \
+        level=1, didSucceed=True, time='tele'))
+    calculated_data['orangesScoredTeleL2'] = len(
+        filter_timeline_actions(timd, type='placement', piece='orange', \
+        level=2, didSucceed=True, time='tele'))
+    calculated_data['orangesScoredTeleL3'] = len(
+        filter_timeline_actions(timd, type='placement', piece='orange', \
+        level=3, didSucceed=True, time='tele'))
+    calculated_data['lemonsScoredTeleL1'] = len(
+        filter_timeline_actions(timd, type='placement', piece='lemon', \
+        level=1, didSucceed=True, time='tele'))
+    calculated_data['lemonsScoredTeleL2'] = len(
+        filter_timeline_actions(timd, type='placement', piece='lemon', \
+        level=2, didSucceed=True, time='tele'))
+    calculated_data['lemonsScoredTeleL3'] = len(
+        filter_timeline_actions(timd, type='placement', piece='lemon', \
+        level=3, didSucceed=True, time='tele'))
+
+    calculated_data['orangesScoredL1'] = len(
+        filter_timeline_actions(timd, type='placement', piece='orange', \
+        level=1, didSucceed=True))
+    calculated_data['orangesScoredL2'] = len(
+        filter_timeline_actions(timd, type='placement', piece='orange', \
+        level=2, didSucceed=True))
+    calculated_data['orangesScoredL3'] = len(
+        filter_timeline_actions(timd, type='placement', piece='orange', \
+        level=3, didSucceed=True))
+    calculated_data['lemonsScoredL1'] = len(
+        filter_timeline_actions(timd, type='placement', piece='lemon', \
+        level=1, didSucceed=True))
+    calculated_data['lemonsScoredL2'] = len(
+        filter_timeline_actions(timd, type='placement', piece='lemon', \
+        level=2, didSucceed=True))
+    calculated_data['lemonsScoredL3'] = len(
+        filter_timeline_actions(timd, type='placement', piece='lemon', \
+        level=3, didSucceed=True))
 
     # The next set of calculated data points are the success
     # percentages, these are the percentages (displayed as an integer)
