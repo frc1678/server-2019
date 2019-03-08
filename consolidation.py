@@ -210,11 +210,10 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
     for action_index, action in enumerate(correct_length_timelines[sprking]):
         comparison_dict = {scout: timeline[action_index] for scout,
                            timeline in correct_length_timelines.items()}
-        # Creates a set of keys from all the keys possible for this
-        # action, then iterates through them.
+        # A set of keys from all the keys possible for this action.
         keys = set()
-        for scout in comparison_dict.keys():
-            for key in comparison_dict[scout].keys():
+        for action in comparison_dict.values():
+            for key in action.keys():
                 keys.add(key)
 
         for key in keys:
