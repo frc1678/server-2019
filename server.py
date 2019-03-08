@@ -54,9 +54,9 @@ def match_num_stream_handler(snapshot):
     # Validates that data was correctly received and is in its expected format
     if (snapshot['event'] == 'put' and snapshot['path'] == '/' and
             isinstance(snapshot['data'], int)):
-        print(snapshot['data'])
         # Calculates SPRs (Scout Precision Rankings)
         subprocess.call('python3 calculate_sprs.py', shell=True)
+        print('Did SPRs calculations')
 
 def cycle_num_stream_handler(snapshot):
     """Runs when 'cycleNumber' is updated on firebase"""
