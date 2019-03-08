@@ -216,6 +216,7 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
         types = {scout: comparison_dict[scout].get('type') for scout in
                  comparison_dict.keys()}
         if max_occurrences(types, sprking) is None:
+            # Skips current iteration
             continue
 
         # Otherwise, the comparison is continued with, deleting any
