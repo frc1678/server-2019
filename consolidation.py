@@ -207,20 +207,19 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
 
     final_simplified_timd = [{} for action in range(majority_length)]
     # Iterates through the sprking's timeline to compare all the actions.
+    # If the majority 'type' for the action is None, the majority of
+    # scouts did not record this action, and this action should not
+    # appear in the consolidated TIMD.
     for action_index, action in enumerate(correct_length_timelines[sprking]):
         comparison_dict = {scout: timeline[action_index] for scout,
                            timeline in correct_length_timelines.items()}
-        # Checks if the majority type for the action is None, if it is,
-        # the loop skips the rest of the code and the action is not
-        # real.
         types = {scout: action.get('type') for scout, action in
                  comparison_dict.items()}
         if max_occurrences(types, sprking) is None:
             # Skips current iteration
             continue
 
-        # Otherwise, the comparison is continued with, deleting any
-        # scout who has a blank action.
+        # Change to Deletes scouts that did not record this action
         for scout in list(comparison_dict):
             if comparison_dict[scout] == {}:
                 comparison_dict.pop(scout)
@@ -243,6 +242,8 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
                 final_simplified_timd[action_index][key] = \
                     max_occurrences(scout_to_keys, sprking)
 
+        # If the action consolidates to only have time as a key, it is
+        # useless in the timeline.
         if list(action.keys()) == ['time']:
             final_simplified_timd = {}
 
