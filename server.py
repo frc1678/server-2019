@@ -257,6 +257,9 @@ while True:
             print(f"Did calculations for {timd}")
             LATEST_CALCULATIONS_BY_TIMD[timd] = FILES_BY_TIMD[timd]
 
+    # Runs advanced calculations for every team in the competition.
+    subprocess.call('python3 make_advanced_calculations.py', shell=True)
+
     # Forwards data from Cloud Firestore to Realtime Database.
     subprocess.call('python3 forward_firestore_data.py', shell=True)
 
