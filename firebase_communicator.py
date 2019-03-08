@@ -13,9 +13,9 @@ def configure_firebase(url=None):
         url = URL
     config = {
         'apiKey': 'mykey',
-        'authDomain': url + '.firebaseapp.com',
-        'databaseURL': 'https://' + url + '.firebaseio.com/',
-        'storageBucket': url + '.appspot.com',
+        'authDomain': f'{url}.firebaseapp.com',
+        'databaseURL': f'https://{url}.firebaseio.com/',
+        'storageBucket': f'{url}.appspot.com',
     }
     firebase = pyrebase.initialize_app(config)
     return firebase.database()
