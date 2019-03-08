@@ -142,6 +142,7 @@ def filter_timeline_actions(timd, **filters):
             # If the filter specifies time, it can either specify
             # sandstorm by making the requirement 'sand' or specify
             # teleop by making the requirement 'tele'.
+            #TODO: Rename 'sand' and 'tele'
             elif data_field == 'time':
                 if requirement == 'sand' and action['time'] <= 135.0:
                     break

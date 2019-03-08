@@ -576,14 +576,18 @@ def filter_cycles(cycle_list, filters):
             filtered_cycles.append(cycle)
     return filtered_cycles
 
-def climbSuccessRate(timds, level):
+def climb_success_rate(timds, level):
+    """Calculates the success rate for climbs of a specific level.
+
+    timds are the timds for a team.
+    level is the level of climb being calculated."""
     climbs = filter_timeline_actions(timds, {'type': 'climb'})
     attempts = 0
     successes = 0
     for climb in climbs:
-        if (climb['attempted']['self'] == level):
+        if climb['attempted']['self'] == level:
             attempts += 1
-        if (climb['actual']['self'] == level):
+        if climb['actual']['self'] == level:
             successes += 1
     if attempts == 0:
         return 0
