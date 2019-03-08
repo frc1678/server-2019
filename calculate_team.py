@@ -576,7 +576,9 @@ def climb_success_rate(timds, level, string=False):
     """Calculates the success rate for climbs of a specific level.
 
     timds are the timds for a team.
-    level is the level of climb being calculated."""
+    level is the level of climb being calculated.
+    string is whether or not the success rate is returned as a string.
+    If it is, it is represented in the format 'successes / attempts'."""
     climbs = filter_timeline_actions(timds, {'type': 'climb'})
     attempts = 0
     successes = 0
