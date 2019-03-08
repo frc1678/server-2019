@@ -814,14 +814,6 @@ def team_calculations(timds, team_number):
             calculate_avg_cycle_time(filter_cycles(lfm_cycle_list, \
             filters_))
 
-    # Calculates the first and second pick ability for the team based on
-    # their previous calculated data. To see how these are calculated,
-    # look at the weights in each of their respective functions.
-    calculated_data['firstPickAbility'] = \
-        first_pick_ability(calculated_data)
-    calculated_data['secondPickAbility'] = \
-        second_pick_ability(calculated_data)
-
     return calculated_data
 
 # Check to ensure Team number is being passed as an argument
