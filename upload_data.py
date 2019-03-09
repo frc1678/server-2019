@@ -39,8 +39,25 @@ def collect_file_data(file_path_, firebase_collection):
     # "/<firebase-collection>/<document-name>/<data-field>": <data-value>
     # (e.g. /TIMDs/1678Q3/startingLocation": "left")
     for data_field, data_value in file_data.items():
-        multi_location_data[os.path.join(firebase_collection, \
-            document_name, data_field)] = data_value
+        # TODO: Clean up variable names
+        if isinstance(data_value, dict):
+            for key, value_ in data_value.items():
+                if isinstance(key, dict):
+                    for key2, value2 in value_.items():
+                        path = os.path.join(data_field, key2)
+                        value = value2
+                        multi_location_data[os.path.join(firebase_collection, \
+                            document_name, path)] = value
+                else:
+                    path = os.path.join(data_field, key)
+                    value = value_
+                    multi_location_data[os.path.join(firebase_collection, \
+                        document_name, path)] = value
+        else:
+            path = data_field
+            value = data_value
+            multi_location_data[os.path.join(firebase_collection, \
+                document_name, path)] = value
 
     return multi_location_data
 
