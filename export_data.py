@@ -57,6 +57,10 @@ while True:
     try:
         TIMD_DATA = DB.child('TIMDs').get().val()
         TEAM_DATA = DB.child('Teams').get().val()
+        # TODO: Move out of try statement
+        for timd in list(TIMD_DATA):
+            if TIMD_DATA[timd].get('calculatedData') is None:
+                TIMD_DATA.pop(timd)
     except OSError:
         print('Error: No internet connection.  Trying again in 3 seconds...')
     else:
