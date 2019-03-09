@@ -131,17 +131,21 @@ for team in TEAMS.keys():
 
 # Calculates the highest driverAbility for any team and uses it to
 # weigh all other driverAbilities in secondPickAbility.
-MAX_DA = max([team['calculatedData']['driverAbility'] for team in
-              TEAMS.keys()])
-MIN_DA = min([team['calculatedData']['driverAbility'] for team in
-              TEAMS.keys()])
-for team in TEAMS.keys():
-    TEAMS[team]['calculatedData']['firstPickAbility'] = \
-        first_pick_ability(TEAMS[team]['calculatedData'])
-    TEAMS[team]['calculatedData']['secondPickAbility'] = \
-        second_pick_ability(TEAMS[team]['calculatedData'], MAX_DA, MIN_DA)
 
-# After all the teams have been calculated, they can be put back in the cache.
-for team, data in TEAMS.items():
-    with open(utils.create_file_path(f'data/cache/teams/{team}.json'), 'w') as team_file:
-        json.dump(data, team_file)
+# TODO: Move if-statement immediately after pulling data
+if TEAMS != {}:
+    MAX_DA = max([team['calculatedData']['driverAbility'] for team in
+                  TEAMS.values()])
+    MIN_DA = min([team['calculatedData']['driverAbility'] for team in
+                  TEAMS.values()])
+    for team in TEAMS.keys():
+        TEAMS[team]['calculatedData']['firstPickAbility'] = \
+            first_pick_ability(TEAMS[team]['calculatedData'])
+        TEAMS[team]['calculatedData']['secondPickAbility'] = \
+            second_pick_ability(TEAMS[team]['calculatedData'], MAX_DA, MIN_DA)
+    # After all the teams have been calculated, they can be put back in the cache.
+    for team, data in TEAMS.items():
+        with open(utils.create_file_path(f'data/cache/teams/{team}.json'), 'w') as team_file:
+            json.dump(data, team_file)
+        with open(utils.create_file_path(f'data/upload_queue/teams/{team}.json'), 'w') as file:
+            json.dump(data, file)
