@@ -70,6 +70,10 @@ for match_key in MATCH_KEYS:
             'red': match['alliances']['red']['team_keys'],
             'blue': match['alliances']['blue']['team_keys'],
         }
+        # Skip the match if a score_breakdown is not available (meaning
+        # the match hasn't been played yet)
+        if match.get('score_breakdown') is None:
+            continue
         for alliance in teams_by_alliance:
             alliance_score_breakdown = match['score_breakdown'][alliance]
             # Removes preceding 'frc' and casts to int
