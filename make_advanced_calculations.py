@@ -154,22 +154,22 @@ for team in TEAMS.keys():
     TEAMS[team]['calculatedData']['driverAbility'] = \
         calculate_driver_ability(TEAMS[team]['calculatedData'])
 
-# Calculates the highest and lowest driverAbility for any team and uses
-# it to weigh all other driverAbilities in secondPickAbility.
-MAX_DA = max([team_data['calculatedData']['driverAbility'] for team_data
-              in TEAMS.values()])
-MIN_DA = min([team_data['calculatedData']['driverAbility'] for team_data
-              in TEAMS.values()])
-for team in TEAMS.keys():
-    TEAMS[team]['calculatedData']['firstPickAbility'] = \
-        calculate_first_pick_ability(TEAMS[team]['calculatedData'])
-    TEAMS[team]['calculatedData']['secondPickAbility'] = \
-        calculate_second_pick_ability(TEAMS[team]['calculatedData'],
-                                      MAX_DA, MIN_DA)
+# TODO: Move if-statement immediately after pulling data
+if TEAMS != {}:
+    MAX_DA = max([team_data['calculatedData']['driverAbility'] for team_data
+                  in TEAMS.values()])
+    MIN_DA = min([team_data['calculatedData']['driverAbility'] for team_data
+                  in TEAMS.values()])
+    for team in TEAMS.keys():
+        TEAMS[team]['calculatedData']['firstPickAbility'] = \
+            calculate_first_pick_ability(TEAMS[team]['calculatedData'])
+        TEAMS[team]['calculatedData']['secondPickAbility'] = \
+            calculate_second_pick_ability(TEAMS[team]['calculatedData'],
+                                          MAX_DA, MIN_DA)
 
-# Sends data to 'cache' and 'upload_queue'
-for team, data in TEAMS.items():
-    with open(utils.create_file_path(f'data/cache/teams/{team}.json'), 'w') as file:
-        json.dump(data, file)
-    with open(utils.create_file_path(f'data/upload_queue/teams/{team}.json'), 'w') as file:
-        json.dump(data, file)
+    # Sends data to 'cache' and 'upload_queue'
+    for team, data in TEAMS.items():
+        with open(utils.create_file_path(f'data/cache/teams/{team}.json'), 'w') as file:
+            json.dump(data, file)
+        with open(utils.create_file_path(f'data/upload_queue/teams/{team}.json'), 'w') as file:
+            json.dump(data, file)
