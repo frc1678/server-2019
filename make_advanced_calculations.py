@@ -99,7 +99,9 @@ TEAMS = {}
 for team in os.listdir(utils.create_file_path('data/cache/teams')):
     with open(utils.create_file_path(f'data/cache/teams/{team}')) as team_file:
         team_data = json.load(team_file)
-        if team_data.get('calculatedData') is not None:
+        # HACK: 'calculatedData' can contain 'actualSeed' without
+        # containing other 'calculatedData'
+        if 'avgLemonsScoredTeleL1' in list(team_data.get('calculatedData').keys()):
             TEAMS[team.split('.')[0]] = team_data
 
 # A dictionary of team to their average agility, used to generate zscores.
