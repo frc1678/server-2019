@@ -59,6 +59,12 @@ for temp_super_file in TEMP_SUPER_FILES:
         except FileNotFoundError:
             timd_data = {}
 
+        # HACK: 'teamNumber' and 'matchNumber' must exist for all TIMDs,
+        # including those with only super data + not scout data.
+        timd_data['teamNumber'] = int(team['teamNumber'])
+        timd_data['matchNumber'] = int(match_number)
+        team['teamNumber'] = int(team['teamNumber'])
+        team['matchNumber'] = int(match_number)
         # Adds tempSuper data to any previous TIMD data
         timd_data.update(team)
         with open(utils.create_file_path(timd_file_path), 'w') as file:
