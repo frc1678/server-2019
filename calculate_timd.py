@@ -434,6 +434,9 @@ with open(utils.create_file_path(
         f'data/upload_queue/timds/{TIMD_NAME}.json'), 'w') as file:
     json.dump(FINAL_TIMD, file)
 
+# TODO: Make 'forward_temp_super' more efficient (call it less often)
+subprocess.call(f'python3 forward_temp_super.py', shell=True)
+
 # After the timd is calculated, the team is calculated.
 TEAM = TIMD_NAME.split('Q')[0]
 subprocess.call(f'python3 calculate_team.py {TEAM}', shell=True)
