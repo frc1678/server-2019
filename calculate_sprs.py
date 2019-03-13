@@ -93,13 +93,18 @@ for temp_timd in TEMP_TIMDS:
         else:
             register_value(scout_name, type_, False)
 
+    # Increments 'matchesScouted'
+    SPRS[scout_name]['matchesScouted'] = SPRS[scout_name].get(
+        'matchesScouted', 0) + 1
+
 # Calculates overall SPR
 for scout_name, scout_breakdown in SPRS.items():
     correct = 0
     total = 0
-    for data_field in scout_breakdown.values():
-        correct += data_field['correct']
-        total += data_field['total']
+    for data_field, breakdown in scout_breakdown.items():
+        if data_field != 'matchesScouted':
+            correct += breakdown['correct']
+            total += breakdown['total']
     SPRS[scout_name]['overall'] = correct / total
 
 # Saves SPRS
