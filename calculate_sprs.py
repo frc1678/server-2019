@@ -6,6 +6,7 @@ These issues are often caused by misunderstanding or actions that have
 an ambiguous input.  With SPRs, these questions can be cleared up during
 scout training and competition to decrease errors in the future."""
 # External imports
+import csv
 import json
 import os
 # Internal imports
@@ -93,15 +94,31 @@ for temp_timd in TEMP_TIMDS:
         else:
             register_value(scout_name, type_, False)
 
+    previous_matches = SPRS[scout_name].get('matchesScouted', 0)
+    SPRS[scout_name]['matchesScouted'] = previous_matches + 1
+
 # Calculates overall SPR
 for scout_name, scout_breakdown in SPRS.items():
     correct = 0
     total = 0
-    for data_field in scout_breakdown.values():
-        correct += data_field['correct']
-        total += data_field['total']
+    for data_field, breakdown in scout_breakdown.items():
+        if data_field != 'matchesScouted':
+            correct += breakdown['correct']
+            total += breakdown['total']
     SPRS[scout_name]['overall'] = correct / total
-
+print(SPRS)
 # Saves SPRS
 with open(utils.create_file_path('data/sprs/sprs.json'), 'w') as file:
     json.dump(SPRS, file)
+
+SPR_KEYS = ['scoutName', 'overall', 'matchesScouted']
+with open(utils.create_file_path(f'data/sprs/sprs.csv'),
+          'w') as file:
+    CSV_WRITER = csv.DictWriter(file, fieldnames=SPR_KEYS)
+    CSV_WRITER.writeheader()
+    for scout, breakdown in SPRS.items():
+        scout_breakdown = {'scoutName': scout}
+        for key in SPR_KEYS:
+            if key != 'scoutName':
+                scout_breakdown[key] = breakdown[key]
+        CSV_WRITER.writerow(scout_breakdown)

@@ -105,22 +105,28 @@ for team in os.listdir(utils.create_file_path('data/cache/teams')):
             TEAMS[team.split('.')[0]] = team_data
 
 # A dictionary of team to their average agility, used to generate zscores.
-AGILITIES = {team : data['calculatedData']['avgAgility'] for team, data
+AGILITIES = {team : data['calculatedData'].get('avgAgility', 0.0) for team, data
              in TEAMS.items()}
 
 AG_MEAN = numpy.mean(list(AGILITIES.values()))
 AG_SD = numpy.std(list(AGILITIES.values()))
 for team, average in AGILITIES.items():
-    TEAMS[team]['calculatedData']['agilityZScore'] = (average - AG_MEAN) / AG_SD
+    if AG_SD == 0.0:
+        TEAMS[team]['calculatedData']['agilityZScore'] = 0.0
+    else:
+        TEAMS[team]['calculatedData']['agilityZScore'] = (average - AG_MEAN) / AG_SD
 
 # A dictionary of team to their average speed, used to generate zscores.
-SPEEDS = {team : data['calculatedData']['avgSpeed'] for team, data in
+SPEEDS = {team : data['calculatedData'].get('avgSpeed', 0.0) for team, data in
           TEAMS.items()}
 
 SP_MEAN = numpy.mean(list(SPEEDS.values()))
 SP_SD = numpy.std(list(SPEEDS.values()))
 for team, average in SPEEDS.items():
-    TEAMS[team]['calculatedData']['speedZScore'] = (average - SP_MEAN) / SP_SD
+    if SP_SD == 0.0:
+        TEAMS[team]['calculatedData']['speedZScore'] = 0.0
+    else:
+        TEAMS[team]['calculatedData']['speedZScore'] = (average - SP_MEAN) / SP_SD
 
 # After the zscores are calculated for all the teams, other calculations
 # that use zscores can be calculated, like driverAbility and
