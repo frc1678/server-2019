@@ -54,6 +54,8 @@ def match_num_stream_handler(snapshot):
     # Validates that data was correctly received and is in its expected format
     if (snapshot['event'] == 'put' and snapshot['path'] == '/' and
             isinstance(snapshot['data'], int)):
+        # Forwards TBA data to Teams, TIMDs, and Matches.
+        subprocess.call('python3 forward_tba_data.py', shell=True)
         # Calculates SPRs (Scout Precision Rankings)
         subprocess.call('python3 calculate_sprs.py', shell=True)
         print('Did SPRs calculations')
@@ -260,9 +262,6 @@ while True:
             subprocess.call(f'python3 calculate_timd.py {timd}', shell=True)
             print(f"Did calculations for {timd}")
             LATEST_CALCULATIONS_BY_TIMD[timd] = FILES_BY_TIMD[timd]
-
-    # Forwards TBA data to Teams, TIMDs, and Matches.
-    subprocess.call('python3 forward_tba_data.py', shell=True)
 
     # Forwards tempSuper data to Matches and TIMDs.
     subprocess.call('python3 forward_temp_super.py', shell=True)
