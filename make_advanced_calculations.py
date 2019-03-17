@@ -84,8 +84,8 @@ def second_pick_ability(calculated_data):
 # Gathers the calculated data from all the teams.
 TEAMS = {}
 for team in os.listdir(utils.create_file_path('data/cache/teams')):
-    with open(utils.create_file_path(f'data/cache/teams/{team}')) as team_file:
-        team_data = json.load(team_file)
+    with open(utils.create_file_path(f'data/cache/teams/{team}')) as file:
+        team_data = json.load(file)
         if team_data.get('calculatedData') is not None:
             TEAMS[team.split('.')[0]] = team_data
 
