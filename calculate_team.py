@@ -805,6 +805,11 @@ def team_calculations(timds):
             calculate_avg_cycle_time(filter_cycles(lfm_cycle_list, \
             filters_))
 
+    # 'lastMatch' is the team's last match when team data is calculated.
+    # Used in the viewer to display when a team's data was last updated.
+    if timds != []:
+        calculated_data['lastMatch'] = max([timd['matchNumber'] for timd in timds])
+
     # Calculates the first and second pick ability for the team based on
     # their previous calculated data. To see how these are calculated,
     # look at the weights in each of their respective functions.
