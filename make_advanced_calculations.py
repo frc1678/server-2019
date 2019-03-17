@@ -127,3 +127,5 @@ for team in TEAMS.keys():
 for team, data in TEAMS.items():
     with open(utils.create_file_path(f'data/cache/teams/{team}.json'), 'w') as team_file:
         json.dump(data, team_file)
+    with open(utils.create_file_path(f'data/upload_queue/teams/{team}.json'), 'w') as team_file:
+        json.dump(data, team_file)
