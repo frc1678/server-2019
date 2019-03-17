@@ -38,8 +38,8 @@ def first_pick_ability(calculated_data):
         + 3 * calculated_data['avgOrangesScoredTeleL3']) * level_3_weight
 
     # Scores for points gained during sandstorm.
-    sand_score = float(calculated_data['habLineSuccessL1']) * 3 / 100
-    sand_score += float(calculated_data['habLineSuccessL2']) * 6 / 100
+    sand_score = max([float(calculated_data['habLineSuccessL1']) * 3 / 100,
+                      float(calculated_data['habLineSuccessL2']) * 6 / 100])
     sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
     sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
 
@@ -63,8 +63,8 @@ def second_pick_ability(calculated_data):
     lemons_weight = 1  # How much we want second picks to be scoring lemons
 
     # Scores for points gained during sandstorm.
-    sand_score = float(calculated_data['habLineSuccessL1']) * 3 / 100
-    sand_score += float(calculated_data['habLineSuccessL2']) * 6 / 100
+    sand_score = max([float(calculated_data['habLineSuccessL1']) * 3 / 100,
+                      float(calculated_data['habLineSuccessL2']) * 6 / 100])
     sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
     sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
 
