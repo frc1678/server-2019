@@ -805,8 +805,8 @@ def team_calculations(timds):
             calculate_avg_cycle_time(filter_cycles(lfm_cycle_list, \
             filters_))
 
-    # Adds the last match played by the team to calculated_data so the
-    # viewer can see when it was last updated.
+    # 'lastMatch' is the team's last match when team data is calculated.
+    # Used in the viewer to display when a team's data was last updated.
     if timds != []:
         calculated_data['lastMatch'] = max([timd['matchNumber'] for timd in timds])
 
