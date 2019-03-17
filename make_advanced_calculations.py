@@ -115,7 +115,7 @@ for average_name, zscore_name in SUPER_ZSCORE_DATA_FIELDS.items():
 # After the zscores are calculated for all the teams, other calculations
 # that use zscores can be calculated, like driverAbility and
 # firstPickAbility.
-for team in list(TEAMS.keys()):
+for team in TEAMS.keys():
     TEAMS[team]['calculatedData']['driverAbility'] = \
         calculate_driver_ability(TEAMS[team]['calculatedData'])
     TEAMS[team]['calculatedData']['firstPickAbility'] = \
