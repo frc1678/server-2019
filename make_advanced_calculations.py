@@ -22,12 +22,12 @@ def first_pick_ability(calculated_data):
 
     calculated_data is the dictionary of calculated_data calculated for
     a team."""
-    # Constants that determine how much each score is weighted in
-    # determining first pick ability.
-    level_1_weight = 0.9  # How much we care about teams scoring on lvl 1
-    level_2_weight = 1.1  # How much we care about teams scoring on lvl 2
-    level_3_weight = 1.1  # How much we care about teams scoring on lvl 3
-    climbing_weight = 0.2  # How much we want alliance partners to solo climb
+    # Weights for how much each aspect of the robot is considered for a
+    # first pick.
+    level_1_weight = 0.9
+    level_2_weight = 1.1
+    level_3_weight = 1.1
+    climbing_weight = 0.2
 
     # Scores for points scored on level 1, 2, and 3.
     level_1_teleop_score = (2 * calculated_data['avgLemonsScoredTeleL1']
@@ -57,9 +57,11 @@ def second_pick_ability(calculated_data):
 
     calculated_data is the dictionary of calculated_data calculated for
     a team."""
-    climbing_weight = .1  # How much we want alliance partners to solo climb
-    oranges_weight = 1  # How much we want second picks to be scoring oranges
-    lemons_weight = 1  # How much we want second picks to be scoring lemons
+    # Weights for how much each aspect of the robot is considered for a
+    # second pick.
+    climbing_weight = .1
+    oranges_weight = 1
+    lemons_weight = 1
 
     # Scores for points gained during sandstorm.
     sand_score = max([float(calculated_data['habLineSuccessL1']) * 3 / 100,
