@@ -44,9 +44,9 @@ def first_pick_ability(calculated_data):
     sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
 
     # Scores for points scored in the endgame.
-    end_game_score = 3 * float(calculated_data['climbSuccessL1']) / 100
-    end_game_score += 6 * float(calculated_data['climbSuccessL2']) / 100
-    end_game_score += 12 * float(calculated_data['climbSuccessL3']) / 100
+    end_game_score = max([3 * float(calculated_data['climbSuccessL1']) / 100,
+                          6 * float(calculated_data['climbSuccessL2']) / 100,
+                          12 * float(calculated_data['climbSuccessL3']) / 100])
     end_game_score *= climbing_weight
 
     # Adds all the previous scores together to get a full first pick score.
@@ -73,9 +73,9 @@ def second_pick_ability(calculated_data):
     level_1_teleop_score += calculated_data['avgOrangesScoredTeleL1'] * 3 * oranges_weight
 
     # Scores for points scored in the endgame.
-    end_game_score = 3 * float(calculated_data['climbSuccessL1']) / 100
-    end_game_score += 6 * float(calculated_data['climbSuccessL2']) / 100
-    end_game_score += 12 * float(calculated_data['climbSuccessL3']) / 100
+    end_game_score = max([3 * float(calculated_data['climbSuccessL1']) / 100,
+                          6 * float(calculated_data['climbSuccessL2']) / 100,
+                          12 * float(calculated_data['climbSuccessL3']) / 100])
     end_game_score *= climbing_weight
 
     # Takes the previously calculated driverAbility and weights it into
