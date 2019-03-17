@@ -81,6 +81,21 @@ def second_pick_ability(calculated_data):
 
     return sand_score + level_1_teleop_score + end_game_score
 
+def calculate_zscores(team_average_name, team_zscore_name):
+    """Calculates the zscore for a team average data point across all teams.
+
+    team_average_name is the name of the team average data field that
+    the zscore is taken from.
+    team_zscore_name is the name of the team zscore data field in which
+    the calculated zscore is put into."""
+    averages = {team : data['calculatedData'][team_average_name] for
+                team, data in TEAMS.items()}
+
+    mean = numpy.mean(list(averages.values()))
+    sd = numpy.std(list(averages.values()))
+    for team, average in averages.items():
+        TEAMS[team]['calculatedData'][team_zscore_name] = (average - mean) / sd
+
 # Gathers the calculated data from all the teams.
 TEAMS = {}
 for team in os.listdir(utils.create_file_path('data/cache/teams')):
@@ -90,23 +105,12 @@ for team in os.listdir(utils.create_file_path('data/cache/teams')):
             # Splits the name of the file in order to get the team number
             TEAMS[team.split('.')[0]] = team_data
 
+SUPER_ZSCORE_DATA_FIELDS = {'avgAgility': 'agilityZScore',
+                            'avgSpeed': 'speedZScore',}
+
 # A dictionary of team to their average agility, used to generate zscores.
-AGILITIES = {team : data['calculatedData']['avgAgility'] for team, data
-             in TEAMS.items()}
-
-AG_MEAN = numpy.mean(list(AGILITIES.values()))
-AG_SD = numpy.std(list(AGILITIES.values()))
-for team, average in AGILITIES.items():
-    TEAMS[team]['calculatedData']['agilityZScore'] = (average - AG_MEAN) / AG_SD
-
-# A dictionary of team to their average speed, used to generate zscores.
-SPEEDS = {team : data['calculatedData']['avgSpeed'] for team, data in
-          TEAMS.items()}
-
-SP_MEAN = numpy.mean(list(SPEEDS.values()))
-SP_SD = numpy.std(list(SPEEDS.values()))
-for team, average in SPEEDS.items():
-    TEAMS[team]['calculatedData']['speedZScore'] = (average - SP_MEAN) / SP_SD
+for average_name, zscore_name in SUPER_ZSCORE_DATA_FIELDS.items():
+    calculate_zscores(average_name, zscore_name)
 
 # After the zscores are calculated for all the teams, other calculations
 # that use zscores can be calculated, like driverAbility and
