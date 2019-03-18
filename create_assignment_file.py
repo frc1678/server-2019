@@ -5,6 +5,7 @@ import json
 import string
 import time
 # Internal imports
+import firebase_communicator
 import tba_communicator
 import utils
 
@@ -39,6 +40,7 @@ def create_assignment_file(matches, scout_names):
         'matches': teams_by_match,
         'letters': scout_name_compression_letters,
         'timestamp': time.time(),
+        'databaseURL': firebase_communicator.URL,
     }
 
 
