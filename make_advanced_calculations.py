@@ -14,8 +14,9 @@ def calculate_driver_ability(calculated_data):
     calculated_data is the calculated data for the team being calculated."""
     agile_weight = 0.8
     speed_weight = 0.2
-    return (calculated_data['agilityZScore'] * agile_weight) + \
-           (calculated_data['speedZScore'] * speed_weight)
+    driver_ability = (calculated_data['agilityZScore'] * agile_weight) + \
+                     (calculated_data['speedZScore'] * speed_weight)
+    return driver_ability
 
 def first_pick_ability(calculated_data):
     """Calculates the relative first pick score for a team.
@@ -81,20 +82,20 @@ def second_pick_ability(calculated_data):
 
     return sand_score + level_1_teleop_score + end_game_score
 
-def calculate_zscores(team_average_name, team_zscore_name):
+def calculate_zscores(timd_zscore_field, avg_zscore_field):
     """Calculates the zscore for a team average data point across all teams.
 
-    team_average_name is the name of the team average data field that
+    timd_zscore_field is the name of the team average data field that
     the zscore is taken from.
-    team_zscore_name is the name of the team zscore data field in which
+    avg_zscore_field is the name of the team zscore data field in which
     the calculated zscore is put into."""
-    averages = {team : data['calculatedData'][team_average_name] for
+    averages = {team: data['calculatedData'][timd_zscore_field] for
                 team, data in TEAMS.items()}
 
     mean = numpy.mean(list(averages.values()))
     sd = numpy.std(list(averages.values()))
     for team, average in averages.items():
-        TEAMS[team]['calculatedData'][team_zscore_name] = (average - mean) / sd
+        TEAMS[team]['calculatedData'][avg_zscore_field] = (average - mean) / sd
 
 # Gathers the calculated data from all the teams.
 TEAMS = {}
@@ -102,14 +103,16 @@ for team in os.listdir(utils.create_file_path('data/cache/teams')):
     with open(utils.create_file_path(f'data/cache/teams/{team}')) as file:
         team_data = json.load(file)
         if team_data.get('calculatedData') is not None:
-            # Splits the name of the file in order to get the team number
+            # '.split()' removes '.txt' file ending
             TEAMS[team.split('.')[0]] = team_data
 
-SUPER_ZSCORE_DATA_FIELDS = {'avgAgility': 'agilityZScore',
-                            'avgSpeed': 'speedZScore',}
+SUPER_ZSCORE_DATA_FIELDS = {
+    'agilityZScore': 'avgAgility',
+    'speedZScore': 'avgSpeed',
+    }
 
 # A dictionary of team to their average agility, used to generate zscores.
-for average_name, zscore_name in SUPER_ZSCORE_DATA_FIELDS.items():
+for zscore_name, average_name in SUPER_ZSCORE_DATA_FIELDS.items():
     calculate_zscores(average_name, zscore_name)
 
 # After the zscores are calculated for all the teams, other calculations
@@ -125,7 +128,7 @@ for team in TEAMS.keys():
 
 # After all the teams have been calculated, they can be put back in the cache.
 for team, data in TEAMS.items():
-    with open(utils.create_file_path(f'data/cache/teams/{team}.json'), 'w') as team_file:
-        json.dump(data, team_file)
-    with open(utils.create_file_path(f'data/upload_queue/teams/{team}.json'), 'w') as team_file:
-        json.dump(data, team_file)
+    with open(utils.create_file_path(f'data/cache/teams/{team}.json'), 'w') as file:
+        json.dump(data, file)
+    with open(utils.create_file_path(f'data/upload_queue/teams/{team}.json'), 'w') as file:
+        json.dump(data, file)
