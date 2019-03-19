@@ -109,7 +109,7 @@ for team in os.listdir(utils.create_file_path('data/cache/teams')):
 SUPER_ZSCORE_DATA_FIELDS = {
     'agilityZScore': 'avgAgility',
     'speedZScore': 'avgSpeed',
-    }
+}
 
 # A dictionary of team to their average agility, used to generate zscores.
 for zscore_name, average_name in SUPER_ZSCORE_DATA_FIELDS.items():
