@@ -14,8 +14,8 @@ def calculate_driver_ability(calculated_data):
     calculated_data is the calculated data for the team being calculated."""
     agile_weight = 0.8
     speed_weight = 0.2
-    driver_ability = (calculated_data['agilityZScore'] * agile_weight) + \
-                     (calculated_data['speedZScore'] * speed_weight)
+    driver_ability = calculated_data['agilityZScore'] * agile_weight + \
+                     calculated_data['speedZScore'] * speed_weight
     return driver_ability
 
 def first_pick_ability(calculated_data):
@@ -109,7 +109,7 @@ for team in os.listdir(utils.create_file_path('data/cache/teams')):
 SUPER_ZSCORE_DATA_FIELDS = {
     'agilityZScore': 'avgAgility',
     'speedZScore': 'avgSpeed',
-    }
+}
 
 # A dictionary of team to their average agility, used to generate zscores.
 for zscore_name, average_name in SUPER_ZSCORE_DATA_FIELDS.items():
