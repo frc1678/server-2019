@@ -89,7 +89,7 @@ def calculate_zscores(timd_zscore_field, avg_zscore_field):
     the zscore is taken from.
     avg_zscore_field is the name of the team zscore data field in which
     the calculated zscore is put into."""
-    averages = {team : data['calculatedData'][timd_zscore_field] for
+    averages = {team: data['calculatedData'][timd_zscore_field] for
                 team, data in TEAMS.items()}
 
     mean = numpy.mean(list(averages.values()))
