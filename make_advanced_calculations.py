@@ -107,12 +107,12 @@ for team in os.listdir(utils.create_file_path('data/cache/teams')):
             TEAMS[team.split('.')[0]] = team_data
 
 SUPER_ZSCORE_DATA_FIELDS = {
-    'avgAgility': 'agilityZScore',
-    'avgSpeed': 'speedZScore',
+    'agilityZScore': 'avgAgility',
+    'speedZScore': 'avgSpeed',
     }
 
 # A dictionary of team to their average agility, used to generate zscores.
-for average_name, zscore_name in SUPER_ZSCORE_DATA_FIELDS.items():
+for zscore_name, average_name in SUPER_ZSCORE_DATA_FIELDS.items():
     calculate_zscores(average_name, zscore_name)
 
 # After the zscores are calculated for all the teams, other calculations
