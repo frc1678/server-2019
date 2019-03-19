@@ -664,6 +664,14 @@ def team_calculations(timds, team_number):
     calculated_data['avgSpeed'] = avg([
         timd.get('rankSpeed') for timd in timds])
 
+    defense_ranks = [timd.get('rankDefense') for timd in timds if timd.get('rankDefense') is not None]
+    calculated_data['avgDefenseKnocking'] = avg([
+        defense['knocking'] for defense in defense_ranks])
+    calculated_data['avgDefenseDocking'] = avg([
+        defense['docking'] for defense in defense_ranks])
+    calculated_data['avgDefensePathBlocking'] = avg([
+        defense['pathBlocking'] for defense in defense_ranks])
+
     # Percent of matches of incap, no-show, or dysfunctional
     matches_incap = [True if timd['calculatedData']['timeIncap'] > 0.0
                      else False for timd in timds]
@@ -814,6 +822,11 @@ def team_calculations(timds, team_number):
             calculate_avg_cycle_time(filter_cycles(lfm_cycle_list, \
             filters_))
 
+    # 'lastMatch' is the team's last match when team data is calculated.
+    # Used in the viewer to display when a team's data was last updated.
+    if timds != []:
+        calculated_data['lastMatch'] = max([timd['matchNumber'] for timd in timds])
+
     return calculated_data
 
 # Check to ensure Team number is being passed as an argument
@@ -832,10 +845,10 @@ for timd in os.listdir(utils.create_file_path('data/cache/timds')):
         with open(utils.create_file_path(
                 f'data/cache/timds/{timd}')) as timd_file:
             timd_data = json.load(timd_file)
-            # If there is no calculatedData in the timd, it hasn't been
-            # calculated yet, so it shouldn't be used in calculations.
-            if timd_data.get('calculatedData') is not None:
-                TIMDS.append(timd_data)
+        # If there is no calculatedData in the timd, it hasn't been
+        # calculated yet, so it shouldn't be used in calculations.
+        if timd_data.get('calculatedData') is not None:
+            TIMDS.append(timd_data)
 
 FINAL_TEAM_DATA = {'calculatedData': team_calculations(TIMDS, TEAM_NUMBER)}
 

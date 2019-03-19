@@ -70,6 +70,10 @@ for match_key in MATCH_KEYS:
             'red': match['alliances']['red']['team_keys'],
             'blue': match['alliances']['blue']['team_keys'],
         }
+        # Skip the match if a score_breakdown is not available (meaning
+        # the match hasn't been played yet)
+        if match.get('score_breakdown') is None:
+            continue
         for alliance in teams_by_alliance:
             alliance_score_breakdown = match['score_breakdown'][alliance]
             # Removes preceding 'frc' and casts to int
@@ -84,8 +88,16 @@ for match_key in MATCH_KEYS:
             for driver_station, team_number in enumerate(teams, 1):
                 starting_level = alliance_score_breakdown[
                     f'preMatchLevelRobot{driver_station}']
+                # Decompresses 'starting_level'
+                decompression = {
+                    'HabLevel1': 1,
+                    'HabLevel2': 2,
+                    'None': None,
+                    'Unknown': None,
+                }
+                starting_level = decompression[starting_level]
                 # Checks if team is a no-show
-                if starting_level == 'None':
+                if starting_level is None:
                     no_show_teams.append(team_number)
                     is_no_show = True
                     # 'hab_line_crossed' cannot exist if the team is a no-show.
