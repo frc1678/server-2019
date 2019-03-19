@@ -128,7 +128,7 @@ for team in TEAMS.keys():
 
 # After all the teams have been calculated, they can be put back in the cache.
 for team, data in TEAMS.items():
-    with open(utils.create_file_path(f'data/cache/teams/{team}.json'), 'w') as team_file:
-        json.dump(data, team_file)
-    with open(utils.create_file_path(f'data/upload_queue/teams/{team}.json'), 'w') as team_file:
-        json.dump(data, team_file)
+    with open(utils.create_file_path(f'data/cache/teams/{team}.json'), 'w') as file:
+        json.dump(data, file)
+    with open(utils.create_file_path(f'data/upload_queue/teams/{team}.json'), 'w') as file:
+        json.dump(data, file)
