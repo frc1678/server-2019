@@ -82,20 +82,20 @@ def second_pick_ability(calculated_data):
 
     return sand_score + level_1_teleop_score + end_game_score
 
-def calculate_zscores(team_average_name, team_zscore_name):
+def calculate_zscores(timd_zscore_field, avg_zscore_field):
     """Calculates the zscore for a team average data point across all teams.
 
-    team_average_name is the name of the team average data field that
+    timd_zscore_field is the name of the team average data field that
     the zscore is taken from.
-    team_zscore_name is the name of the team zscore data field in which
+    avg_zscore_field is the name of the team zscore data field in which
     the calculated zscore is put into."""
-    averages = {team : data['calculatedData'][team_average_name] for
+    averages = {team : data['calculatedData'][timd_zscore_field] for
                 team, data in TEAMS.items()}
 
     mean = numpy.mean(list(averages.values()))
     sd = numpy.std(list(averages.values()))
     for team, average in averages.items():
-        TEAMS[team]['calculatedData'][team_zscore_name] = (average - mean) / sd
+        TEAMS[team]['calculatedData'][avg_zscore_field] = (average - mean) / sd
 
 # Gathers the calculated data from all the teams.
 TEAMS = {}
