@@ -643,22 +643,25 @@ def team_calculations(timds, team_number):
     # Calculates average defense fields similar to average data fields,
     # with the exception of only taking into account matches where the
     # team played defense.
-    calculated_data['avgCyclesDefended'] = avg([timd[
-        'calculatedData'].get('totalCyclesDefended') for timd in timds \
-        if timd['calculatedData'].get('timeDefending', 0.0) > 0.0])
-    calculated_data['avgTimeDefending'] = avg([timd[
-        'calculatedData'].get('timeDefending') for timd in timds \
-        if timd['calculatedData'].get('timeDefending', 0.0) > 0.0])
+    defending_timds = []
+    for timd in timds:
+        if timd['calculatedData'].get('timeDefending', 0.0) > 0.0:
+            defending_timds.append(timd)
 
-    # Other miscellaneous defense data points
-    calculated_data['matchesDefended'] = len([timd for timd in timds \
-        if timd['calculatedData'].get('timeDefending', 0.0) > 0.0])
+    calculated_data['avgCyclesDefended'] = avg([timd[
+        'calculatedData'].get('totalCyclesDefended') for timd in \
+        defending_timds])
+    calculated_data['avgTimeDefending'] = avg([timd[
+        'calculatedData'].get('timeDefending') for timd in \
+        defending_timds])
+    calculated_data['matchesDefended'] = len([timd for timd in \
+        defending_timds])
     calculated_data['totalTimeDefending'] = sum([timd[
-        'calculatedData'].get('timeDefending') for timd in timds \
-        if timd['calculatedData'].get('timeDefending', 0.0) > 0.0])
+        'calculatedData'].get('timeDefending') for timd in \
+        defending_timds])
     calculated_data['cyclesDefended'] = sum([timd[
-        'calculatedData'].get('totalCyclesDefended') for timd in timds \
-        if timd['calculatedData'].get('timeDefending', 0.0) > 0.0])
+        'calculatedData'].get('totalCyclesDefended') for timd in \
+        defending_timds])
     calculated_data['cyclesDefendedPerSecond'] = calculated_data[
         'cyclesDefended'] / calculated_data['totalTimeDefending']
 
