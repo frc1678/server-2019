@@ -29,6 +29,12 @@ AVERAGE_DATA_FIELDS = {
     'avgLemonsScoredTeleL1': 'lemonsScoredTeleL1',
     'avgLemonsScoredTeleL2': 'lemonsScoredTeleL2',
     'avgLemonsScoredTeleL3': 'lemonsScoredTeleL3',
+    'avgOrangesScoredL1': 'orangesScoredL1',
+    'avgOrangesScoredL2': 'orangesScoredL2',
+    'avgOrangesScoredL3': 'orangesScoredL3',
+    'avgLemonsScoredL1': 'lemonsScoredL1',
+    'avgLemonsScoredL2': 'lemonsScoredL2',
+    'avgLemonsScoredL3': 'lemonsScoredL3',
     'avgTimeIncap': 'timeIncap',
     'avgTimeClimbing': 'timeClimbing',
 }
@@ -352,20 +358,6 @@ LFM_CYCLE_DATA_FIELDS = {
     },
 }
 
-def first_pick_ability(calculated_data):
-    """Calculates the relative first pick score for a team.
-
-    calculated_data is the dictionary of data calculated for a team."""
-    #TODO: Implement first pick calculations once strategy decides
-    return 0.0
-
-def second_pick_ability(calculated_data):
-    """Calculates the relative second pick score for a team.
-
-    calculated_data is the dictionary of data calculated for a team."""
-    #TODO: Implement second pick calculations once strategy decides
-    return 0.0
-
 def calculate_avg_cycle_time(cycles):
     """Calculates the average time for an action based on start and end times.
 
@@ -580,6 +572,23 @@ def filter_cycles(cycle_list, filters):
             filtered_cycles.append(cycle)
     return filtered_cycles
 
+def climb_success_rate(timds, level):
+    """Calculates the success rate for climbs of a specific level.
+
+    timds are the timds for a team.
+    level is the level of climb being calculated."""
+    climbs = filter_timeline_actions(timds, {'type': 'climb'})
+    attempts = 0
+    successes = 0
+    for climb in climbs:
+        if climb['attempted']['self'] == level:
+            attempts += 1
+        if climb['actual']['self'] == level:
+            successes += 1
+    if attempts == 0:
+        return 0
+    return round(100 * successes / attempts)
+
 def make_paired_cycle_list(cycle_list):
     """Pairs up cycles together into tuples of intakes and outakes.
 
@@ -592,7 +601,7 @@ def make_paired_cycle_list(cycle_list):
     # matching-index items from two lists into tuples.
     return list(zip(cycle_list[::2], cycle_list[1::2]))
 
-def team_calculations(timds):
+def team_calculations(timds, team_number):
     """Calculates all the calculated data for one team.
 
     Uses a team's timds to make many calculations and return them in a
@@ -650,6 +659,10 @@ def team_calculations(timds):
         timd.get('numGoodDecisions') for timd in timds])
     calculated_data['avgBadDecisions'] = avg([
         timd.get('numBadDecisions') for timd in timds])
+    calculated_data['avgAgility'] = avg([
+        timd.get('rankAgility') for timd in timds])
+    calculated_data['avgSpeed'] = avg([
+        timd.get('rankSpeed') for timd in timds])
 
     defense_ranks = [timd.get('rankDefense') for timd in timds if timd.get('rankDefense') is not None]
     calculated_data['avgDefenseKnocking'] = avg([
@@ -693,6 +706,10 @@ def team_calculations(timds):
     calculated_data['lfmHabLineSuccessL2'] = round(100 * avg([
         timd['crossedHabLine'] for timd in lfm_timds if
         timd.get('startingLevel') == 2]))
+
+    calculated_data['climbSuccessL1'] = climb_success_rate(timds, 1)
+    calculated_data['climbSuccessL2'] = climb_success_rate(timds, 2)
+    calculated_data['climbSuccessL3'] = climb_success_rate(timds, 3)
 
     calculated_data['lfmAvgGoodDecisions'] = avg([
         timd.get('numGoodDecisions') for timd in lfm_timds])
@@ -810,14 +827,6 @@ def team_calculations(timds):
     if timds != []:
         calculated_data['lastMatch'] = max([timd['matchNumber'] for timd in timds])
 
-    # Calculates the first and second pick ability for the team based on
-    # their previous calculated data. To see how these are calculated,
-    # look at the weights in each of their respective functions.
-    calculated_data['firstPickAbility'] = \
-        first_pick_ability(calculated_data)
-    calculated_data['secondPickAbility'] = \
-        second_pick_ability(calculated_data)
-
     return calculated_data
 
 # Check to ensure Team number is being passed as an argument
@@ -841,7 +850,7 @@ for timd in os.listdir(utils.create_file_path('data/cache/timds')):
         if timd_data.get('calculatedData') is not None:
             TIMDS.append(timd_data)
 
-FINAL_TEAM_DATA = {'calculatedData': team_calculations(TIMDS)}
+FINAL_TEAM_DATA = {'calculatedData': team_calculations(TIMDS, TEAM_NUMBER)}
 
 # Save data in local cache
 with open(utils.create_file_path(
