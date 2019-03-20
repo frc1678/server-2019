@@ -230,6 +230,10 @@ def calculate_timd_data(timd):
         filter_timeline_actions(timd, type='placement', piece='lemon', \
         level=3, didSucceed=True))
 
+    calculated_data['totalCyclesDefended'] = sum([
+        action['cyclesDefended'] for action in
+        filter_timeline_actions(timd, type='endDefense')])
+
     # The next set of calculated data points are the success
     # percentages, these are the percentages (displayed as an integer)
     # of didSucceed for certain actions, such as the percentage of
