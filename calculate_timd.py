@@ -360,6 +360,22 @@ def calculate_timd_data(timd):
         # Otherwise, the time that the robot spent incap is naturally 0.
         calculated_data['timeIncap'] = 0.0
 
+    # Creates a list of all the startDefense and endDefense actions in
+    # the timeline.
+    defense_items = []
+    for action in timd.get('timeline', []):
+        if action.get('type') in ['startDefense', 'endDefense']:
+            defense_items.append(action)
+    if len(defense_items) > 0:
+        paired_defense_list = make_paired_cycle_list(defense_items)
+
+        # Calculates the timeDefending by calculating the total amount
+        # of time the robot spent defending during the match.
+        calculated_data['timeDefending'] = calculate_total_incap_time(
+            paired_defense_list)
+    else:
+        # Otherwise, the time that the robot spent defending is naturally 0.
+        calculated_data['timeDefending'] = 0.0
     return calculated_data
 
 # Check to ensure TIMD name is being passed as an argument
