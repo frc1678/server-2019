@@ -115,7 +115,7 @@ SUPER_ZSCORE_DATA_FIELDS = {
     'speedZScore': 'avgSpeed',
 }
 
-# A dictionary of team to their average agility, used to generate zscores.
+# Calculates zscores for teams based on data fields in 'SUPER_ZSCORE_DATA_FIELDS'
 for zscore_name, average_name in SUPER_ZSCORE_DATA_FIELDS.items():
     calculate_zscores(average_name, zscore_name)
 
