@@ -28,6 +28,7 @@ def calculate_first_pick_ability(calculated_data):
     level_1_weight = 0.9
     level_2_weight = 1.1
     level_3_weight = 1.1
+    sandstorm_weight = 1.0
     climbing_weight = 0.2
 
     # Scores for points scored on level 1, 2, and 3.
@@ -43,6 +44,7 @@ def calculate_first_pick_ability(calculated_data):
                       float(calculated_data['habLineSuccessL2']) * 6 / 100])
     sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
     sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
+    sand_score *= sandstorm_weight
 
     # Scores for points scored in the endgame.
     end_game_score = max([3 * float(calculated_data['climbSuccessL1']) / 100,
@@ -63,12 +65,14 @@ def calculate_second_pick_ability(calculated_data):
     climbing_weight = .1
     oranges_weight = 1
     lemons_weight = 1
+    sandstorm_weight = 1.0
 
     # Scores for points gained during sandstorm.
     sand_score = max([float(calculated_data['habLineSuccessL1']) * 3 / 100,
                       float(calculated_data['habLineSuccessL2']) * 6 / 100])
     sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
     sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
+    sand_score *= sandstorm_weight
 
     # Scores for points scored on level 1.
     level_1_teleop_score = calculated_data['avgLemonsScoredTeleL1'] * 2 * lemons_weight
