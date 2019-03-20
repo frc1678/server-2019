@@ -12,13 +12,13 @@ def calculate_driver_ability(calculated_data):
     """Calculates the relative driver ability for a team using driver zscores.
 
     calculated_data is the calculated data for the team being calculated."""
-    agile_weight = 0.8
+    agility_weight = 0.8
     speed_weight = 0.2
-    driver_ability = calculated_data['agilityZScore'] * agile_weight + \
+    driver_ability = calculated_data['agilityZScore'] * agility_weight + \
                      calculated_data['speedZScore'] * speed_weight
     return driver_ability
 
-def first_pick_ability(calculated_data):
+def calculate_first_pick_ability(calculated_data):
     """Calculates the relative first pick score for a team.
 
     calculated_data is the dictionary of calculated_data calculated for
@@ -28,6 +28,7 @@ def first_pick_ability(calculated_data):
     level_1_weight = 0.9
     level_2_weight = 1.1
     level_3_weight = 1.1
+    sandstorm_weight = 1.0
     climbing_weight = 0.2
 
     # Scores for points scored on level 1, 2, and 3.
@@ -43,6 +44,7 @@ def first_pick_ability(calculated_data):
                       float(calculated_data['habLineSuccessL2']) * 6 / 100])
     sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
     sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
+    sand_score *= sandstorm_weight
 
     # Scores for points scored in the endgame.
     end_game_score = max([3 * float(calculated_data['climbSuccessL1']) / 100,
@@ -51,9 +53,9 @@ def first_pick_ability(calculated_data):
     end_game_score *= climbing_weight
 
     # Adds all the previous scores together to get a full first pick score.
-    return sand_score + end_game_score + level_1_teleop_score + level_2_teleop_score + level_3_teleop_score
+    return sand_score + level_1_teleop_score + level_2_teleop_score + level_3_teleop_score + end_game_score
 
-def second_pick_ability(calculated_data):
+def calculate_second_pick_ability(calculated_data):
     """Calculates the relative second pick score for a team.
 
     calculated_data is the dictionary of calculated_data calculated for
@@ -63,12 +65,14 @@ def second_pick_ability(calculated_data):
     climbing_weight = .1
     oranges_weight = 1
     lemons_weight = 1
+    sandstorm_weight = 1.0
 
     # Scores for points gained during sandstorm.
     sand_score = max([float(calculated_data['habLineSuccessL1']) * 3 / 100,
                       float(calculated_data['habLineSuccessL2']) * 6 / 100])
     sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
     sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
+    sand_score *= sandstorm_weight
 
     # Scores for points scored on level 1.
     level_1_teleop_score = calculated_data['avgLemonsScoredTeleL1'] * 2 * lemons_weight
@@ -82,29 +86,29 @@ def second_pick_ability(calculated_data):
 
     return sand_score + level_1_teleop_score + end_game_score
 
-def calculate_zscores(timd_zscore_field, avg_zscore_field):
+def calculate_zscores(team_average_field, team_zscore_field):
     """Calculates the zscore for a team average data point across all teams.
 
-    timd_zscore_field is the name of the team average data field that
+    team_average_field is the name of the team average data field that
     the zscore is taken from.
-    avg_zscore_field is the name of the team zscore data field in which
+    team_zscore_field is the name of the team zscore data field in which
     the calculated zscore is put into."""
-    averages = {team: data['calculatedData'][timd_zscore_field] for
+    averages = {team: data['calculatedData'][team_average_field] for
                 team, data in TEAMS.items()}
 
     mean = numpy.mean(list(averages.values()))
     sd = numpy.std(list(averages.values()))
     for team, average in averages.items():
-        TEAMS[team]['calculatedData'][avg_zscore_field] = (average - mean) / sd
+        TEAMS[team]['calculatedData'][team_zscore_field] = (average - mean) / sd
 
 # Gathers the calculated data from all the teams.
 TEAMS = {}
 for team in os.listdir(utils.create_file_path('data/cache/teams')):
     with open(utils.create_file_path(f'data/cache/teams/{team}')) as file:
         team_data = json.load(file)
-        if team_data.get('calculatedData') is not None:
-            # '.split()' removes '.txt' file ending
-            TEAMS[team.split('.')[0]] = team_data
+    if team_data.get('calculatedData') is not None:
+        # '.split()' removes '.txt' file ending
+        TEAMS[team.split('.')[0]] = team_data
 
 SUPER_ZSCORE_DATA_FIELDS = {
     'agilityZScore': 'avgAgility',
@@ -122,11 +126,13 @@ for team in TEAMS.keys():
     TEAMS[team]['calculatedData']['driverAbility'] = \
         calculate_driver_ability(TEAMS[team]['calculatedData'])
     TEAMS[team]['calculatedData']['firstPickAbility'] = \
-        first_pick_ability(TEAMS[team]['calculatedData'])
+        calculate_first_pick_ability(TEAMS[team]['calculatedData'])
     TEAMS[team]['calculatedData']['secondPickAbility'] = \
-        second_pick_ability(TEAMS[team]['calculatedData'])
+        calculate_second_pick_ability(TEAMS[team]['calculatedData'])
 
-# After all the teams have been calculated, they can be put back in the cache.
+# After all the teams have been calculated, they can be put in the cache.
+# In order to upload all the calculated data, the data is also sent to
+# the upload queue for sending to firebase.
 for team, data in TEAMS.items():
     with open(utils.create_file_path(f'data/cache/teams/{team}.json'), 'w') as file:
         json.dump(data, file)
