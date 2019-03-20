@@ -63,6 +63,11 @@ while True:
         break
     time.sleep(3)
 
+# Removes empty TIMDs
+for timd in TIMD_DATA.keys():
+    if TIMD_DATA[timd].get('calculatedData') is None:
+        TIMD_DATA.pop(timd)
+
 if TIMD_DATA is None:
     print('Warning: TIMD data does not exist on Firebase')
 else:
