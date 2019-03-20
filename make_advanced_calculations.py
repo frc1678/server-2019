@@ -18,7 +18,7 @@ def calculate_driver_ability(calculated_data):
                      calculated_data['speedZScore'] * speed_weight
     return driver_ability
 
-def first_pick_ability(calculated_data):
+def calculate_first_pick_ability(calculated_data):
     """Calculates the relative first pick score for a team.
 
     calculated_data is the dictionary of calculated_data calculated for
@@ -53,7 +53,7 @@ def first_pick_ability(calculated_data):
     # Adds all the previous scores together to get a full first pick score.
     return sand_score + end_game_score + level_1_teleop_score + level_2_teleop_score + level_3_teleop_score
 
-def second_pick_ability(calculated_data):
+def calculate_second_pick_ability(calculated_data):
     """Calculates the relative second pick score for a team.
 
     calculated_data is the dictionary of calculated_data calculated for
@@ -122,9 +122,9 @@ for team in TEAMS.keys():
     TEAMS[team]['calculatedData']['driverAbility'] = \
         calculate_driver_ability(TEAMS[team]['calculatedData'])
     TEAMS[team]['calculatedData']['firstPickAbility'] = \
-        first_pick_ability(TEAMS[team]['calculatedData'])
+        calculate_first_pick_ability(TEAMS[team]['calculatedData'])
     TEAMS[team]['calculatedData']['secondPickAbility'] = \
-        second_pick_ability(TEAMS[team]['calculatedData'])
+        calculate_second_pick_ability(TEAMS[team]['calculatedData'])
 
 # After all the teams have been calculated, they can be put back in the cache.
 for team, data in TEAMS.items():
