@@ -640,6 +640,28 @@ def team_calculations(timds, team_number):
         calculated_data[average_data_field] = avg([timd[
             'calculatedData'].get(timd_data_field) for timd in timds])
 
+    # Calculates average defense fields similar to average data fields,
+    # with the exception of only taking into account matches where the
+    # team played defense.
+    calculated_data['avgCyclesDefended'] = avg([timd[
+        'calculatedData'].get('totalCyclesDefended') for timd in timds \
+        if timd['calculatedData'].get('timeDefending', 0.0) > 0.0])
+    calculated_data['avgTimeDefending'] = avg([timd[
+        'calculatedData'].get('timeDefending') for timd in timds \
+        if timd['calculatedData'].get('timeDefending', 0.0) > 0.0])
+
+    # Other miscellaneous defense data points
+    calculated_data['matchesDefended'] = len([timd for timd in timds \
+        if timd['calculatedData'].get('timeDefending', 0.0) > 0.0])
+    calculated_data['totalTimeDefending'] = sum([timd[
+        'calculatedData'].get('timeDefending') for timd in timds \
+        if timd['calculatedData'].get('timeDefending', 0.0) > 0.0])
+    calculated_data['cyclesDefended'] = sum([timd[
+        'calculatedData'].get('totalCyclesDefended') for timd in timds \
+        if timd['calculatedData'].get('timeDefending', 0.0) > 0.0])
+    calculated_data['cyclesDefendedPerSecond'] = calculated_data[
+        'cyclesDefended'] / calculated_data['totalTimeDefending']
+
     # Calculations for percent successes for different actions using the
     # SUCCESS_DATA_FIELDS dictionary.
     for success_data_field, filters_ in SUCCESS_DATA_FIELDS.items():
@@ -663,6 +685,8 @@ def team_calculations(timds, team_number):
         timd.get('rankAgility') for timd in timds])
     calculated_data['avgSpeed'] = avg([
         timd.get('rankSpeed') for timd in timds])
+    calculated_data['avgRankDefense'] = avg([
+        timd.get('rankDefense') for timd in timds])
 
     # Percent of matches of incap, no-show, or dysfunctional
     matches_incap = [True if timd['calculatedData']['timeIncap'] > 0.0
