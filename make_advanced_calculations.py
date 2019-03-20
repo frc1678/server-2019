@@ -51,7 +51,7 @@ def calculate_first_pick_ability(calculated_data):
     end_game_score *= climbing_weight
 
     # Adds all the previous scores together to get a full first pick score.
-    return sand_score + end_game_score + level_1_teleop_score + level_2_teleop_score + level_3_teleop_score
+    return sand_score + level_1_teleop_score + level_2_teleop_score + level_3_teleop_score + end_game_score
 
 def calculate_second_pick_ability(calculated_data):
     """Calculates the relative second pick score for a team.
