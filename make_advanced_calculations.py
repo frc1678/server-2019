@@ -130,7 +130,9 @@ for team in TEAMS.keys():
     TEAMS[team]['calculatedData']['secondPickAbility'] = \
         calculate_second_pick_ability(TEAMS[team]['calculatedData'])
 
-# After all the teams have been calculated, they can be put back in the cache.
+# After all the teams have been calculated, they can be put in the cache.
+# In order to upload all the calculated data, the data is also sent to
+# the upload queue for sending to firebase.
 for team, data in TEAMS.items():
     with open(utils.create_file_path(f'data/cache/teams/{team}.json'), 'w') as file:
         json.dump(data, file)
