@@ -664,14 +664,6 @@ def team_calculations(timds, team_number):
     calculated_data['avgSpeed'] = avg([
         timd.get('rankSpeed') for timd in timds])
 
-    defense_ranks = [timd.get('rankDefense') for timd in timds if timd.get('rankDefense') is not None]
-    calculated_data['avgDefenseKnocking'] = avg([
-        defense['knocking'] for defense in defense_ranks])
-    calculated_data['avgDefenseDocking'] = avg([
-        defense['docking'] for defense in defense_ranks])
-    calculated_data['avgDefensePathBlocking'] = avg([
-        defense['pathBlocking'] for defense in defense_ranks])
-
     # Percent of matches of incap, no-show, or dysfunctional
     matches_incap = [True if timd['calculatedData']['timeIncap'] > 0.0
                      else False for timd in timds]
