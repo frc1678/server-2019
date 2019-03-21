@@ -364,7 +364,7 @@ def calculate_timd_data(timd):
     # the timeline.
     defense_items = []
     for action in timd.get('timeline', []):
-        if action.get('type') in ['startDefense', 'endDefense']:
+        if action['type'] in ['startDefense', 'endDefense']:
             defense_items.append(action)
     if len(defense_items) > 0:
         paired_defense_list = make_paired_cycle_list(defense_items)
