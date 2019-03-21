@@ -6,6 +6,7 @@ These issues are often caused by misunderstanding or actions that have
 an ambiguous input.  With SPRs, these questions can be cleared up during
 scout training and competition to decrease errors in the future."""
 # External imports
+import csv
 import json
 import os
 # Internal imports
@@ -110,3 +111,18 @@ for scout_name, scout_breakdown in SPRS.items():
 # Saves SPRS
 with open(utils.create_file_path('data/sprs/sprs.json'), 'w') as file:
     json.dump(SPRS, file)
+
+# Exports SPRS to CSV file
+SPR_KEYS = ['scoutName', 'overall', 'matchesScouted']
+with open(utils.create_file_path(f'data/sprs/sprs.csv'),
+          'w') as file:
+    CSV_WRITER = csv.DictWriter(file, fieldnames=SPR_KEYS)
+    CSV_WRITER.writeheader()
+    for scout, breakdown in SPRS.items():
+        scout_breakdown = {}
+        for key in SPR_KEYS:
+            if key == 'scoutName':
+                scout_breakdown[key] = scout
+            else:
+                scout_breakdown[key] = breakdown[key]
+        CSV_WRITER.writerow(scout_breakdown)
