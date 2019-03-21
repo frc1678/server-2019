@@ -645,22 +645,22 @@ def team_calculations(timds, team_number):
     # team played defense.
     defending_timds = []
     for timd in timds:
-        if timd['calculatedData'].get('timeDefending', 0.0) > 0.0:
+        if timd['calculatedData']['timeDefending'] > 0.0:
             defending_timds.append(timd)
 
     calculated_data['avgCyclesDefended'] = avg([timd[
-        'calculatedData'].get('totalCyclesDefended') for timd in \
+        'calculatedData']['totalCyclesDefended'] for timd in \
         defending_timds])
     calculated_data['avgTimeDefending'] = avg([timd[
-        'calculatedData'].get('timeDefending') for timd in \
+        'calculatedData']['timeDefending'] for timd in \
         defending_timds])
     calculated_data['matchesDefended'] = len([timd for timd in \
         defending_timds])
     calculated_data['totalTimeDefending'] = sum([timd[
-        'calculatedData'].get('timeDefending') for timd in \
+        'calculatedData']['timeDefending'] for timd in \
         defending_timds])
     calculated_data['cyclesDefended'] = sum([timd[
-        'calculatedData'].get('totalCyclesDefended') for timd in \
+        'calculatedData']['totalCyclesDefended'] for timd in \
         defending_timds])
     calculated_data['cyclesDefendedPerSecond'] = calculated_data[
         'cyclesDefended'] / calculated_data['totalTimeDefending']
