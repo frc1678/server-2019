@@ -55,17 +55,22 @@ def calculate_first_pick_ability(calculated_data):
     # Adds all the previous scores together to get a full first pick score.
     return sand_score + level_1_teleop_score + level_2_teleop_score + level_3_teleop_score + end_game_score
 
-def calculate_second_pick_ability(calculated_data):
+def calculate_second_pick_ability(calculated_data, max_da, min_da):
     """Calculates the relative second pick score for a team.
 
     calculated_data is the dictionary of calculated_data calculated for
-    a team."""
+    a team.
+    max_da is the maximum driver ability in the competition, this is
+    used to weight driver ability.
+    min_da is the minimum driver ability in the competition, this is
+    used to weight driver ability."""
     # Weights for how much each aspect of the robot is considered for a
     # second pick.
     climbing_weight = .1
     oranges_weight = 1
     lemons_weight = 1
     sandstorm_weight = 1.0
+    driving_weight = 10.0
 
     # Scores for points gained during sandstorm.
     sand_score = max([float(calculated_data['habLineSuccessL1']) * 3 / 100,
@@ -84,7 +89,18 @@ def calculate_second_pick_ability(calculated_data):
                           12 * float(calculated_data['climbSuccessL3']) / 100])
     end_game_score *= climbing_weight
 
-    return sand_score + level_1_teleop_score + end_game_score
+    # If the max_da is 0.0, all the zscores are equal and there is no
+    # point to weighting it.
+    if max_da == 0.0:
+        driver_ability = 0.0
+    else:
+        # Otherwise, takes the previously calculated driverAbility and
+        # weights it into the pick ability. Scales all driverAbilities
+        # between 0 and 'driving_weight'.
+        driver_ability = driving_weight * \
+            (calculated_data['driverAbility'] - min_da)/(max_da - min_da)
+
+    return sand_score + level_1_teleop_score + end_game_score + driver_ability
 
 def calculate_zscores(team_average_field, team_zscore_field):
     """Calculates the zscore for a team average data point across all teams.
@@ -127,10 +143,19 @@ for zscore_name, average_name in SUPER_ZSCORE_DATA_FIELDS.items():
 for team in TEAMS.keys():
     TEAMS[team]['calculatedData']['driverAbility'] = \
         calculate_driver_ability(TEAMS[team]['calculatedData'])
+
+# Calculates the highest and lowest driverAbility for any team and uses
+# it to weigh all other driverAbilities in secondPickAbility.
+MAX_DA = max([team['calculatedData']['driverAbility'] for team in
+              TEAMS.keys()])
+MIN_DA = min([team['calculatedData']['driverAbility'] for team in
+              TEAMS.keys()])
+for team in TEAMS.keys():
     TEAMS[team]['calculatedData']['firstPickAbility'] = \
         calculate_first_pick_ability(TEAMS[team]['calculatedData'])
     TEAMS[team]['calculatedData']['secondPickAbility'] = \
-        calculate_second_pick_ability(TEAMS[team]['calculatedData'])
+        calculate_second_pick_ability(TEAMS[team]['calculatedData'],
+                                      MAX_DA, MIN_DA)
 
 # Sends data to 'cache' and 'upload_queue'
 for team, data in TEAMS.items():
