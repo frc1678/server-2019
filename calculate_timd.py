@@ -100,8 +100,9 @@ def calculate_total_action_duration(cycles):
     """Calculates the total duration for an action based on start and end times.
 
     Finds the time difference between each action pair passed and
-    returns the sum of the differences. This function is used for both
-    defense and incap cycles.
+    returns the sum of the differences. Used for both defense and incap
+    cycles.
+
     cycles is a list of tuples where both the first action is a starting
     action and the second action is an ending action."""
     cycle_times = []
