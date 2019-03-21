@@ -687,8 +687,17 @@ def team_calculations(timds, team_number):
         timd.get('rankAgility') for timd in timds])
     calculated_data['avgSpeed'] = avg([
         timd.get('rankSpeed') for timd in timds])
+
+    # When calculating the super average for defense, takes out the
+    # matches when they didn't play defense (matches where rankDefense
+    # is 0).
+    defending_matches = []
+    for timd in timds:
+        if timd.get('rankDefense') != 0:
+            defending_matches.append(timd)
+
     calculated_data['avgRankDefense'] = avg([
-        timd.get('rankDefense') for timd in timds])
+        timd.get('rankDefense') for timd in defending_timds])
 
     # Percent of matches of incap, no-show, or dysfunctional
     matches_incap = [True if timd['calculatedData']['timeIncap'] > 0.0
