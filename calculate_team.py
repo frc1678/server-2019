@@ -585,8 +585,10 @@ def climb_success_rate(timds, level, string=False):
     for climb in climbs:
         if climb['attempted']['self'] == level:
             attempts += 1
-        if climb['actual']['self'] == level:
-            successes += 1
+            # 'actual' must match the 'attempt' for a climb to be
+            # counted as a success
+            if climb['actual']['self'] == level:
+                successes += 1
     if string is True:
         if attempts == 0:
             return '0 / 0'
