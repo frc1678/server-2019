@@ -656,9 +656,9 @@ def team_calculations(timds, team_number):
     # Lists of boolean success values for each hab starting level used
     # for calculating level specific hab line success.
     hab_level_one = [timd['crossedHabLine'] for timd in timds if
-                     timd.get('startingLevel') == 1]
+                     timd['startingLevel'] == 1]
     hab_level_two = [timd['crossedHabLine'] for timd in timds if
-                     timd.get('startingLevel') == 2]
+                     timd['startingLevel'] == 2]
 
     # Percentages and fractions of hab line successes.
     calculated_data['habLineSuccessL1'] = round(100 * avg(hab_level_one))
