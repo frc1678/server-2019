@@ -103,8 +103,9 @@ def calculate_total_action_duration(cycles):
     returns the sum of the differences. Used for both defense and incap
     cycles.
 
-    cycles is a list of tuples where both the first action is a starting
-    action and the second action is an ending action."""
+    cycles is a list of tuples where the first action marks the start of
+    a period (incap or defense), and the second action marks the end of
+    that period."""
     cycle_times = []
     for cycle in cycles:
         # Subtracts the second time from the first because the time
