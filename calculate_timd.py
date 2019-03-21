@@ -96,13 +96,13 @@ def calculate_avg_cycle_time(cycles):
                            cycle[1].get('time'))
     return avg(cycle_times, None)
 
-def calculate_total_incap_time(cycles):
-    """Calculates the total time for incap based on incap and unincap times.
+def calculate_total_duration(cycles):
+    """Calculates the total duration for an action based on start and end times.
 
     Finds the time difference between each action pair passed and
     returns the sum of the differences.
-    cycles is a list of tuples where both the first action is an incap
-    and the second action is unincap."""
+    cycles is a list of tuples where both the first action is a starting
+    action and the second action is an ending action."""
     cycle_times = []
     for cycle in cycles:
         # Subtracts the second time from the first because the time
