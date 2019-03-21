@@ -371,7 +371,7 @@ def calculate_timd_data(timd):
 
         # Calculates the timeDefending by calculating the total amount
         # of time the robot spent defending during the match.
-        calculated_data['timeDefending'] = calculate_total_incap_time(
+        calculated_data['timeDefending'] = calculate_total_duration(
             paired_defense_list)
     else:
         # Otherwise, the time that the robot spent defending is naturally 0.
