@@ -96,11 +96,12 @@ def calculate_avg_cycle_time(cycles):
                            cycle[1].get('time'))
     return avg(cycle_times, None)
 
-def calculate_total_duration(cycles):
+def calculate_total_action_duration(cycles):
     """Calculates the total duration for an action based on start and end times.
 
     Finds the time difference between each action pair passed and
-    returns the sum of the differences.
+    returns the sum of the differences. This function is used for both
+    defense and incap cycles.
     cycles is a list of tuples where both the first action is a starting
     action and the second action is an ending action."""
     cycle_times = []
@@ -354,7 +355,7 @@ def calculate_timd_data(timd):
 
         # Calculates the timeIncap by calculating the total amount of
         # time the robot spent incap during the match.
-        calculated_data['timeIncap'] = calculate_total_incap_time(
+        calculated_data['timeIncap'] = calculate_total_action_duration(
             paired_incap_list)
     else:
         # Otherwise, the time that the robot spent incap is naturally 0.
@@ -371,7 +372,7 @@ def calculate_timd_data(timd):
 
         # Calculates the timeDefending by calculating the total amount
         # of time the robot spent defending during the match.
-        calculated_data['timeDefending'] = calculate_total_duration(
+        calculated_data['timeDefending'] = calculate_total_action_duration(
             paired_defense_list)
     else:
         # Otherwise, the time that the robot spent defending is naturally 0.
