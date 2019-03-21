@@ -654,11 +654,11 @@ def team_calculations(timds, team_number):
     calculated_data['avgTimeDefending'] = avg([timd[
         'calculatedData']['timeDefending'] for timd in \
         defending_timds])
-    calculated_data['totalTimeDefending'] = sum([timd[
-        'calculatedData']['timeDefending'] for timd in \
-        defending_timds])
     calculated_data['cyclesDefended'] = sum([timd[
         'calculatedData']['totalCyclesDefended'] for timd in \
+        defending_timds])
+    calculated_data['totalTimeDefending'] = sum([timd[
+        'calculatedData']['timeDefending'] for timd in \
         defending_timds])
     calculated_data['matchesDefended'] = len(defending_timds)
     calculated_data['cyclesDefendedPerSecond'] = calculated_data[
