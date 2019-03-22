@@ -653,8 +653,7 @@ def team_calculations(timds, team_number):
         calculated_data[success_data_field] = avg_percent_success(
             filter_timeline_actions(timds, filters_))
 
-    # Lists of boolean success values for each hab starting level used
-    # for calculating level specific hab line success.
+    # 'hab_level_one' and 'hab_level_two' are lists of booleans
     hab_level_one = [timd['crossedHabLine'] for timd in timds if
                      timd['startingLevel'] == 1]
     hab_level_two = [timd['crossedHabLine'] for timd in timds if
