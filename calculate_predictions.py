@@ -170,6 +170,8 @@ for match in MATCHES.keys():
         TEAMS[str(team)]['calculatedData']['predictedRPs'].append(calculated_data['bluePredictedRPs'])
 
     # Adds the 'calculated_data' to the 'calculatedData' key on the match.
+    if MATCHES.get(str(match)) is None:
+        MATCHES[str(match)] = {}
     MATCHES[str(match)]['calculatedData'] = calculated_data
 
 # Creates a list of all the teams in order of their average predictedRPs
