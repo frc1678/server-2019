@@ -232,7 +232,7 @@ def cache_match_schedule():
                 'blueTeams': blue_teams,
             }
         with open(utils.create_file_path(
-                f'data/cache/matches/{str(match_number)}'), 'w') as file:
+                f'data/cache/matches/{str(match_number)}.json'), 'w') as file:
             json.dump(final_match_data, file)
 
 # Deletes the entire 'cache' directory to remove any old data.
@@ -296,6 +296,9 @@ while True:
 
     # Forwards tempSuper data to Matches and TIMDs.
     subprocess.call('python3 forward_temp_super.py', shell=True)
+
+    # Makes predictions about future matches
+    subprocess.call('python3 calculate_predictions.py', shell=True)
 
     # Runs advanced calculations for every team in the competition.
     subprocess.call('python3 make_advanced_calculations.py', shell=True)
