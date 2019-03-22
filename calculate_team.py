@@ -358,6 +358,21 @@ LFM_CYCLE_DATA_FIELDS = {
     },
 }
 
+def calculate_predicted_solo_points(calculated_data):
+    """Calculates the predicted points that a team would score by themselves.
+
+    calculated_data is the data for a team used to calculate the team's
+    ability to complete each of the scoring objectives."""
+    sand_score = max([float(calculated_data['habLineSuccessL1']) * 3 / 100,
+                      float(calculated_data['habLineSuccessL2']) * 6 / 100])
+    lemon_score = calculated_data['avgLemonsScoredSandstorm'] * 3
+    lemon_score += calculated_data['avgLemonsScored'] * 2
+    orange_score = calculated_data['avgOrangesScored'] * 3
+    end_game_score = max([3 * float(calculated_data['climbSuccessL1']) / 100,
+                          6 * float(calculated_data['climbSuccessL2']) / 100,
+                          12 * float(calculated_data['climbSuccessL3']) / 100])
+    return sand_score + lemon_score + orange_score + end_game_score
+
 def calculate_avg_cycle_time(cycles):
     """Calculates the average time for an action based on start and end times.
 
@@ -873,6 +888,11 @@ def team_calculations(timds, team_number):
     # Used in the viewer to display when a team's data was last updated.
     if timds != []:
         calculated_data['lastMatch'] = max([timd['matchNumber'] for timd in timds])
+
+    # Calculates predicted solo points based on the team's proficiency
+    # in all the scoring objectives in the game.
+    calculated_data['predictedSoloPoints'] = \
+        calculate_predicted_solo_points(calculated_data)
 
     return calculated_data
 
