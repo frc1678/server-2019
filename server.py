@@ -232,7 +232,7 @@ def cache_match_schedule():
                 'blueTeams': blue_teams,
             }
         with open(utils.create_file_path(
-                f'data/cache/matches/{str(match_number)}.json'), 'w') as file:
+                f'data/cache/schedule_matches/{str(match_number)}.json'), 'w') as file:
             json.dump(final_match_data, file)
 
 # Deletes the entire 'cache' directory to remove any old data.
