@@ -649,6 +649,30 @@ def team_calculations(timds, team_number):
         calculated_data[average_data_field] = avg([timd[
             'calculatedData'].get(timd_data_field) for timd in timds])
 
+    # Calculates average defense fields similar to average data fields,
+    # with the exception of only taking into account matches where the
+    # team played defense.
+    defending_timds = []
+    for timd in timds:
+        if timd['calculatedData']['timeDefending'] > 0.0:
+            defending_timds.append(timd)
+
+    calculated_data['avgCyclesDefended'] = avg([timd[
+        'calculatedData']['totalCyclesDefended'] for timd in \
+        defending_timds])
+    calculated_data['avgTimeDefending'] = avg([timd[
+        'calculatedData']['timeDefending'] for timd in \
+        defending_timds])
+    calculated_data['cyclesDefended'] = sum([timd[
+        'calculatedData']['totalCyclesDefended'] for timd in \
+        defending_timds])
+    calculated_data['totalTimeDefending'] = sum([timd[
+        'calculatedData']['timeDefending'] for timd in \
+        defending_timds])
+    calculated_data['matchesDefended'] = len(defending_timds)
+    calculated_data['cyclesDefendedPerSecond'] = calculated_data[
+        'cyclesDefended'] / calculated_data['totalTimeDefending']
+
     # Calculations for percent successes for different actions using the
     # SUCCESS_DATA_FIELDS dictionary.
     for success_data_field, filters_ in SUCCESS_DATA_FIELDS.items():
@@ -673,13 +697,16 @@ def team_calculations(timds, team_number):
     calculated_data['avgSpeed'] = avg([
         timd.get('rankSpeed') for timd in timds])
 
-    defense_ranks = [timd.get('rankDefense') for timd in timds if timd.get('rankDefense') is not None]
-    calculated_data['avgDefenseKnocking'] = avg([
-        defense['knocking'] for defense in defense_ranks])
-    calculated_data['avgDefenseDocking'] = avg([
-        defense['docking'] for defense in defense_ranks])
-    calculated_data['avgDefensePathBlocking'] = avg([
-        defense['pathBlocking'] for defense in defense_ranks])
+    # When calculating the super average for defense, takes out the
+    # matches when they didn't play defense (matches where rankDefense
+    # is 0).
+    defending_matches = []
+    for timd in timds:
+        if timd.get('rankDefense') != 0:
+            defending_matches.append(timd)
+
+    calculated_data['avgRankDefense'] = avg([
+        timd.get('rankDefense') for timd in defending_matches])
 
     # Percent of matches of incap, no-show, or dysfunctional
     matches_incap = [True if timd['calculatedData']['timeIncap'] > 0.0
