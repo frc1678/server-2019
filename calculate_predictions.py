@@ -38,6 +38,7 @@ def calculate_predicted_climb_points(team_numbers):
     total_points = 0
     for team in team_numbers:
         team_calculated_data = TEAMS[team]['calculatedData']
+        # TODO: Only let one robot use climb level 3
         total_points += max([3 * float(team_calculated_data['climbSuccessL1']) / 100,
                              6 * float(team_calculated_data['climbSuccessL2']) / 100,
                              12 * float(team_calculated_data['climbSuccessL3']) / 100])
