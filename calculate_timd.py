@@ -372,8 +372,8 @@ def calculate_timd_data(timd):
     if len(defense_items) > 0:
         paired_defense_list = make_paired_cycle_list(defense_items)
 
-        # Calculates the timeDefending by calculating the total amount
-        # of time the robot spent defending during the match.
+        # 'timeDefending' is the total amount of time the robot spent
+        # defending during the match.
         calculated_data['timeDefending'] = calculate_total_action_duration(
             paired_defense_list)
     else:
