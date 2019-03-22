@@ -117,9 +117,16 @@ for team in os.listdir(utils.create_file_path('data/cache/teams')):
         TEAMS[team.split('.')[0]] = team_data
 
 # Gathers the matches in the competition.
-MATCHES = {}
+SCHEDULE_MATCHES = {}
 for match in os.listdir(utils.create_file_path('data/cache/schedule_matches')):
     with open(utils.create_file_path(f'data/cache/schedule_matches/{match}')) as file:
+        match_data = json.load(file)
+    # '.split()' removes '.txt' file ending
+    SCHEDULE_MATCHES[match.split('.')[0]] = match_data
+
+MATCHES = {}
+for match in os.listdir(utils.create_file_path('data/cache/matches')):
+    with open(utils.create_file_path(f'data/cache/matches/{match}')) as file:
         match_data = json.load(file)
     # '.split()' removes '.txt' file ending
     MATCHES[match.split('.')[0]] = match_data
