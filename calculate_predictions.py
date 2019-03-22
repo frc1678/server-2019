@@ -172,9 +172,9 @@ for match in MATCHES.keys():
     MATCHES[match]['calculatedData'] = calculated_data
 
 # Creates a list of all the teams in order of their average predictedRPs
-TEAM_LIST = {team: (sum(TEAMS[team]['calculatedData']['predictedRPs']) / \
-             len(TEAMS[team]['calculatedData']['predictedRPs'])) for team in TEAMS.keys()}
-SEED_ORDER = sorted(TEAM_LIST.keys(), key=lambda team: team.get, reverse=True)
+PREDICTED_RP_LIST = {team: (sum(TEAMS[team]['calculatedData']['predictedRPs']) / \
+                     len(TEAMS[team]['calculatedData']['predictedRPs'])) for team in TEAMS.keys()}
+SEED_ORDER = sorted(PREDICTED_RP_LIST.keys(), key=lambda team: team.get, reverse=True)
 
 for seed, team in enumerate(SEED_ORDER, 1):
     TEAMS[team]['calculatedData']['predictedRPs'] = \
