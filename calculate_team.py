@@ -365,7 +365,8 @@ def calculate_predicted_solo_points(calculated_data):
     ability to complete each of the scoring objectives."""
     sand_score = max([float(calculated_data['habLineSuccessL1']) * 3 / 100,
                       float(calculated_data['habLineSuccessL2']) * 6 / 100])
-    lemon_score = calculated_data['avgLemonsScored'] * 2
+    lemon_score = calculated_data['avgLemonsScoredSandstorm'] * 3
+    lemon_score += calculated_data['avgLemonsScored'] * 2
     orange_score = calculated_data['avgOrangesScored'] * 3
     end_game_score = max([3 * float(calculated_data['climbSuccessL1']) / 100,
                           6 * float(calculated_data['climbSuccessL2']) / 100,
