@@ -679,13 +679,17 @@ def team_calculations(timds, team_number):
         calculated_data[success_data_field] = avg_percent_success(
             filter_timeline_actions(timds, filters_))
 
-    # Percentages of hab line successes.
-    calculated_data['habLineSuccessL1'] = round(100 * avg([
-        timd['crossedHabLine'] for timd in timds if
-        timd.get('startingLevel') == 1]))
-    calculated_data['habLineSuccessL2'] = round(100 * avg([
-        timd['crossedHabLine'] for timd in timds if
-        timd.get('startingLevel') == 2]))
+    # 'hab_level_one' and 'hab_level_two' are lists of booleans
+    hab_level_one = [timd['crossedHabLine'] for timd in timds if
+                     timd['startingLevel'] == 1]
+    hab_level_two = [timd['crossedHabLine'] for timd in timds if
+                     timd['startingLevel'] == 2]
+
+    # Percentages and fractions of hab line successes.
+    calculated_data['habLineSuccessL1'] = round(100 * avg(hab_level_one))
+    calculated_data['habLineSuccessL2'] = round(100 * avg(hab_level_two))
+    calculated_data['habLineAttemptsL1'] = f'{sum(hab_level_one)} / {len(hab_level_one)}'
+    calculated_data['habLineAttemptsL2'] = f'{sum(hab_level_two)} / {len(hab_level_two)}'
 
     # Averages of super data points in timd.
     calculated_data['avgGoodDecisions'] = avg([
