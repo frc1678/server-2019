@@ -32,7 +32,7 @@ def calculate_predicted_alliance_score(team_numbers):
     team_numbers is a list of team numbers (integers) on the alliance"""
     total_score = 0
     for team in team_numbers:
-        total_score += TEAMS[team]['calculatedData']['predictedSoloPoints']
+        total_score += TEAMS[str(team)]['calculatedData']['predictedSoloPoints']
     return total_score
 
 def calculate_predicted_climb_points(team_numbers):
@@ -41,7 +41,7 @@ def calculate_predicted_climb_points(team_numbers):
     team_numbers is a list of team numbers (integers) on the alliance"""
     total_points = 0
     for team in team_numbers:
-        team_calculated_data = TEAMS[team]['calculatedData']
+        team_calculated_data = TEAMS[str(team)]['calculatedData']
         # TODO: Only let one robot use climb level 3
         total_points += max([3 * float(team_calculated_data['climbSuccessL1']) / 100,
                              6 * float(team_calculated_data['climbSuccessL2']) / 100,
@@ -54,8 +54,8 @@ def calculate_chance_climb_rp(team_numbers):
     team_numbers are the team_numbers on the alliance."""
     # 'teams_calculated_data' is the list of 'calculatedData'
     # dictionaries for each team in the alliance
-    teams_calculated_data = [TEAMS[team]['calculatedData'] for team in
-                             team_numbers]
+    teams_calculated_data = [TEAMS[str(team)]['calculatedData'] for team
+                             in team_numbers]
     # The two common options for the climb rp are one team climbing to
     # level 3 with another on level 1, and two teams climbing to level 2
     # with another on level 1.
@@ -76,7 +76,7 @@ def calculate_chance_rocket_rp(team_numbers):
     """Calculates the chance an alliance gets the rocket ranking point.
 
     team_numbers are the team_numbers on the alliance."""
-    teams_calculated_data = [TEAMS[team]['calculatedData'] for team in
+    teams_calculated_data = [TEAMS[str(team)]['calculatedData'] for team in
                              team_numbers]
     # Calculates the chances that the alliance places 6 lemons, then
     # multiplies it by the chance the alliance places 6 oranges. The
@@ -181,13 +181,13 @@ for match in SCHEDULE_MATCHES.keys():
         calculated_data['redPredictedRPs'] = MATCHES[match]['redActualRPs']
 
     for team in red_alliance:
-        if TEAMS[team]['calculatedData'].get('predictedRPs') is None:
-            TEAMS[team]['calculatedData']['predictedRPs'] = []
-        TEAMS[team]['calculatedData']['predictedRPs'] += calculated_data['redPredictedRPs']
+        if TEAMS[str(team)]['calculatedData'].get('predictedRPs') is None:
+            TEAMS[str(team)]['calculatedData']['predictedRPs'] = []
+        TEAMS[str(team)]['calculatedData']['predictedRPs'].append(calculated_data['redPredictedRPs'])
     for team in blue_alliance:
-        if TEAMS[team]['calculatedData'].get('predictedRPs') is None:
-            TEAMS[team]['calculatedData']['predictedRPs'] = []
-        TEAMS[team]['calculatedData']['predictedRPs'] += calculated_data['bluePredictedRPs']
+        if TEAMS[str(team)]['calculatedData'].get('predictedRPs') is None:
+            TEAMS[str(team)]['calculatedData']['predictedRPs'] = []
+        TEAMS[str(team)]['calculatedData']['predictedRPs'].append(calculated_data['bluePredictedRPs'])
 
     # Adds the 'calculated_data' to the 'calculatedData' key on the match.
     if MATCHES.get(str(match)) is None:
@@ -200,9 +200,9 @@ PREDICTED_RP_LIST = {team: (sum(TEAMS[team]['calculatedData']['predictedRPs']) /
 SEED_ORDER = sorted(PREDICTED_RP_LIST.keys(), key=lambda team: team.get, reverse=True)
 
 for seed, team in enumerate(SEED_ORDER, 1):
-    TEAMS[team]['calculatedData']['predictedRPs'] = \
-        sum(TEAMS['team']['calculatedData']['predictedRPs'])
-    TEAMS[team]['calculatedData']['predictedSeed'] = seed
+    TEAMS[str(team)]['calculatedData']['predictedRPs'] = \
+        sum(TEAMS[str(team)]['calculatedData']['predictedRPs'])
+    TEAMS[str(team)]['calculatedData']['predictedSeed'] = seed
 
 # Sends data to 'cache' and 'upload_queue'
 for team, data in TEAMS.items():
