@@ -888,23 +888,6 @@ def team_calculations(timds, team_number):
     if timds != []:
         calculated_data['lastMatch'] = max([timd['matchNumber'] for timd in timds])
 
-    # Calculates team predictions based on previously calculated data
-    # fields.
-    # 'predictedDedicatedLemonCycles' and 'predictedDedicatedOrangeCycles'
-    # should only be calculated if the team performed any cycles of that
-    # type.
-    if calculated_data.get('orangeCycleAll') is not None:
-        # 'predictedDedicatedLemonCycles' and 'predictedDedicatedOrangeCycles'
-        # are both calculated by dividing the total match time (150) by the
-        # calculated seconds per cycle for each respective game piece
-        # multiplied by 1.5 to account for time spent recovering from the
-        # cycle and orienting for the next one.
-        calculated_data['predictedDedicatedOrangeCycles'] = 150 / \
-            (calculated_data.get('orangeCycleAll') * 1.5)
-    if calculated_data.get('lemonCycleAll') is not None:
-        calculated_data['predictedDedicatedLemonCycles'] = 150 / \
-            (calculated_data.get('lemonCycleAll') * 1.5)
-
     # Calculates predicted solo points based on the team's proficiency
     # in all the scoring objectives in the game.
     calculated_data['predictedSoloPoints'] = \
