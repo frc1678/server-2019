@@ -164,13 +164,16 @@ def calculate_zscores(team_average_field, team_zscore_field):
     the zscore is taken from.
     team_zscore_field is the name of the team zscore data field in which
     the calculated zscore is put into."""
-    averages = {team: data['calculatedData'][team_average_field] for
+    averages = {team: data['calculatedData'].get(team_average_field, 0.0) for
                 team, data in TEAMS.items()}
 
     mean = numpy.mean(list(averages.values()))
     sd = numpy.std(list(averages.values()))
     for team, average in averages.items():
-        TEAMS[team]['calculatedData'][team_zscore_field] = (average - mean) / sd
+        if sd == 0.0:
+            TEAMS[team]['calculatedData'][team_zscore_field] = 0.0
+        else:
+            TEAMS[team]['calculatedData'][team_zscore_field] = (average - mean) / sd
 
 # Gathers the calculated data from all the teams.
 TEAMS = {}
