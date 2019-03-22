@@ -176,10 +176,10 @@ TEAM_LIST = {team: (sum(TEAMS[team]['calculatedData']['predictedRPs']) / \
              len(TEAMS[team]['calculatedData']['predictedRPs'])) for team in TEAMS.keys()}
 SEED_ORDER = sorted(TEAM_LIST.keys(), key=lambda team: team.get, reverse=True)
 
-for team in TEAMS.keys():
+for seed, team in enumerate(SEED_ORDER, 1):
     TEAMS[team]['calculatedData']['predictedRPs'] = \
         sum(TEAMS['team']['calculatedData']['predictedRPs'])
-    TEAMS[team]['calculatedData']['predictedSeed'] = SEED_ORDER.index(team) + 1
+    TEAMS[team]['calculatedData']['predictedSeed'] = seed
 
 # Sends data to 'cache' and 'upload_queue'
 for team, data in TEAMS.items():
