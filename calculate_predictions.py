@@ -28,7 +28,7 @@ def calculate_predicted_score(team_numbers):
     team_numbers are the team_numbers on the alliance."""
     total_score = 0
     for team in team_numbers:
-        total_score += TEAMS[team]['calculatedData']['predictedSoloPoints']
+        total_score += TEAMS[str(team)]['calculatedData']['predictedSoloPoints']
     return total_score
 
 def calculate_predicted_climb_points(team_numbers):
@@ -37,7 +37,7 @@ def calculate_predicted_climb_points(team_numbers):
     team_numbers are the team_numbers on the alliance."""
     total_points = 0
     for team in team_numbers:
-        team_calculated_data = TEAMS[team]['calculatedData']
+        team_calculated_data = TEAMS[str(team)]['calculatedData']
         # TODO: Only let one robot use climb level 3
         total_points += max([3 * float(team_calculated_data['climbSuccessL1']) / 100,
                              6 * float(team_calculated_data['climbSuccessL2']) / 100,
@@ -48,7 +48,7 @@ def calculate_chance_climb_rp(team_numbers):
     """Calculates the chance an alliance gets the climb ranking point.
 
     team_numbers are the team_numbers on the alliance."""
-    teams_calculated_data = [TEAMS[team]['calculatedData'] for team in
+    teams_calculated_data = [TEAMS[str(team)]['calculatedData'] for team in
                              team_numbers]
     # The two common options for the climb rp are one team climbing to
     # level 3 with another on level 1, and two teams climbing to level 2
@@ -70,7 +70,7 @@ def calculate_chance_rocket_rp(team_numbers):
     """Calculates the chance an alliance gets the rocket ranking point.
 
     team_numbers are the team_numbers on the alliance."""
-    teams_calculated_data = [TEAMS[team]['calculatedData'] for team in
+    teams_calculated_data = [TEAMS[str(team)]['calculatedData'] for team in
                              team_numbers]
     # Calculates the chances that the alliance places the lemons first,
     # then multiplies it by the chance the alliance places the oranges.
@@ -161,16 +161,16 @@ for match in MATCHES.keys():
         calculate_predicted_rps(calculated_data, True)
 
     for team in red_alliance:
-        if TEAMS[team]['calculatedData'].get('predictedRPs') is None:
-            TEAMS[team]['calculatedData']['predictedRPs'] = []
-        TEAMS[team]['calculatedData']['predictedRPs'] += calculated_data['redPredictedRPs']
+        if TEAMS[str(team)]['calculatedData'].get('predictedRPs') is None:
+            TEAMS[str(team)]['calculatedData']['predictedRPs'] = []
+        TEAMS[str(team)]['calculatedData']['predictedRPs'].append(calculated_data['redPredictedRPs'])
     for team in blue_alliance:
-        if TEAMS[team]['calculatedData'].get('predictedRPs') is None:
-            TEAMS[team]['calculatedData']['predictedRPs'] = []
-        TEAMS[team]['calculatedData']['predictedRPs'] += calculated_data['bluePredictedRPs']
+        if TEAMS[str(team)]['calculatedData'].get('predictedRPs') is None:
+            TEAMS[str(team)]['calculatedData']['predictedRPs'] = []
+        TEAMS[str(team)]['calculatedData']['predictedRPs'].append(calculated_data['bluePredictedRPs'])
 
     # Adds the 'calculated_data' to the 'calculatedData' key on the match.
-    MATCHES[match]['calculatedData'] = calculated_data
+    MATCHES[str(match)]['calculatedData'] = calculated_data
 
 # Creates a list of all the teams in order of their average predictedRPs
 PREDICTED_RP_LIST = {team: (sum(TEAMS[team]['calculatedData']['predictedRPs']) / \
@@ -178,9 +178,9 @@ PREDICTED_RP_LIST = {team: (sum(TEAMS[team]['calculatedData']['predictedRPs']) /
 SEED_ORDER = sorted(PREDICTED_RP_LIST.keys(), key=lambda team: team.get, reverse=True)
 
 for seed, team in enumerate(SEED_ORDER, 1):
-    TEAMS[team]['calculatedData']['predictedRPs'] = \
-        sum(TEAMS['team']['calculatedData']['predictedRPs'])
-    TEAMS[team]['calculatedData']['predictedSeed'] = seed
+    TEAMS[str(team)]['calculatedData']['predictedRPs'] = \
+        sum(TEAMS[str(team)]['calculatedData']['predictedRPs'])
+    TEAMS[str(team)]['calculatedData']['predictedSeed'] = seed
 
 # Sends data to 'cache' and 'upload_queue'
 for team, data in TEAMS.items():
