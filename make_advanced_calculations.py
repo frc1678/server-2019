@@ -159,9 +159,9 @@ for team in TEAMS.keys():
 
 # TODO: Move if-statement immediately after pulling data
 if TEAMS != {}:
-    MAX_DA = max([team['calculatedData']['driverAbility'] for team in
+    MAX_DA = max([TEAMS[str(team)]['calculatedData']['driverAbility'] for team in
                   TEAMS.keys()])
-    MIN_DA = min([team['calculatedData']['driverAbility'] for team in
+    MIN_DA = min([TEAMS[str(team)]['calculatedData']['driverAbility'] for team in
                   TEAMS.keys()])
     for team in TEAMS.keys():
         TEAMS[team]['calculatedData']['firstPickAbility'] = \
