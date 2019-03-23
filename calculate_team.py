@@ -685,8 +685,9 @@ def team_calculations(timds, team_number):
         'calculatedData']['timeDefending'] for timd in \
         defending_timds])
     calculated_data['matchesDefended'] = len(defending_timds)
-    calculated_data['cyclesDefendedPerSecond'] = calculated_data[
-        'cyclesDefended'] / calculated_data['totalTimeDefending']
+    if calculated_data['matchesDefended'] > 0:
+        calculated_data['cyclesDefendedPerSecond'] = calculated_data[
+            'cyclesDefended'] / calculated_data['totalTimeDefending']
 
     # Calculations for percent successes for different actions using the
     # SUCCESS_DATA_FIELDS dictionary.
