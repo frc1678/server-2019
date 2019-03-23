@@ -297,11 +297,12 @@ while True:
     # Forwards tempSuper data to Matches and TIMDs.
     subprocess.call('python3 forward_temp_super.py', shell=True)
 
-    # Makes predictions about future matches
-    subprocess.call('python3 calculate_predictions.py', shell=True)
+    if TEMP_TIMD_FILES != []:
+        # Makes predictions about future matches
+        subprocess.call('python3 calculate_predictions.py', shell=True)
 
-    # Runs advanced calculations for every team in the competition.
-    subprocess.call('python3 make_advanced_calculations.py', shell=True)
+        # Runs advanced calculations for every team in the competition.
+        subprocess.call('python3 make_advanced_calculations.py', shell=True)
 
     # Uploads data in data queue.
     subprocess.call('python3 upload_data.py', shell=True)
