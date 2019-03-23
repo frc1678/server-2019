@@ -728,6 +728,14 @@ def team_calculations(timds, team_number):
     calculated_data['avgRankDefense'] = avg([
         timd.get('rankDefense') for timd in defending_matches])
 
+    counter_defending_matches = []
+    for timd in timds:
+        if timd.get('rankCounterDefense') != 0:
+            counter_defending_matches.append(timd)
+
+    calculated_data['avgRankCounterDefense'] = avg([
+        timd.get('rankCounterDefense') for timd in counter_defending_matches])
+
     # Percent of matches of incap, no-show, or dysfunctional
     matches_incap = [True if timd['calculatedData']['timeIncap'] > 0.0
                      else False for timd in timds]
