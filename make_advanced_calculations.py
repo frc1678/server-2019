@@ -156,9 +156,9 @@ for team in TEAMS.keys():
 
 # Calculates the highest and lowest driverAbility for any team and uses
 # it to weigh all other driverAbilities in secondPickAbility.
-MAX_DA = max([team['calculatedData']['driverAbility'] for team in
+MAX_DA = max([TEAMS[team]['calculatedData']['driverAbility'] for team in
               TEAMS.keys()])
-MIN_DA = min([team['calculatedData']['driverAbility'] for team in
+MIN_DA = min([TEAMS[team]['calculatedData']['driverAbility'] for team in
               TEAMS.keys()])
 for team in TEAMS.keys():
     TEAMS[team]['calculatedData']['firstPickAbility'] = \
