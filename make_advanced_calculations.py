@@ -101,7 +101,13 @@ def calculate_second_pick_ability(calculated_data, max_da, min_da):
         driver_ability = driving_weight * \
             (calculated_data['driverAbility'] - min_da)/(max_da - min_da)
 
-    return sand_score + level_1_teleop_score + end_game_score + driver_ability
+    # Score for defense, based around the lowest being 1, and the highest being
+    # 2 times the defense weight + 1.
+    defense_ability = (float(calculated_data['avgRankDefense']) * \
+        defense_weight) - (defense_weight - 1)
+    if defense_ability < 1:
+        defense_ability = 0
+    return sand_score + level_1_teleop_score + end_game_score + driver_ability + defense_ability
 
 def calculate_zscores(team_average_field, team_zscore_field):
     """Calculates the zscore for a team average data point across all teams.
