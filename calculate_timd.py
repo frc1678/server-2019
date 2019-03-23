@@ -341,6 +341,9 @@ def calculate_timd_data(timd):
     for action in timd.get('timeline', []):
         if action['type'] == 'climb':
             calculated_data['timeClimbing'] = action['time']
+            calculated_data['selfClimbLevel'] = action['actual']['self']
+            calculated_data['robot1ClimbLevel'] = action['actual']['robot1']
+            calculated_data['robot2ClimbLevel'] = action['actual']['robot2']
 
     # Creates a list of all the incap and unincap actions in the timeline.
     incap_items = []
