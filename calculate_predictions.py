@@ -132,12 +132,15 @@ for match in os.listdir(utils.create_file_path('data/cache/matches')):
     # '.split()' removes '.txt' file ending
     MATCHES[match.split('.')[0]] = match_data
 
-for match in MATCHES.keys():
+for team in TEAMS.keys():
+    TEAMS[team]['calculatedData']['predictedRPs'] = []
+
+for match in SCHEDULE_MATCHES.keys():
     # The calculated_data dictionary where all the calculated match data
     # will be stored.
     calculated_data = {}
-    red_alliance = MATCHES[match]['redTeams']
-    blue_alliance = MATCHES[match]['blueTeams']
+    red_alliance = SCHEDULE_MATCHES[str(match)]['redTeams']
+    blue_alliance = SCHEDULE_MATCHES[str(match)]['blueTeams']
 
     calculated_data['bluePredictedScore'] = \
         calculate_predicted_score(blue_alliance)
