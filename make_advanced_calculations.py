@@ -68,10 +68,10 @@ def calculate_second_pick_ability(calculated_data, max_da, min_da):
     # second pick.
     climbing_weight = 0.25
     oranges_weight = 0.5
-    lemons_weight = 4
+    lemons_weight = 4.0
     sandstorm_weight = 1.0
     driving_weight = 18.0
-    defense_weight = 2
+    defense_weight = 2.0
 
     # Scores for points gained during sandstorm.
     sand_score = max([float(calculated_data['habLineSuccessL1']) * 3 / 100,
@@ -102,9 +102,15 @@ def calculate_second_pick_ability(calculated_data, max_da, min_da):
             (calculated_data['driverAbility'] - min_da)/(max_da - min_da)
 
     # Score for defense, based around the lowest being 1, and the highest being
-    # 2 times the defense weight + 1.
+    # 2 times the defense weight + 1. Example - if avgRankDefense is 2,
+    # and the weight is 5, the defense ability would be 6, because the
+    # avgRankDefense is one above one, which translates to one times the
+    # weight above one, or 1 + 5, which is 6.
     defense_ability = (float(calculated_data['avgRankDefense']) * \
         defense_weight) - (defense_weight - 1)
+    # When the average rank defense is less than 1, the defense ability
+    # calculation returns negative, and it should return zero because
+    # the team didn't play defense.
     if defense_ability < 1:
         defense_ability = 0
     return sand_score + level_1_teleop_score + end_game_score + driver_ability + defense_ability
