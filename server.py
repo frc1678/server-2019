@@ -67,10 +67,13 @@ def cycle_num_stream_handler(snapshot):
     # Validates that data was correctly received and is in its expected format
     if (snapshot['event'] == 'put' and snapshot['path'] == '/'):
         cycle_number = snapshot['data']
+        previous_qr = DB.child('scoutManagement').child('QRcode').get().val()
         if cycle_number is None:
             cycle_number = 0
-        subprocess.call(f'python3 update_assignments.py {cycle_number}',
-                        shell=True)
+        # Prevents different QRs from being created with the same cycle number.
+        if previous_qr.split('_')[0] != str(cycle_number):
+            subprocess.call(f'python3 update_assignments.py {cycle_number}',
+                            shell=True)
 
 def temp_timd_stream_handler(snapshot):
     """Runs when any new tempTIMDs are uploaded"""
