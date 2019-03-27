@@ -7,6 +7,7 @@ directories and sends it to firebase in a single request."""
 # External imports
 import json
 import os
+import numpy
 # Internal imports
 import firebase_communicator
 import utils
@@ -66,6 +67,20 @@ for firebase_key, cache_key in FIREBASE_TO_CACHE_KEY.items():
 
         FILES_TO_REMOVE.append(file_path)
 
+for key, value in FINAL_DATA.items():
+    if key.split('/')[-1] == 'timeline':
+        for action in value:
+            for key, value in action.items():
+                if type(value) == float:
+                    if value != value:
+                        action[key] = None
+                        print(key)
+    if type(value) == float:
+        if value != value:
+            FINAL_DATA[key] = None
+            print(key)
+with open('./test.json', 'w') as file:
+    json.dump(FINAL_DATA, file)
 # Sends the data to firebase.
 DB.update(FINAL_DATA)
 
