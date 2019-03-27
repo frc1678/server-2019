@@ -67,20 +67,17 @@ for firebase_key, cache_key in FIREBASE_TO_CACHE_KEY.items():
 
         FILES_TO_REMOVE.append(file_path)
 
-for key, value in FINAL_DATA.items():
-    if key.split('/')[-1] == 'timeline':
+for path, value in FINAL_DATA.items():
+    if path.split('/')[-1] == 'timeline':
         for action in value:
-            for key, value in action.items():
-                if type(value) == float:
-                    if value != value:
+            for key, value_ in action.items():
+                if type(value_) == float:
+                    if value_ != value_:
                         action[key] = None
-                        print(key)
     if type(value) == float:
         if value != value:
             FINAL_DATA[key] = None
-            print(key)
-with open('./test.json', 'w') as file:
-    json.dump(FINAL_DATA, file)
+
 # Sends the data to firebase.
 DB.update(FINAL_DATA)
 
