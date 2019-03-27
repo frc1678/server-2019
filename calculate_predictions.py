@@ -53,18 +53,18 @@ def calculate_chance_climb_rp(team_numbers):
     # The two common options for the climb rp are one team climbing to
     # level 3 with another on level 1, and two teams climbing to level 2
     # with another on level 1.
-    level_3 = max([float(team_calculated_data['climbSuccessL3']) / 100
-                   for team_calculated_data in teams_calculated_data])
-    level_1 = max([float(team_calculated_data['climbSuccessL1']) / 100
-                   for team_calculated_data in teams_calculated_data])
-    climb_31 = level_3 * level_1
+    level_3_chance = max([float(team_calculated_data['climbSuccessL3']) / 100
+                          for team_calculated_data in teams_calculated_data])
+    level_1_chance = max([float(team_calculated_data['climbSuccessL1']) / 100
+                          for team_calculated_data in teams_calculated_data])
+    level_3_rp_chance = level_3_chance * level_1_chance
 
-    level_22_raw = sorted([float(team_calculated_data['climbSuccessL2']) / 100
-                           for team_calculated_data in teams_calculated_data])[-2:]
-    level_22 = level_22_raw[0] * level_22_raw[1]
-    climb_212 = level_22 * level_1
+    level_2_climb_chances = sorted([float(team_calculated_data['climbSuccessL2']) / 100
+                                    for team_calculated_data in teams_calculated_data])[-2:]
+    two_level_2_climb_chance = level_2_climb_chances[0] * level_2_climb_chances[1]
+    level_2_rp_chance = two_level_2_climb_chance * level_1_chance
 
-    return max([climb_31, climb_212])
+    return max([level_3_rp_chance, level_2_rp_chance])
 
 def calculate_chance_rocket_rp(team_numbers):
     """Calculates the chance an alliance gets the rocket ranking point.
