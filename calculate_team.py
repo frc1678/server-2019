@@ -712,6 +712,8 @@ def team_calculations(timds, team_number):
     calculated_data['avgRankDefense'] = avg([
         timd.get('rankDefense') for timd in defending_matches])
 
+    # Takes out the matches when they didn't play counter defense
+    # (matches where rankCounterDefense is 0).
     counter_defending_matches = []
     for timd in timds:
         if timd.get('rankCounterDefense') != 0:
