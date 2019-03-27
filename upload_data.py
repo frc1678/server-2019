@@ -71,12 +71,10 @@ for path, value in FINAL_DATA.items():
     if path.split('/')[-1] == 'timeline':
         for action in value:
             for key, value_ in action.items():
-                if type(value_) == float:
-                    if value_ != value_:
-                        action[key] = None
-    if type(value) == float:
-        if value != value:
-            FINAL_DATA[key] = None
+                if type(value_) == float and value_ != value_:
+                    action[key] = None
+    if type(value) == float and value != value:
+        FINAL_DATA[path] = None
 
 # Sends the data to firebase.
 DB.update(FINAL_DATA)
