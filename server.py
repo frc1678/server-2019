@@ -65,7 +65,7 @@ def cycle_num_stream_handler(snapshot):
     # Validates that data was correctly received and is in its expected format
     if (snapshot['event'] == 'put' and snapshot['path'] == '/'):
         cycle_number = snapshot['data']
-        previous_qr = DB.child('scoutManagement').child('QRcode').get().val()
+        previous_qr = DB.child('scoutManagement/QRcode').get().val()
         if cycle_number is None:
             cycle_number = 0
         # Prevents different QRs from being created with the same cycle number.
