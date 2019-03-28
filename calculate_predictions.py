@@ -12,11 +12,12 @@ def probability_density(x, mu, sigma):
     """Finds the probability density in order to make predictive chances.
 
     x is the point that the chance is based on (ex: The amount of lemons
-    that need to be scored in order to fill a rocket). The returned
-    chance is the chance that mu lies on x through the variance of sigma.
+    that need to be scored in order to fill a rocket).
     mu is the tested variable (ex: The amount of lemons that a team
     actually scored).
     sigma is the variance of mu, in our case it is a standard deviation.
+    The returned chance is the chance that mu lies on x through the
+    variance of sigma.
     """
     if sigma == 0.0:
         return int(x == mu)
