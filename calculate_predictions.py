@@ -23,7 +23,8 @@ def probability_density(x, mu, sigma):
     # return either 1 or 0 based on if mu is equal to x.
     if sigma == 0.0:
         return int(x == mu)
-    return 1.0 - norm.cdf(x, mu, sigma)
+    else:
+        return 1.0 - norm.cdf(x, mu, sigma)
 
 def calculate_predicted_score(team_numbers):
     """Calculates the predicted score for an alliance.
