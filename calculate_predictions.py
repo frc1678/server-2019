@@ -19,6 +19,8 @@ def probability_density(x, mu, sigma):
     The returned chance is the chance that mu lies on x through the
     variance of sigma.
     """
+    # If the variance is 0, the only two options are 100% and 0%, so
+    # return either 1 or 0 based on if mu is equal to x.
     if sigma == 0.0:
         return int(x == mu)
     return 1.0 - norm.cdf(x, mu, sigma)
