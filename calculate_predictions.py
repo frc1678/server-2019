@@ -29,7 +29,7 @@ def probability_density(x, mu, sigma):
 def calculate_predicted_alliance_score(team_numbers):
     """Calculates the predicted score for an alliance.
 
-    team_numbers are the team_numbers on the alliance."""
+    team_numbers is a list of team numbers (integers) on the alliance"""
     total_score = 0
     for team in team_numbers:
         total_score += TEAMS[team]['calculatedData']['predictedSoloPoints']
