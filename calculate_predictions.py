@@ -26,7 +26,7 @@ def probability_density(x, mu, sigma):
     else:
         return 1.0 - norm.cdf(x, mu, sigma)
 
-def calculate_predicted_score(team_numbers):
+def calculate_predicted_alliance_score(team_numbers):
     """Calculates the predicted score for an alliance.
 
     team_numbers are the team_numbers on the alliance."""
@@ -144,9 +144,9 @@ for match in MATCHES.keys():
     blue_alliance = MATCHES[match]['blueTeams']
 
     calculated_data['bluePredictedScore'] = \
-        calculate_predicted_score(blue_alliance)
+        calculate_predicted_alliance_score(blue_alliance)
     calculated_data['redPredictedScore'] = \
-        calculate_predicted_score(red_alliance)
+        calculate_predicted_alliance_score(red_alliance)
     calculated_data['bluePredictedClimbPoints'] = \
         calculate_predicted_climb_points(blue_alliance)
     calculated_data['redPredictedClimbPoints'] = \
