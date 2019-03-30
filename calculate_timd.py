@@ -233,8 +233,8 @@ def calculate_timd_data(timd):
         filter_timeline_actions(timd, type='placement', piece='lemon', \
         level=3, didSucceed=True))
 
-    calculated_data['totalCyclesDefended'] = sum([
-        action['cyclesDefended'] for action in
+    calculated_data['totalFailedCyclesCaused'] = sum([
+        action['failedCyclesCaused'] for action in
         filter_timeline_actions(timd, type='endDefense')])
 
     # The next set of calculated data points are the success

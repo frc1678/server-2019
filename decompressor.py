@@ -38,7 +38,7 @@ TEMP_TIMD_COMPRESSION_KEYS = {
     'D': 'self',
     'E': 'robot1',
     'F': 'robot2',
-    'J': 'cyclesDefended',
+    'J': 'failedCyclesCaused',
 }
 # Compressed tempTIMD value to uncompressed tempTIMD value
 TEMP_TIMD_COMPRESSION_VALUES = {
