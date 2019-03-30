@@ -63,8 +63,6 @@ for temp_super_file in TEMP_SUPER_FILES:
         # including those with only super data + not scout data.
         timd_data['teamNumber'] = int(team['teamNumber'])
         timd_data['matchNumber'] = int(match_number)
-        team['teamNumber'] = int(team['teamNumber'])
-        team['matchNumber'] = int(match_number)
         # Adds tempSuper data to any previous TIMD data
         timd_data.update(team)
         with open(utils.create_file_path(timd_file_path), 'w') as file:
@@ -75,7 +73,7 @@ for temp_super_file in TEMP_SUPER_FILES:
         # send the 'timd_data' that was read from the file.
         with open(utils.create_file_path(
                 f'data/upload_queue/timds/{timd_name}.json'), 'w') as file:
-            json.dump(team, file)
+            json.dump(timd_data, file)
 
 
     # Sends 'temp_super_headers' to Matches local cache and upload queue.
