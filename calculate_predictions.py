@@ -38,7 +38,7 @@ def calculate_predicted_alliance_score(team_numbers):
 def calculate_predicted_climb_points(team_numbers):
     """Calculates the predicted climb points for an alliance.
 
-    team_numbers are the team_numbers on the alliance."""
+    team_numbers is a list of team numbers (integers) on the alliance"""
     total_points = 0
     for team in team_numbers:
         team_calculated_data = TEAMS[team]['calculatedData']
