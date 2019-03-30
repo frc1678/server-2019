@@ -349,7 +349,7 @@ def consolidate_temp_timds(temp_timds):
                 # seperately so that the timings on each action are
                 # split apart, making it more easy to line up, identify,
                 # and consolidate the timeline.
-                for action_type in ['spill', 'incap', 'unincap', \
+                for action_type in ['pinningFoul', 'incap', 'unincap', \
                         'drop', 'startDefense', 'endDefense', \
                         'placement', 'intake']:
                     final_timeline += consolidate_timeline_action(

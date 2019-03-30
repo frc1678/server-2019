@@ -79,7 +79,7 @@ for temp_timd in TEMP_TIMDS:
             register_value(scout_name, key, False)
 
     # Compares the # of occurrences of each action type in the timeline
-    for type_ in ['intake', 'placement', 'drop', 'spill', 'climb',
+    for type_ in ['intake', 'placement', 'drop', 'pinningFoul', 'climb',
                   'incap', 'unincap', 'startDefense', 'endDefense']:
         temp_timd_type_occurrences = 0
         for action in temp_timd_timeline:

@@ -57,7 +57,7 @@ TEMP_TIMD_COMPRESSION_VALUES = {
     'M': 'intake',
     'N': 'placement',
     'P': 'drop',
-    'Q': 'spill',
+    'Q': 'pinningFoul',
     'R': 'climb',
     'S': 'incap',
     'U': 'unincap',
