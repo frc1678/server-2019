@@ -692,10 +692,6 @@ def team_calculations(timds, team_number):
     calculated_data['habLineAttemptsL2'] = f'{sum(hab_level_two)} / {len(hab_level_two)}'
 
     # Averages of super data points in timd.
-    calculated_data['avgGoodDecisions'] = avg([
-        timd.get('numGoodDecisions') for timd in timds])
-    calculated_data['avgBadDecisions'] = avg([
-        timd.get('numBadDecisions') for timd in timds])
     calculated_data['avgAgility'] = avg([
         timd.get('rankAgility') for timd in timds])
     calculated_data['avgSpeed'] = avg([
@@ -768,11 +764,6 @@ def team_calculations(timds, team_number):
     calculated_data['climbAttemptsL3'] = climb_success_rate(timds, 3, \
         string=True)
 
-    calculated_data['lfmAvgGoodDecisions'] = avg([
-        timd.get('numGoodDecisions') for timd in lfm_timds])
-    calculated_data['lfmAvgBadDecisions'] = avg([
-        timd.get('numBadDecisions') for timd in lfm_timds])
-
     calculated_data['lfmPercentIncap'] = round(100 * avg([
         True if timd['calculatedData']['timeIncap'] > 0.0 else
         False for timd in lfm_timds]))
@@ -793,11 +784,6 @@ def team_calculations(timds, team_number):
             timd['calculatedData'].get(timd_data_field) for timd in
             timds])
 
-    calculated_data['sdAvgGoodDecisions'] = sd([
-        timd.get('numGoodDecisions') for timd in timds])
-    calculated_data['sdAvgBadDecisions'] = sd([
-        timd.get('numBadDecisions') for timd in timds])
-
     # Finds the upper half average of all the previously calculated data
     # points.
     # p75_average_data_field is the calculated team data field, and
@@ -807,11 +793,6 @@ def team_calculations(timds, team_number):
         calculated_data[p75_average_data_field] = p75([
             timd['calculatedData'].get(timd_data_field) for timd in
             timds])
-
-    calculated_data['p75AvgGoodDecisions'] = p75([
-        timd.get('numGoodDecisions') for timd in timds])
-    calculated_data['p75AvgBadDecisions'] = p75([
-        timd.get('numBadDecisions') for timd in timds])
 
     # Takes out all the cycles in all the timds for a team. These will
     # be used for average cycle time calculations.

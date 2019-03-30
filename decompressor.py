@@ -277,8 +277,6 @@ TEMP_SUPER_COMPRESSION_KEYS = {
     '1': 'team1',
     '2': 'team2',
     '3': 'team3',
-    'A': 'numGoodDecisions',
-    'B': 'numBadDecisions',
     'j': 'wasHitDuringSandstorm',
 }
 # Compressed tempSuper value to uncompressed tempSuper value
