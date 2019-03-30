@@ -75,7 +75,7 @@ for temp_super_file in TEMP_SUPER_FILES:
         # send the 'timd_data' that was read from the file.
         with open(utils.create_file_path(
                 f'data/upload_queue/timds/{timd_name}.json'), 'w') as file:
-            json.dump(team, file)
+            json.dump(timd_data, file)
 
 
     # Sends 'temp_super_headers' to Matches local cache and upload queue.
