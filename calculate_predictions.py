@@ -79,8 +79,8 @@ def calculate_chance_rocket_rp(team_numbers):
     teams_calculated_data = [TEAMS[team]['calculatedData'] for team in
                              team_numbers]
     # Calculates the chances that the alliance places 6 lemons, then
-    # multiplies it by the chance the alliance places the oranges.
-    # The [-2:] at the end of the sorted list splits the list to only
+    # multiplies it by the chance the alliance places 6 oranges. The
+    # [-2:] at the end of the sorted list splits the list to only
     # include the two highest lemon scorers.
     lemons_scored = sum(sorted([team_calculated_data['avgLemonsScored'] \
         for team_calculated_data in teams_calculated_data])[-2:])
