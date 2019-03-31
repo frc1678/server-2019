@@ -215,6 +215,8 @@ def handle_ctrl_c(*args):
 
 def cache_match_schedule():
     """Requests the match schedule from TBA and adds it to the cache."""
+    # HACK: Only pulls the match schedule once since the caching built
+    # into tba_communicator.py is not complete.
     matches = tba_communicator.request_matches()
     for match_data in matches:
         # 'qm' stands for qualification match
