@@ -198,6 +198,8 @@ PREDICTED_RP_LIST = {team: (sum(
     TEAMS}
 SEED_ORDER = sorted(PREDICTED_RP_LIST.keys(), key=PREDICTED_RP_LIST.get, reverse=True)
 
+# Iterates through the enumerated seed order starting with one in order
+# to find the seed for each team. 
 for seed, team in enumerate(SEED_ORDER, 1):
     TEAMS[str(team)]['calculatedData']['predictedRPs'] = \
         sum(TEAMS[str(team)]['calculatedData']['predictedRPs'])
