@@ -163,10 +163,15 @@ for match in MATCHES.keys():
         calculate_chance_rocket_rp(blue_alliance)
     calculated_data['redChanceRocketRP'] = \
         calculate_chance_rocket_rp(red_alliance)
-    calculated_data['bluePredictedRPs'] = \
-        calculate_predicted_rps(calculated_data, False)
-    calculated_data['redPredictedRPs'] = \
-        calculate_predicted_rps(calculated_data, True)
+
+    if MATCHES[match].get('blueActualRPs') is None:
+        calculated_data['bluePredictedRPs'] = \
+            calculate_predicted_rps(calculated_data, False)
+        calculated_data['redPredictedRPs'] = \
+            calculate_predicted_rps(calculated_data, True)
+    else:
+        calculated_data['bluePredictedRPs'] = MATCHES[match]['blueActualRPs']
+        calculated_data['redPredictedRPs'] = MATCHES[match]['redActualRPs']
 
     for team in red_alliance:
         if TEAMS[team]['calculatedData'].get('predictedRPs') is None:
