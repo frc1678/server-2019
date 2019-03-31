@@ -122,6 +122,8 @@ for team in os.listdir(utils.create_file_path('data/cache/teams')):
         team_data = json.load(file)
     # HACK: 'calculatedData' can contain 'actualSeed' without
     # containing other 'calculatedData'
+    # Checks if the team has calculated data before considering them for
+    # predictions.
     if 'avgLemonsScoredTeleL1' in team_data.get('calculatedData').keys():
         # '.split()' removes '.txt' file ending
         TEAMS[team.split('.')[0]] = team_data
