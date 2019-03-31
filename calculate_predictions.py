@@ -185,7 +185,8 @@ for match in SCHEDULE_MATCHES.keys():
         TEAMS[str(team)]['calculatedData']['predictedRPs'].append(
             calculated_data['bluePredictedRPs'])
 
-    # Adds the 'calculated_data' to the 'calculatedData' key on the match.
+    # Adds the prediction data to the 'calculatedData' key in the match
+    # dictionary.
     if MATCHES.get(str(match)) is None:
         MATCHES[str(match)] = {}
     MATCHES[str(match)]['calculatedData'] = calculated_data
