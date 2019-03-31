@@ -299,7 +299,7 @@ while True:
     # Forwards tempSuper data to Matches and TIMDs.
     subprocess.call('python3 forward_temp_super.py', shell=True)
 
-    # Makes predictions about future matches
+    # Makes predictions about match results.
     subprocess.call('python3 calculate_predictions.py', shell=True)
 
     # Runs advanced calculations for every team in the competition.
