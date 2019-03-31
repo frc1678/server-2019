@@ -249,8 +249,8 @@ signal.signal(signal.SIGINT, handle_ctrl_c)
 # Creates all the database streams and stores them in global dict.
 STREAMS = create_streams()
 
-# In order to make match calculations, the match schedule must be put in
-# the cache.
+# In order to make match calculations, the match schedule must be taken
+# from TBA and put into the cache.
 cache_match_schedule()
 
 # Stores the tempTIMDs that have already been calculated in order to
