@@ -192,8 +192,10 @@ for match in SCHEDULE_MATCHES.keys():
     MATCHES[str(match)]['calculatedData'] = calculated_data
 
 # All the teams in order of their average predictedRPs from highest to lowest.
-PREDICTED_RP_LIST = {team: (sum(TEAMS[str(team)]['calculatedData']['predictedRPs']) / \
-                     len(TEAMS[str(team)]['calculatedData']['predictedRPs'])) for team in TEAMS.keys()}
+PREDICTED_RP_LIST = {team: (sum(
+    TEAMS[str(team)]['calculatedData']['predictedRPs']) / len( \
+    TEAMS[str(team)]['calculatedData']['predictedRPs'])) for team in \
+    TEAMS}
 SEED_ORDER = sorted(PREDICTED_RP_LIST.keys(), key=PREDICTED_RP_LIST.get, reverse=True)
 
 for seed, team in enumerate(SEED_ORDER, 1):
