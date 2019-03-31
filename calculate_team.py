@@ -361,8 +361,9 @@ LFM_CYCLE_DATA_FIELDS = {
 def calculate_predicted_solo_points(calculated_data):
     """Predicts the points that a team would score by themselves.
 
-    calculated_data is the data for a team used to calculate the team's
-    ability to complete each of the scoring objectives."""
+    calculated_data is the data for a team that is calculated in the
+    'team_calculations()' function. Used to calculate the team's ability
+    to complete each of the scoring objectives."""
     sand_score = max([float(calculated_data['habLineSuccessL1']) * 3 / 100,
                       float(calculated_data['habLineSuccessL2']) * 6 / 100])
     lemon_score = calculated_data['avgLemonsScoredSandstorm'] * 3
