@@ -137,6 +137,8 @@ for match in os.listdir(utils.create_file_path('data/cache/schedule_matches')):
     # '.split()' removes '.txt' file ending
     SCHEDULE_MATCHES[match.split('.')[0]] = match_data
 
+# Gathers the matches that already have data in the competition. This
+# data is added to, then sent to the cache and upload queue.
 MATCHES = {}
 for match in os.listdir(utils.create_file_path('data/cache/matches')):
     with open(utils.create_file_path(f'data/cache/matches/{match}')) as file:
