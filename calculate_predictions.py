@@ -96,13 +96,12 @@ def calculate_chance_rocket_rp(team_numbers):
 
     return lemon_chance * orange_chance
 
-def calculate_predicted_rps(calculated_data, is_red):
+def calculate_predicted_rps(calculated_data, color):
     """Calculates the predicted number of rps for an alliance.
 
     calculated_data is the prediction data for the match.
-    is_red is True or False based on whether the alliance is red or
-    blue."""
-    if is_red:
+    color is the alliance color which is being calculated."""
+    if color == 'red':
         win = 2 if calculated_data['redPredictedScore'] > \
             calculated_data['bluePredictedScore'] else 0
         total = win + calculated_data['redChanceClimbRP'] + \
@@ -153,43 +152,38 @@ for match in SCHEDULE_MATCHES.keys():
     # The calculated_data dictionary where all the calculated match data
     # will be stored.
     calculated_data = {}
-    red_alliance = SCHEDULE_MATCHES[str(match)]['redTeams']
-    blue_alliance = SCHEDULE_MATCHES[str(match)]['blueTeams']
 
-    calculated_data['bluePredictedScore'] = \
-        calculate_predicted_alliance_score(blue_alliance)
-    calculated_data['redPredictedScore'] = \
-        calculate_predicted_alliance_score(red_alliance)
-    calculated_data['bluePredictedClimbPoints'] = \
-        calculate_predicted_climb_points(blue_alliance)
-    calculated_data['redPredictedClimbPoints'] = \
-        calculate_predicted_climb_points(red_alliance)
-    calculated_data['blueChanceClimbRP'] = \
-        calculate_chance_climb_rp(blue_alliance)
-    calculated_data['redChanceClimbRP'] = \
-        calculate_chance_climb_rp(red_alliance)
-    calculated_data['blueChanceRocketRP'] = \
-        calculate_chance_rocket_rp(blue_alliance)
-    calculated_data['redChanceRocketRP'] = \
-        calculate_chance_rocket_rp(red_alliance)
+    # Iterates through each of the alliances to do predictions on both
+    # of them.
+    for alliance_color in ['red', 'blue']:
+        alliance = SCHEDULE_MATCHES[str(match)][f'{alliance_color}Teams']
 
-    if MATCHES[match].get('blueActualRPs') is None:
-        calculated_data['bluePredictedRPs'] = \
-            calculate_predicted_rps(calculated_data, False)
-        calculated_data['redPredictedRPs'] = \
-            calculate_predicted_rps(calculated_data, True)
-    else:
-        calculated_data['bluePredictedRPs'] = MATCHES[match]['blueActualRPs']
-        calculated_data['redPredictedRPs'] = MATCHES[match]['redActualRPs']
+        calculated_data[f'{alliance_color}PredictedScore'] = \
+            calculate_predicted_alliance_score(alliance)
+        calculated_data[f'{alliance_color}PredictedClimbPoints'] = \
+            calculate_predicted_climb_points(alliance)
+        calculated_data[f'{alliance_color}ChanceClimbRP'] = \
+            calculate_chance_climb_rp(alliance)
+        calculated_data[f'{alliance_color}ChanceRocketRP'] = \
+            calculate_chance_rocket_rp(alliance)
 
-    for team in red_alliance:
+        if MATCHES[match].get(f'{alliance_color}ActualRPs') is None:
+            calculated_data[f'{alliance_color}PredictedRPs'] = \
+                calculate_predicted_rps(calculated_data, alliance_color)
+        else:
+            calculated_data[f'{alliance_color}PredictedRPs'] = \
+                MATCHES[match][f'{alliance_color}ActualRPs']
+
+    for team in SCHEDULE_MATCHES[str(match)]['redTeams']:
         if TEAMS[str(team)]['calculatedData'].get('predictedRPs') is None:
             TEAMS[str(team)]['calculatedData']['predictedRPs'] = []
-        TEAMS[str(team)]['calculatedData']['predictedRPs'].append(calculated_data['redPredictedRPs'])
-    for team in blue_alliance:
+        TEAMS[str(team)]['calculatedData']['predictedRPs'].append(
+            calculated_data['redPredictedRPs'])
+    for team in SCHEDULE_MATCHES[str(match)]['blueTeams']:
         if TEAMS[str(team)]['calculatedData'].get('predictedRPs') is None:
             TEAMS[str(team)]['calculatedData']['predictedRPs'] = []
-        TEAMS[str(team)]['calculatedData']['predictedRPs'].append(calculated_data['bluePredictedRPs'])
+        TEAMS[str(team)]['calculatedData']['predictedRPs'].append(
+            calculated_data['bluePredictedRPs'])
 
     # Adds the 'calculated_data' to the 'calculatedData' key on the match.
     if MATCHES.get(str(match)) is None:
