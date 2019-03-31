@@ -100,7 +100,8 @@ def calculate_predicted_rps(calculated_data, is_red):
     """Calculates the predicted number of rps for an alliance.
 
     calculated_data is the prediction data for the match.
-    is_red is a boolean showing if the alliance is red or blue."""
+    is_red is True or False based on whether the alliance is red or
+    blue."""
     if is_red:
         win = 2 if calculated_data['redPredictedScore'] > \
             calculated_data['bluePredictedScore'] else 0
