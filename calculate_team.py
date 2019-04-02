@@ -660,21 +660,21 @@ def team_calculations(timds, team_number):
         if timd['calculatedData']['timeDefending'] > 0.0:
             defending_timds.append(timd)
 
-    calculated_data['avgCyclesDefended'] = avg([timd[
-        'calculatedData']['totalCyclesDefended'] for timd in \
+    calculated_data['avgFailedCyclesCaused'] = avg([timd[
+        'calculatedData']['totalFailedCyclesCaused'] for timd in \
         defending_timds])
     calculated_data['avgTimeDefending'] = avg([timd[
         'calculatedData']['timeDefending'] for timd in \
         defending_timds])
-    calculated_data['cyclesDefended'] = sum([timd[
-        'calculatedData']['totalCyclesDefended'] for timd in \
+    calculated_data['failedCyclesCaused'] = sum([timd[
+        'calculatedData']['totalFailedCyclesCaused'] for timd in \
         defending_timds])
     calculated_data['totalTimeDefending'] = sum([timd[
         'calculatedData']['timeDefending'] for timd in \
         defending_timds])
     calculated_data['matchesDefended'] = len(defending_timds)
-    calculated_data['cyclesDefendedPerSecond'] = calculated_data[
-        'cyclesDefended'] / calculated_data['totalTimeDefending']
+    calculated_data['failedCyclesCausedPerSecond'] = calculated_data[
+        'failedCyclesCaused'] / calculated_data['totalTimeDefending']
 
     # Calculations for percent successes for different actions using the
     # SUCCESS_DATA_FIELDS dictionary.
