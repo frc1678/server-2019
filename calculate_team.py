@@ -595,7 +595,10 @@ def climb_success_rate(timds, level, string=False):
         return f'{successes} / {attempts}'
     else:
         if attempts == 0:
-            return 0
+            # Returns None instead of zero because a team who didn't
+            # climb at all to a specific level shouldn't have a 0%
+            # success rate, becuase that implies failure.
+            return None
         return round(100 * successes / attempts)
 
 def make_paired_cycle_list(cycle_list):
@@ -686,8 +689,12 @@ def team_calculations(timds, team_number):
                      timd['startingLevel'] == 2]
 
     # Percentages and fractions of hab line successes.
-    calculated_data['habLineSuccessL1'] = round(100 * avg(hab_level_one))
-    calculated_data['habLineSuccessL2'] = round(100 * avg(hab_level_two))
+    # Only calculates hab level success if they attempted to cross from
+    # that level.
+    if hab_level_one != []:
+        calculated_data['habLineSuccessL1'] = round(100 * avg(hab_level_one))
+    if hab_level_two != []:
+        calculated_data['habLineSuccessL2'] = round(100 * avg(hab_level_two))
     calculated_data['habLineAttemptsL1'] = f'{sum(hab_level_one)} / {len(hab_level_one)}'
     calculated_data['habLineAttemptsL2'] = f'{sum(hab_level_two)} / {len(hab_level_two)}'
 
@@ -709,8 +716,10 @@ def team_calculations(timds, team_number):
         if timd.get('rankDefense') != 0:
             defending_matches.append(timd)
 
+    # If a team didn't play defense, they shouldn't have a 0 for their
+    # defense rank, because it is undetermined.
     calculated_data['avgRankDefense'] = avg([
-        timd.get('rankDefense') for timd in defending_matches])
+        timd.get('rankDefense') for timd in defending_matches], None)
 
     # Takes out the matches when they didn't play counter defense
     # (matches where rankCounterDefense is 0).
@@ -719,8 +728,10 @@ def team_calculations(timds, team_number):
         if timd.get('rankCounterDefense') != 0:
             counter_defending_matches.append(timd)
 
+    # If a team didn't play defense, they shouldn't have a 0 for their
+    # counter defense rank, because it is undetermined.
     calculated_data['avgRankCounterDefense'] = avg([
-        timd.get('rankCounterDefense') for timd in counter_defending_matches])
+        timd.get('rankCounterDefense') for timd in counter_defending_matches], None)
 
     # Percent of matches of incap, no-show, or dysfunctional
     matches_incap = [True if timd['calculatedData']['timeIncap'] > 0.0
