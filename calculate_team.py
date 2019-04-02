@@ -20,7 +20,7 @@ AVERAGE_DATA_FIELDS = {
     'avgOrangesScored': 'orangesScored',
     'avgLemonsScored': 'lemonsScored',
     'avgOrangesFouls': 'orangeFouls',
-    'avgLemonsSpilled': 'lemonsSpilled',
+    'avgPinningFouls': 'pinningFouls',
     'avgOrangesScoredSandstorm': 'orangesScoredSandstorm',
     'avgLemonsScoredSandstorm': 'lemonsScoredSandstorm',
     'avgOrangesScoredTeleL1': 'orangesScoredTeleL1',
@@ -45,7 +45,7 @@ LFM_AVERAGE_DATA_FIELDS = {
     'lfmAvgOrangesScored': 'orangesScored',
     'lfmAvgLemonsScored': 'lemonsScored',
     'lfmAvgOrangesFouls': 'orangeFouls',
-    'lfmAvgLemonsSpilled': 'lemonsSpilled',
+    'lfmAvgPinningFouls': 'pinningFouls',
     'lfmAvgTimeIncap': 'timeIncap',
     'lfmAvgTimeClimbing': 'timeClimbing',
 }
@@ -56,7 +56,7 @@ SD_DATA_FIELDS = {
     'sdAvgOrangesScored': 'orangesScored',
     'sdAvgLemonsScored': 'lemonsScored',
     'sdAvgOrangesFouls': 'orangeFouls',
-    'sdAvgLemonsSpilled': 'lemonsSpilled',
+    'sdAvgPinningFouls': 'pinningFouls',
     'sdAvgTimeIncap': 'timeIncap',
     'sdAvgTimeClimbing': 'timeClimbing',
 }
@@ -67,7 +67,7 @@ P75_DATA_FIELDS = {
     'p75AvgOrangesScored': 'orangesScored',
     'p75AvgLemonsScored': 'lemonsScored',
     'p75AvgOrangesFouls': 'orangeFouls',
-    'p75AvgLemonsSpilled': 'lemonsSpilled',
+    'p75AvgPinningFouls': 'pinningFouls',
     'p75AvgTimeIncap': 'timeIncap',
     'p75AvgTimeClimbing': 'timeClimbing',
 }

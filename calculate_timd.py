@@ -186,8 +186,8 @@ def calculate_timd_data(timd):
         timd, type='placement', didSucceed=True, piece='lemon'))
     calculated_data['orangeFouls'] = len(filter_timeline_actions(
         timd, shotOutOfField=True))
-    calculated_data['lemonsSpilled'] = len(filter_timeline_actions(
-        timd, type='spill'))
+    calculated_data['pinningFouls'] = len(filter_timeline_actions(
+        timd, type='pinningFoul'))
 
     calculated_data['orangesScoredSandstorm'] = len(
         filter_timeline_actions(timd, type='placement', piece='orange', \
