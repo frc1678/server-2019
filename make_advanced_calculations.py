@@ -101,18 +101,17 @@ def calculate_second_pick_ability(calculated_data, max_da, min_da):
         driver_ability = driving_weight * \
             (calculated_data['driverAbility'] - min_da)/(max_da - min_da)
 
-    # Score for defense, based around the lowest being 1, and the highest being
-    # 2 times the defense weight + 1. Example - if avgRankDefense is 2,
-    # and the weight is 5, the defense ability would be 6, because the
-    # avgRankDefense is one above one, which translates to one times the
-    # weight above one, or 1 + 5, which is 6.
-    defense_ability = (float(calculated_data['avgRankDefense']) * \
-        defense_weight) - (defense_weight - 1)
-    # When the average rank defense is less than 1, the defense ability
-    # calculation returns negative, and it should return zero because
-    # the team didn't play defense.
-    if defense_ability < 1:
+    # When the average rank defense is None, the defense_ability should
+    # be 0, because the team didn't play defense.
+    if calculated_data.get('avgRankDefense') is None:
         defense_ability = 0
+    else:
+        # Score for defense, based around the lowest being 1, and the
+        # highest being 2 times the defense weight + 1. Example: If the
+        # weight is 5, the defense ability for an avgRankDefense of 1,
+        # 2, and 3 would be 1, 6, and 11 respectively.
+        defense_ability = (float(calculated_data['avgRankDefense']) * \
+            defense_weight) - (defense_weight - 1)
     return sand_score + level_1_teleop_score + end_game_score + driver_ability + defense_ability
 
 def calculate_zscores(team_average_field, team_zscore_field):
