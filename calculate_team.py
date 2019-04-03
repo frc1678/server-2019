@@ -658,6 +658,8 @@ def team_calculations(timds, team_number):
             defending_timds.append(timd)
 
     calculated_data['matchesDefended'] = len(defending_timds)
+    # The defense calculations should only be calculated if the team had
+    # a match where they played defense.
     if calculated_data['matchesDefended'] > 0:
         calculated_data['avgCyclesDefended'] = avg([timd[
             'calculatedData']['totalCyclesDefended'] for timd in \
