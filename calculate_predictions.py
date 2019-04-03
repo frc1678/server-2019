@@ -51,28 +51,71 @@ def calculate_predicted_climb_points(team_numbers):
     return total_points
 
 def calculate_chance_climb_rp(team_numbers):
-    """Calculates the chance an alliance gets the climb ranking point.
+    """Calculates the chance an alliance gets the climb RP (ranking point).
 
     team_numbers are the team_numbers on the alliance."""
     # 'teams_calculated_data' is the list of 'calculatedData'
     # dictionaries for each team in the alliance
-    teams_calculated_data = [TEAMS[str(team)]['calculatedData'] for team
-                             in team_numbers]
-    # The two common options for the climb rp are one team climbing to
+    teams_calculated_data = {team_number: \
+        TEAMS[str(team)]['calculatedData'] for team_number in \
+        team_numbers}
+
+    base_available_teams = {}
+    for team, team_calculated_data in teams_calculated_data.items():
+        level_specific_successes = {}
+        for level in ['1', '2', '3']:
+            level_specific_successes[level] = \
+                team_calculated_data.get(f'climbSuccessL{level}', 0) / 100
+        base_available_teams[str(team)] = level_specific_successes
+
+    # The two minimum options for the climb RP are one team climbing to
     # level 3 with another on level 1, and two teams climbing to level 2
     # with another on level 1.
-    level_3_chance = max([float(team_calculated_data['climbSuccessL3']) / 100
-                          for team_calculated_data in teams_calculated_data])
-    level_1_chance = max([float(team_calculated_data['climbSuccessL1']) / 100
-                          for team_calculated_data in teams_calculated_data])
-    level_3_rp_chance = level_3_chance * level_1_chance
+    # All possible combinations for the RP are at these levels or above.
+    # RP combinations
+    rp_combinations = [['3', '1'], ['2', '2', '1']]
+    rp_combination_chances = []
 
-    level_2_climb_chances = sorted([float(team_calculated_data['climbSuccessL2']) / 100
-                                    for team_calculated_data in teams_calculated_data])[-2:]
-    two_level_2_climb_chance = level_2_climb_chances[0] * level_2_climb_chances[1]
-    level_2_rp_chance = two_level_2_climb_chance * level_1_chance
+    for rp_combination in rp_combinations:
+        # 'dict(base_available_teams)' makes a copy of
+        # 'base_available_teams'.
+        # A copy is needed in order to remove teams without altering
+        # the original data.
+        available_teams = dict(base_available_teams)
+        level_chances = []
+        for min_level in rp_combination:
+            # Team to their highest success rate at a level at or
+            # above the minimum required level.
+            max_successes = {}
+            for team in available_teams:
+                # Team's success rate by level for each level between
+                # (and including) the minimum level and 3.
+                level_success_rates = {level: \
+                    available_teams[team][str(level)] for level in \
+                    range(min_level, 3+1)}
+                # Gets the max success rate out of all the levels.
+                max_successes[team] = max(level_success_rates.values())
+            # After each team's highest success rate is taken, the
+            # absolute highest success rate for the remaining teams is
+            # added to the list of chances for the RP combination. Also,
+            # the team is removed from the available teams because they
+            # already were used for a previous minimum level.
+            for team, chance in max_successes.items():
+                if chance == max(max_successes.values()):
+                    level_chances.append(chance)
+                    available_teams.pop(team)
+                    break
+        # Multiplies all the chances for the different minimum levels to
+        # find the total chance for the RP combination.
+        rp_combination_chance = 1
+        for chance in level_chances:
+            rp_combination_chance *= chance
+        rp_combination_chances.append(rp_combination_chance)
 
-    return max([level_3_rp_chance, level_2_rp_chance])
+    # Assumes that the alliance will go will the RP combination that has
+    # the highest chance of success, so the chance for a climb RP is the
+    # max of all the RP combination chances.
+    return max(rp_combination_chances)
 
 def calculate_chance_rocket_rp(team_numbers):
     """Calculates the chance an alliance gets the rocket ranking point.
