@@ -38,6 +38,7 @@ TEMP_TIMD_COMPRESSION_KEYS = {
     'D': 'self',
     'E': 'robot1',
     'F': 'robot2',
+    'J': 'failedCyclesCaused',
 }
 # Compressed tempTIMD value to uncompressed tempTIMD value
 TEMP_TIMD_COMPRESSION_VALUES = {
@@ -56,7 +57,7 @@ TEMP_TIMD_COMPRESSION_VALUES = {
     'M': 'intake',
     'N': 'placement',
     'P': 'drop',
-    'Q': 'spill',
+    'Q': 'pinningFoul',
     'R': 'climb',
     'S': 'incap',
     'U': 'unincap',
@@ -276,12 +277,7 @@ TEMP_SUPER_COMPRESSION_KEYS = {
     '1': 'team1',
     '2': 'team2',
     '3': 'team3',
-    'A': 'numGoodDecisions',
-    'B': 'numBadDecisions',
     'j': 'wasHitDuringSandstorm',
-    'C': 'knocking',
-    'D': 'docking',
-    'E': 'pathBlocking',
 }
 # Compressed tempSuper value to uncompressed tempSuper value
 TEMP_SUPER_COMPRESSION_VALUES = {
@@ -396,20 +392,8 @@ def decompress_temp_super_teams(compressed_temp_super_teams):
             decompressed_key = TEMP_SUPER_COMPRESSION_KEYS[compressed_key]
             # Every character after the key is the value.
             compressed_value = team_item[1:]
-            if decompressed_key == 'rankDefense':
-                # Example 'compressed_value': "{C3D3E3}"
-                # Removes curly brackets
-                compressed_value = compressed_value[1:-1]
-                decompressed_value = {}
-                for character in compressed_value:
-                    if character.isalpha():
-                        rank_defense_key = TEMP_SUPER_COMPRESSION_KEYS[character]
-                    elif character.isdigit():
-                        rank_defense_value = int(character)
-                        decompressed_value[rank_defense_key] = rank_defense_value
-
             # Checks if the value is a letter that can be decompressed.
-            elif compressed_value in TEMP_SUPER_COMPRESSION_VALUES:
+            if compressed_value in TEMP_SUPER_COMPRESSION_VALUES:
                 # Decompresses the key and the value.
                 decompressed_value = TEMP_SUPER_COMPRESSION_VALUES[compressed_value]
             # Checks if the value only contains characters 0-9

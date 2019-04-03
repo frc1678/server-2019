@@ -186,8 +186,8 @@ def calculate_timd_data(timd):
         timd, type='placement', didSucceed=True, piece='lemon'))
     calculated_data['orangeFouls'] = len(filter_timeline_actions(
         timd, shotOutOfField=True))
-    calculated_data['lemonsSpilled'] = len(filter_timeline_actions(
-        timd, type='spill'))
+    calculated_data['pinningFouls'] = len(filter_timeline_actions(
+        timd, type='pinningFoul'))
 
     calculated_data['orangesScoredSandstorm'] = len(
         filter_timeline_actions(timd, type='placement', piece='orange', \
@@ -233,8 +233,8 @@ def calculate_timd_data(timd):
         filter_timeline_actions(timd, type='placement', piece='lemon', \
         level=3, didSucceed=True))
 
-    calculated_data['totalCyclesDefended'] = sum([
-        action['cyclesDefended'] for action in
+    calculated_data['totalFailedCyclesCaused'] = sum([
+        action['failedCyclesCaused'] for action in
         filter_timeline_actions(timd, type='endDefense')])
 
     # The next set of calculated data points are the success
@@ -341,6 +341,9 @@ def calculate_timd_data(timd):
     for action in timd.get('timeline', []):
         if action['type'] == 'climb':
             calculated_data['timeClimbing'] = action['time']
+            calculated_data['selfClimbLevel'] = action['actual']['self']
+            calculated_data['robot1ClimbLevel'] = action['actual']['robot1']
+            calculated_data['robot2ClimbLevel'] = action['actual']['robot2']
 
     # Creates a list of all the incap and unincap actions in the timeline.
     incap_items = []

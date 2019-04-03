@@ -20,7 +20,7 @@ AVERAGE_DATA_FIELDS = {
     'avgOrangesScored': 'orangesScored',
     'avgLemonsScored': 'lemonsScored',
     'avgOrangesFouls': 'orangeFouls',
-    'avgLemonsSpilled': 'lemonsSpilled',
+    'avgPinningFouls': 'pinningFouls',
     'avgOrangesScoredSandstorm': 'orangesScoredSandstorm',
     'avgLemonsScoredSandstorm': 'lemonsScoredSandstorm',
     'avgOrangesScoredTeleL1': 'orangesScoredTeleL1',
@@ -45,7 +45,7 @@ LFM_AVERAGE_DATA_FIELDS = {
     'lfmAvgOrangesScored': 'orangesScored',
     'lfmAvgLemonsScored': 'lemonsScored',
     'lfmAvgOrangesFouls': 'orangeFouls',
-    'lfmAvgLemonsSpilled': 'lemonsSpilled',
+    'lfmAvgPinningFouls': 'pinningFouls',
     'lfmAvgTimeIncap': 'timeIncap',
     'lfmAvgTimeClimbing': 'timeClimbing',
 }
@@ -56,7 +56,7 @@ SD_DATA_FIELDS = {
     'sdAvgOrangesScored': 'orangesScored',
     'sdAvgLemonsScored': 'lemonsScored',
     'sdAvgOrangesFouls': 'orangeFouls',
-    'sdAvgLemonsSpilled': 'lemonsSpilled',
+    'sdAvgPinningFouls': 'pinningFouls',
     'sdAvgTimeIncap': 'timeIncap',
     'sdAvgTimeClimbing': 'timeClimbing',
 }
@@ -67,7 +67,7 @@ P75_DATA_FIELDS = {
     'p75AvgOrangesScored': 'orangesScored',
     'p75AvgLemonsScored': 'lemonsScored',
     'p75AvgOrangesFouls': 'orangeFouls',
-    'p75AvgLemonsSpilled': 'lemonsSpilled',
+    'p75AvgPinningFouls': 'pinningFouls',
     'p75AvgTimeIncap': 'timeIncap',
     'p75AvgTimeClimbing': 'timeClimbing',
 }
@@ -595,7 +595,10 @@ def climb_success_rate(timds, level, string=False):
         return f'{successes} / {attempts}'
     else:
         if attempts == 0:
-            return 0
+            # Returns None instead of zero because a team who didn't
+            # climb at all to a specific level shouldn't have a 0%
+            # success rate, becuase that implies failure.
+            return None
         return round(100 * successes / attempts)
 
 def make_paired_cycle_list(cycle_list):
@@ -661,20 +664,20 @@ def team_calculations(timds, team_number):
     # The defense calculations should only be calculated if the team had
     # a match where they played defense.
     if calculated_data['matchesDefended'] > 0:
-        calculated_data['avgCyclesDefended'] = avg([timd[
-            'calculatedData']['totalCyclesDefended'] for timd in \
+        calculated_data['avgFailedCyclesCaused'] = avg([timd[
+            'calculatedData']['totalFailedCyclesCaused'] for timd in \
             defending_timds])
         calculated_data['avgTimeDefending'] = avg([timd[
             'calculatedData']['timeDefending'] for timd in \
             defending_timds])
-        calculated_data['cyclesDefended'] = sum([timd[
-            'calculatedData']['totalCyclesDefended'] for timd in \
+        calculated_data['failedCyclesCaused'] = sum([timd[
+            'calculatedData']['totalFailedCyclesCaused'] for timd in \
             defending_timds])
         calculated_data['totalTimeDefending'] = sum([timd[
             'calculatedData']['timeDefending'] for timd in \
             defending_timds])
-        calculated_data['cyclesDefendedPerSecond'] = calculated_data[
-            'cyclesDefended'] / calculated_data['totalTimeDefending']
+        calculated_data['failedCyclesCausedPerSecond'] = calculated_data[
+            'failedCyclesCaused'] / calculated_data['totalTimeDefending']
 
     # Calculations for percent successes for different actions using the
     # SUCCESS_DATA_FIELDS dictionary.
@@ -689,16 +692,16 @@ def team_calculations(timds, team_number):
                      timd['startingLevel'] == 2]
 
     # Percentages and fractions of hab line successes.
-    calculated_data['habLineSuccessL1'] = round(100 * avg(hab_level_one))
-    calculated_data['habLineSuccessL2'] = round(100 * avg(hab_level_two))
+    # Only calculates hab level success if they attempted to cross from
+    # that level.
+    if hab_level_one != []:
+        calculated_data['habLineSuccessL1'] = round(100 * avg(hab_level_one))
+    if hab_level_two != []:
+        calculated_data['habLineSuccessL2'] = round(100 * avg(hab_level_two))
     calculated_data['habLineAttemptsL1'] = f'{sum(hab_level_one)} / {len(hab_level_one)}'
     calculated_data['habLineAttemptsL2'] = f'{sum(hab_level_two)} / {len(hab_level_two)}'
 
     # Averages of super data points in timd.
-    calculated_data['avgGoodDecisions'] = avg([
-        timd.get('numGoodDecisions') for timd in timds])
-    calculated_data['avgBadDecisions'] = avg([
-        timd.get('numBadDecisions') for timd in timds])
     calculated_data['avgAgility'] = avg([
         timd.get('rankAgility') for timd in timds])
     calculated_data['avgSpeed'] = avg([
@@ -712,8 +715,22 @@ def team_calculations(timds, team_number):
         if timd.get('rankDefense') != 0:
             defending_matches.append(timd)
 
+    # If a team didn't play defense, they shouldn't have a 0 for their
+    # defense rank, because it is undetermined.
     calculated_data['avgRankDefense'] = avg([
-        timd.get('rankDefense') for timd in defending_matches])
+        timd.get('rankDefense') for timd in defending_matches], None)
+
+    # Takes out the matches when they didn't play counter defense
+    # (matches where rankCounterDefense is 0).
+    counter_defending_matches = []
+    for timd in timds:
+        if timd.get('rankCounterDefense') != 0:
+            counter_defending_matches.append(timd)
+
+    # If a team didn't play defense, they shouldn't have a 0 for their
+    # counter defense rank, because it is undetermined.
+    calculated_data['avgRankCounterDefense'] = avg([
+        timd.get('rankCounterDefense') for timd in counter_defending_matches], None)
 
     # Percent of matches of incap, no-show, or dysfunctional
     matches_incap = [True if timd['calculatedData']['timeIncap'] > 0.0
@@ -761,11 +778,6 @@ def team_calculations(timds, team_number):
     calculated_data['climbAttemptsL3'] = climb_success_rate(timds, 3, \
         string=True)
 
-    calculated_data['lfmAvgGoodDecisions'] = avg([
-        timd.get('numGoodDecisions') for timd in lfm_timds])
-    calculated_data['lfmAvgBadDecisions'] = avg([
-        timd.get('numBadDecisions') for timd in lfm_timds])
-
     calculated_data['lfmPercentIncap'] = round(100 * avg([
         True if timd['calculatedData']['timeIncap'] > 0.0 else
         False for timd in lfm_timds]))
@@ -786,11 +798,6 @@ def team_calculations(timds, team_number):
             timd['calculatedData'].get(timd_data_field) for timd in
             timds])
 
-    calculated_data['sdAvgGoodDecisions'] = sd([
-        timd.get('numGoodDecisions') for timd in timds])
-    calculated_data['sdAvgBadDecisions'] = sd([
-        timd.get('numBadDecisions') for timd in timds])
-
     # Finds the upper half average of all the previously calculated data
     # points.
     # p75_average_data_field is the calculated team data field, and
@@ -800,11 +807,6 @@ def team_calculations(timds, team_number):
         calculated_data[p75_average_data_field] = p75([
             timd['calculatedData'].get(timd_data_field) for timd in
             timds])
-
-    calculated_data['p75AvgGoodDecisions'] = p75([
-        timd.get('numGoodDecisions') for timd in timds])
-    calculated_data['p75AvgBadDecisions'] = p75([
-        timd.get('numBadDecisions') for timd in timds])
 
     # Takes out all the cycles in all the timds for a team. These will
     # be used for average cycle time calculations.
