@@ -64,7 +64,9 @@ while True:
     time.sleep(3)
 
 # Removes empty TIMDs
-for timd in TIMD_DATA.keys():
+# Uses 'list()' instead of '.keys()' because it errors if you are
+# removing data from a dictionary whose keys you are iterating through.
+for timd in list(TIMD_DATA):
     if TIMD_DATA[timd].get('calculatedData') is None:
         TIMD_DATA.pop(timd)
 
