@@ -11,16 +11,18 @@ import utils
 def probability_density(x, mu, sigma):
     """Finds the probability density in order to make predictive chances.
 
-    x is the point that the chance is based on (e.g. The amount of lemons
+    x is the goal constant, or the point that the involved teams are
+    trying to reach. (e.g. The amount of lemons
     that need to be scored in order to fill a rocket).
-    mu is the tested variable (e.g. The amount of lemons that a team
-    actually scored).
-    sigma is the variance of mu, in our case it is a standard deviation.
+    mu is the predicted output from the involved teams. (e.g. The amount
+    of lemons that a team actually scored).
+    sigma is the distribution of the possible outcomes for mu.
+
     The returned chance is the chance that mu lies on x through the
-    variance of sigma.
-    """
-    # If the variance is 0, the only two options are 100% and 0%, so
-    # return either 1 or 0 based on if mu is equal to x.
+    variance of sigma."""
+    # If the distribution for mu is 0, there is no chance mu will lie on
+    # x unless the value for mu is the same as x, in which the
+    # probability is 100%.
     if sigma == 0.0:
         return int(x == mu)
     else:
