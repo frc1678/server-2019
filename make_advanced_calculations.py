@@ -135,7 +135,7 @@ for team in os.listdir(utils.create_file_path('data/cache/teams')):
     with open(utils.create_file_path(f'data/cache/teams/{team}')) as file:
         team_data = json.load(file)
     if team_data.get('calculatedData') is not None:
-        # '.split()' removes '.txt' file ending
+        # '.split()' removes '.json' file ending
         TEAMS[team.split('.')[0]] = team_data
 
 SUPER_ZSCORE_DATA_FIELDS = {
