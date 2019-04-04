@@ -226,8 +226,8 @@ def cache_match_schedule():
             match_number = match_data['match_number']
             # Remove 'frc' from team number and convert to integer
             # (e.g. 'frc1678' -> 1678)
-            red_teams = [int(team[3:]) for team in red_teams]
-            blue_teams = [int(team[3:]) for team in blue_teams]
+            red_teams = [team[3:] for team in red_teams]
+            blue_teams = [team[3:] for team in blue_teams]
             final_match_data = {
                 'matchNumber': match_number,
                 'redTeams': red_teams,
