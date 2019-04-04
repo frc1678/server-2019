@@ -137,7 +137,7 @@ for team in os.listdir(utils.create_file_path('data/cache/teams')):
     # HACK: 'calculatedData' can contain 'actualSeed' without
     # containing other 'calculatedData'
     if 'avgLemonsScoredTeleL1' in team_data.get('calculatedData').keys():
-        # '.split()' removes '.txt' file ending
+        # '.split()' removes '.json' file ending
         TEAMS[team.split('.')[0]] = team_data
 
 SUPER_ZSCORE_DATA_FIELDS = {
