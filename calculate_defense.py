@@ -58,9 +58,6 @@ for match_number, timds in TIMDS_BY_MATCH.items():
 
         # Checks if defense was played
         if timd_data['calculatedData'].get('timeDefending', 0) > 0:
-            # Extracts 'team_number' from 'timd_name'.
-            # 'team_number' is a string.
-            team_number = timd_name.split('Q')[0]
             defending_timds_by_alliance[alliance][timd_name] = timd_data
 
     for alliance, timds_ in defending_timds_by_alliance.items():
