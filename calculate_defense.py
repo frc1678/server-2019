@@ -158,6 +158,7 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                 with open(utils.create_file_path(
                         f'data/cache/teams/{team}.json'), 'r') as file:
                     calculated_data = json.load(file)['calculatedData']
+                # Points prevented on a single team
                 points_prevented = {}
                 for piece in ['orange', 'lemon']:
                     avg_drops = calculated_data[f'avg{piece.capitalize()}Drops']
