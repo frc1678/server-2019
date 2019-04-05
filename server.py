@@ -75,55 +75,29 @@ def cycle_num_stream_handler(snapshot):
             subprocess.call(f'python3 update_assignments.py {cycle_number}',
                             shell=True)
 
-def temp_timd_stream_handler(snapshot):
+def temp_timd_stream_handler(temp_timd_name, temp_timd_value):
     """Runs when any new tempTIMDs are uploaded"""
-    data = snapshot['data']
-    path = snapshot['path']
-
-    # This occurs when the entirety of tempTIMDs are updated
-    # (stream initialization, all tempTIMDs deleted, or first tempTIMD created)
-    if path == '/':
-        # This means that all tempTIMDs have been wiped and we should
-        # wipe our local copy.
-        if data is None:
-            delete_cache_data_folder('temp_timds')
-            return
-    elif path.count('/') == 1:
-        # This is moving the path into the data so it is in the same
-        # format as data at the path '/'.  This allows us to use the
-        # same code to save the data in our local cache later on.
-        # The '[1:]' removes the slash at the beginning of the path
-        data = {path[1:]: data}
-    # If there is more than 1 slash in the path, the data is multiple
-    # children deep.  tempTIMDs are only one child deep and this will
-    # only trigger if invalid data is sent to Firebase.
+    # HACK: Remove trailing '\n' (newlines) in compressed tempTIMD
+    # data.  This is a bug in the Scout app.
+    temp_timd_value = temp_timd_value.rstrip('\n')
+    # This means that this tempTIMD has been deleted from Firebase
+    # and we should delete it from our local copy.
+    if temp_timd_value is None:
+        os.remove(utils.create_file_path(
+            f'data/cache/temp_timds/{temp_timd_name}.txt'))
+        # Causes the corresponding TIMD to be recalculated
+        register_modified_temp_timd(temp_timd_name)
     else:
-        print('Error: Invalid tempTIMD data received')
-        return
-
-    # This saves each tempTIMD in a separate text file.
-    for temp_timd_name, temp_timd_value in data.items():
-        # HACK: Remove trailing '\n' (newlines) in compressed tempTIMD
-        # data.  This is a bug in the Scout app.
-        temp_timd_value = temp_timd_value.rstrip('\n')
-        # This means that this tempTIMD has been deleted from Firebase
-        # and we should delete it from our local copy.
-        if temp_timd_value is None:
-            os.remove(utils.create_file_path(
-                f'data/cache/temp_timds/{temp_timd_name}.txt'))
-            # Causes the corresponding TIMD to be recalculated
+        with open(utils.create_file_path(
+                f'data/cache/temp_timds/{temp_timd_name}.txt'),
+                  'w') as file:
+            file.write(temp_timd_value)
+        timd_name = temp_timd_name.split('-')[0]
+        # This means an already existing tempTIMD has been modified
+        # and needs to be recalculated.
+        if temp_timd_name in LATEST_CALCULATIONS_BY_TIMD.get(
+                timd_name, []):
             register_modified_temp_timd(temp_timd_name)
-        else:
-            with open(utils.create_file_path(
-                    f'data/cache/temp_timds/{temp_timd_name}.txt'),
-                      'w') as file:
-                file.write(temp_timd_value)
-            timd_name = temp_timd_name.split('-')[0]
-            # This means an already existing tempTIMD has been modified
-            # and needs to be recalculated.
-            if temp_timd_name in LATEST_CALCULATIONS_BY_TIMD.get(
-                    timd_name, []):
-                register_modified_temp_timd(temp_timd_name)
 
 def temp_super_stream_handler(snapshot):
     """Runs when any new tempSuper datas are uploaded"""
@@ -170,11 +144,11 @@ def create_streams(stream_names=None):
     """Creates firebase streams given a list of possible streams.
 
     These possible streams include: MATCH_NUM_STREAM, CYCLE_NUM_STREAM,
-                                    TEMP_TIMD_STREAM, TEMP_SUPER_STREAM"""
+                                    TEMP_SUPER_STREAM"""
     # If specific streams are not given, create all of the possible streams
     if stream_names is None:
         stream_names = ['MATCH_NUM_STREAM', 'CYCLE_NUM_STREAM',
-                        'TEMP_TIMD_STREAM', 'TEMP_SUPER_STREAM']
+                        'TEMP_SUPER_STREAM']
     streams = {}
     # Creates each of the streams specified and stores them in the
     # streams dict.
@@ -186,11 +160,6 @@ def create_streams(stream_names=None):
         elif name == 'CYCLE_NUM_STREAM':
             streams[name] = DB.child('scoutManagement/cycleNumber'
                                     ).stream(cycle_num_stream_handler)
-        elif name == 'TEMP_TIMD_STREAM':
-            # Used to remove any outdated data
-            delete_cache_data_folder('temp_timds')
-            streams[name] = DB.child('tempTIMDs').stream(
-                temp_timd_stream_handler)
         elif name == 'TEMP_SUPER_STREAM':
             # Used to remove any outdated data
             delete_cache_data_folder('temp_super')
@@ -256,6 +225,11 @@ STREAMS = create_streams()
 # from TBA and put into the cache.
 cache_match_schedule()
 
+# Wipes 'temp_timds' cache folder
+delete_cache_data_folder('temp_timds')
+# Stores the last shallow request on 'tempTIMDs'
+LAST_TEMP_TIMD_SHALLOW = []
+
 # Stores the tempTIMDs that have already been calculated in order to
 # prevent them from being recalculated if the data has not changed.
 LATEST_CALCULATIONS_BY_TIMD = {}
@@ -269,6 +243,14 @@ while True:
             # dict to contain the new stream. 'create_streams' returns
             # a dict, which is why '.update' is called.
             STREAMS.update(create_streams([stream_name]))
+
+    # HACK: Pulls tempTIMDs in a custom stream
+    TEMP_TIMD_SHALLOW = DB.child('tempTIMDs').shallow().get().val()
+    for temp_timd in TEMP_TIMD_SHALLOW:
+        if temp_timd not in LAST_TEMP_TIMD_SHALLOW:
+            temp_timd_value = DB.child('tempTIMDs').child(temp_timd).get().val()
+            temp_timd_stream_handler(temp_timd, temp_timd_value)
+
 
     # Checks list of tempTIMDs from files to determine what calculations
     # are needed.
