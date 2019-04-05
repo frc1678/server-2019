@@ -174,12 +174,12 @@ for team in os.listdir(utils.create_file_path('data/cache/teams')):
 
 # Gathers the matches in the competition. These matches are cached from
 # the tba match schedule when the server first runs.
-SCHEDULE_MATCHES = {}
-for match in os.listdir(utils.create_file_path('data/cache/schedule_matches')):
-    with open(utils.create_file_path(f'data/cache/schedule_matches/{match}')) as file:
+MATCH_SCHEDULE = {}
+for match in os.listdir(utils.create_file_path('data/cache/match_schedule')):
+    with open(utils.create_file_path(f'data/cache/match_schedule/{match}')) as file:
         match_data = json.load(file)
     # '.split()' removes '.txt' file ending
-    SCHEDULE_MATCHES[match.split('.')[0]] = match_data
+    MATCH_SCHEDULE[match.split('.')[0]] = match_data
 
 # Gathers the matches that already have data in the competition. This
 # data is added to, then sent to the cache and upload queue.
@@ -193,7 +193,7 @@ for match in os.listdir(utils.create_file_path('data/cache/matches')):
 for team in TEAMS.keys():
     TEAMS[team]['calculatedData']['predictedRPs'] = []
 
-for match in SCHEDULE_MATCHES.keys():
+for match in MATCH_SCHEDULE.keys():
     # The calculated_data dictionary where all the calculated match data
     # will be stored.
     calculated_data = {}
@@ -201,7 +201,7 @@ for match in SCHEDULE_MATCHES.keys():
     # Iterates through each of the alliances to do predictions on both
     # of them.
     for alliance_color in ['red', 'blue']:
-        alliance = SCHEDULE_MATCHES[match][f'{alliance_color}Teams']
+        alliance = MATCH_SCHEDULE[match][f'{alliance_color}Teams']
 
         calculated_data[f'{alliance_color}PredictedScore'] = \
             calculate_predicted_alliance_score(alliance)
@@ -219,12 +219,12 @@ for match in SCHEDULE_MATCHES.keys():
             calculated_data[f'{alliance_color}PredictedRPs'] = \
                 MATCHES[match][f'{alliance_color}ActualRPs']
 
-    for team in SCHEDULE_MATCHES[match]['redTeams']:
+    for team in MATCH_SCHEDULE[match]['redTeams']:
         if TEAMS[team]['calculatedData'].get('predictedRPs') is None:
             TEAMS[team]['calculatedData']['predictedRPs'] = []
         TEAMS[team]['calculatedData']['predictedRPs'].append(
             calculated_data['redPredictedRPs'])
-    for team in SCHEDULE_MATCHES[match]['blueTeams']:
+    for team in MATCH_SCHEDULE[match]['blueTeams']:
         if TEAMS[team]['calculatedData'].get('predictedRPs') is None:
             TEAMS[team]['calculatedData']['predictedRPs'] = []
         TEAMS[team]['calculatedData']['predictedRPs'].append(
