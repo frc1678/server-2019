@@ -91,6 +91,7 @@ def calculate_chance_climb_rp(team_numbers):
         # A copy is needed in order to remove teams without altering
         # the original data.
         available_teams = dict(base_available_teams)
+        # The chances that each minimum level requirement is met.
         level_chances = []
         for min_level in rp_combination:
             # Team to their highest success rate at a level at or
