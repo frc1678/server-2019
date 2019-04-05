@@ -110,11 +110,9 @@ def calculate_chance_climb_rp(team_numbers):
             # added to the list of chances for the RP combination. Also,
             # the team is removed from the available teams because they
             # already were used for a previous minimum level.
-            for team, chance in max_successes.items():
-                if chance == max(max_successes.values()):
-                    level_chances.append(chance)
-                    available_teams.pop(team)
-                    break
+            best_team = max(max_successes, key=max_successes.get)
+            level_chances.append(max_successes[best_team])
+            available_teams.pop(best_team)
         # Multiplies all the chances for the different minimum levels to
         # find the total chance for the RP combination.
         rp_combination_chance = 1
