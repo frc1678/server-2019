@@ -189,6 +189,19 @@ def calculate_timd_data(timd):
     calculated_data['pinningFouls'] = len(filter_timeline_actions(
         timd, type='pinningFoul'))
 
+    calculated_data['orangeCycles'] = len(filter_timeline_actions(
+        timd, type='intake', piece='orange'))
+    calculated_data['lemonCycles'] = len(filter_timeline_actions(
+        timd, type='intake', piece='lemon'))
+    calculated_data['orangeDrops'] = len(filter_timeline_actions(
+        timd, type='drop', piece='orange'))
+    calculated_data['lemonDrops'] = len(filter_timeline_actions(
+        timd, type='drop', piece='lemon'))
+    calculated_data['orangeFails'] = len(filter_timeline_actions(
+        timd, type='placement', didSucceed=False, piece='orange'))
+    calculated_data['lemonFails'] = len(filter_timeline_actions(
+        timd, type='placement', didSucceed=False, piece='lemon'))
+
     calculated_data['orangesScoredSandstorm'] = len(
         filter_timeline_actions(timd, type='placement', piece='orange', \
         didSucceed=True, time='sand'))
