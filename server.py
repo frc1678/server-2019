@@ -225,7 +225,7 @@ def cache_match_schedule():
             blue_teams = match_data['alliances']['blue']['team_keys']
             match_number = match_data['match_number']
             # Remove 'frc' from team number
-            # (e.g. 'frc1678' -> 1678)
+            # (e.g. 'frc1678' -> '1678')
             red_teams = [team[3:] for team in red_teams]
             blue_teams = [team[3:] for team in blue_teams]
             final_match_data = {
