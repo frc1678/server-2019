@@ -226,7 +226,7 @@ for match in MATCH_SCHEDULE.keys():
             calculate_chance_rocket_rp(alliance)
 
         # Uses actual rps instead of predicted rps when available.
-        # HACK: This instead should be handled when calculating predicted rps.
+        # HACK: This should be handled when calculating predicted rps instead.
         if MATCHES[match].get(f'{alliance_color}ActualRPs') is None:
             calculated_data[f'{alliance_color}PredictedRPs'] = \
                 calculate_predicted_rps(calculated_data, alliance_color)
