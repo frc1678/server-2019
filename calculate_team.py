@@ -366,6 +366,8 @@ def calculate_predicted_solo_points(calculated_data):
     to complete each of the scoring objectives."""
     sandstorm_score = max([float(calculated_data['habLineSuccessL1']) * 3 / 100,
                            float(calculated_data['habLineSuccessL2']) * 6 / 100])
+    # Lemons in sandstorm are worth 5 because they also score the cargo
+    # they are trapping.
     lemon_score = calculated_data['avgLemonsScoredSandstorm'] * 5
     lemon_score += (calculated_data['avgLemonsScored'] - \
         calculated_data['avgLemonsScoredSandstorm']) * 2
