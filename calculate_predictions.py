@@ -57,8 +57,8 @@ def calculate_predicted_climb_points(team_numbers):
             total_points += max([3 * float(team_calculated_data['climbSuccessL1']) / 100,
                                  6 * float(team_calculated_data['climbSuccessL2']) / 100,
                                  12 * float(team_calculated_data['climbSuccessL3']) / 100])
-        # If the team is not the most successful, it only considers the
-        # team's level 1 and 2 successes.
+        # If the team is not the most successful at level 3, it only
+        # considers the team's level 1 and 2 successes.
         else:
             total_points += max([3 * float(team_calculated_data['climbSuccessL1']) / 100,
                                  6 * float(team_calculated_data['climbSuccessL2']) / 100])
