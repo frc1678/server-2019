@@ -219,16 +219,12 @@ for match in MATCH_SCHEDULE.keys():
             calculated_data[f'{alliance_color}PredictedRPs'] = \
                 MATCHES[match][f'{alliance_color}ActualRPs']
 
-    for team in MATCH_SCHEDULE[match]['redTeams']:
-        if TEAMS[team]['calculatedData'].get('predictedRPs') is None:
-            TEAMS[team]['calculatedData']['predictedRPs'] = []
-        TEAMS[team]['calculatedData']['predictedRPs'].append(
-            calculated_data['redPredictedRPs'])
-    for team in MATCH_SCHEDULE[match]['blueTeams']:
-        if TEAMS[team]['calculatedData'].get('predictedRPs') is None:
-            TEAMS[team]['calculatedData']['predictedRPs'] = []
-        TEAMS[team]['calculatedData']['predictedRPs'].append(
-            calculated_data['bluePredictedRPs'])
+    for alliance_color in ['red', 'blue']:
+        for team in MATCH_SCHEDULE[match][f'{alliance_color}Teams']:
+            if TEAMS[team]['calculatedData'].get('predictedRPs') is None:
+                TEAMS[team]['calculatedData']['predictedRPs'] = []
+            TEAMS[team]['calculatedData']['predictedRPs'].append(
+                calculated_data[f'{alliance_color}PredictedRPs'])
 
     # Adds the prediction data to the 'calculatedData' key in the match
     # dictionary.
