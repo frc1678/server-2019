@@ -225,7 +225,7 @@ for match in MATCH_SCHEDULE.keys():
         calculated_data[f'{alliance_color}ChanceRocketRP'] = \
             calculate_chance_rocket_rp(alliance)
 
-        # Uses actual rps instead of predicted rps after the match finished.
+        # Uses actual rps instead of predicted rps when available.
         # HACK: This instead should be handled when calculating predicted rps.
         if MATCHES[match].get(f'{alliance_color}ActualRPs') is None:
             calculated_data[f'{alliance_color}PredictedRPs'] = \
