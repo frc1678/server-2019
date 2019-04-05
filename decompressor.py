@@ -298,7 +298,8 @@ def decompress_temp_super_team(compressed_temp_super_team):
             # Checks if 'opponents' or 'timeline' is empty
             if compressed_value == '':
                 compressed_teams = []
-            compressed_teams = compressed_value.rstrip(',').split(',')
+            else:
+                compressed_teams = compressed_value.rstrip(',').split(',')
             decompressed_value = []
             for compressed_team in compressed_teams:
                 compressed_items2 = compressed_team.rstrip('?').split('?')
