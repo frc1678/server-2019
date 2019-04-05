@@ -281,7 +281,7 @@ def decompress_temp_super_team(compressed_temp_super_team):
 
     compressed_temp_super is a string."""
 
-    compressed_items = compressed_temp_super_team.split(';')
+    compressed_items = compressed_temp_super_team.rstrip(';').split(';')
 
     # 'decompressed_team_value' contains
     # 'decompressed_key':'decompressed_value' pairs
@@ -300,6 +300,7 @@ def decompress_temp_super_team(compressed_temp_super_team):
             decompressed_value = []
             for compressed_team in compressed_teams:
                 compressed_items2 = compressed_team.split('?')
+                decompressed_team = {}
                 for compressed_item2 in compressed_items2:
                     # The first character in will always be the key.
                     compressed_key2 = compressed_item2[0]
@@ -308,14 +309,23 @@ def decompress_temp_super_team(compressed_temp_super_team):
                     compressed_value2 = compressed_item2[1:]
                     if compressed_value2 in TEMP_SUPER_COMPRESSION_VALUES:
                         # Decompresses the key and the value.
-                        decompressed_value2 = TEMP_SUPER_COMPRESSION_VALUES[compressed_value]
+                        decompressed_value2 = TEMP_SUPER_COMPRESSION_VALUES[compressed_value2]
                     # Checks if the value only contains characters 0-9
                     elif compressed_value2.isdigit():
-                        decompressed_value2 = int(compressed_value)
+                        decompressed_value2 = int(compressed_value2)
                     else:
-                        # 'decompressed_value' is a float
-                        decompressed_value2 = float(compressed_value)
-                    decompressed_value[decompressed_key2] = decompressed_value2
+                        # 'compressed_value' is a float
+                        decompressed_value2 = float(compressed_value2)
+                    # HACK: Super scout sends incorrectly
+                    if decompressed_key == 'rankResistance':
+                        fix_dict = {
+                            1: 3,
+                            2: 2,
+                            3: 1,
+                        }
+                        decompressed_value2 = fix_dict[decompressed_value2]
+                    decompressed_team[decompressed_key2] = decompressed_value2
+                decompressed_value.append(decompressed_team)
         # Checks if the value is a letter that can be decompressed.
         elif compressed_value in TEMP_SUPER_COMPRESSION_VALUES:
             # Decompresses the key and the value.
@@ -337,7 +347,7 @@ def decompress_temp_super(compressed_temp_super):
 
     compressed_temp_super is a string."""
     temp_super_key = compressed_temp_super.split('|')[0]
-    compressed_teams = compressed_temp_super.split('|')[1].split('_')
+    compressed_teams = compressed_temp_super.split('|')[1].rstrip('_').split('_')
 
     decompressed_temp_super = []
 
