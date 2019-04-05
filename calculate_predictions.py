@@ -82,7 +82,6 @@ def calculate_chance_climb_rp(team_numbers):
     # level 3 with another on level 1, and two teams climbing to level 2
     # with another on level 1.
     # All possible combinations for the RP are at these levels or above.
-    # RP combinations
     rp_combinations = [['3', '1'], ['2', '2', '1']]
     rp_combination_chances = []
 
