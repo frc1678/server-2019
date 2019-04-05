@@ -94,8 +94,8 @@ def calculate_chance_climb_rp(team_numbers):
         # The chances that each minimum level requirement is met.
         level_chances = []
         for min_level in rp_combination:
-            # Team to their highest success rate at a level at or
-            # above the minimum required level.
+            # Team to their highest success rate out of the level(s) at
+            # or above the minimum required level.
             max_successes = {}
             for team in available_teams:
                 # Team's success rate by level for each level between
