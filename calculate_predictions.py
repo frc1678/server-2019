@@ -69,6 +69,7 @@ def calculate_chance_climb_rp(team_numbers):
         TEAMS[team]['calculatedData'] for team_number in \
         team_numbers}
 
+    # The template for each team to their successes for each climb level.
     base_available_teams = {}
     for team, team_calculated_data in calculated_data_by_team.items():
         level_specific_successes = {}
