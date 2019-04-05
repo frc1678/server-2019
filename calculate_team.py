@@ -705,9 +705,9 @@ def team_calculations(timds, team_number):
 
     # 'hab_level_one' and 'hab_level_two' are lists of booleans
     hab_level_one = [timd['crossedHabLine'] for timd in timds if
-                     timd['startingLevel'] == 1]
+                     timd.get('startingLevel') == 1]
     hab_level_two = [timd['crossedHabLine'] for timd in timds if
-                     timd['startingLevel'] == 2]
+                     timd.get('startingLevel') == 2]
 
     # Percentages and fractions of hab line successes.
     # Only calculates hab level success if they attempted to cross from
