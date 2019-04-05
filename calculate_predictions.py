@@ -200,6 +200,9 @@ for match in os.listdir(utils.create_file_path('data/cache/matches')):
 for team in TEAMS.keys():
     TEAMS[team]['calculatedData']['predictedRPs'] = []
 
+# Each team to a list of the predicted rps they recieved in each of
+# their matches.
+PREDICTED_RPS_BY_TEAM = {}
 for match in MATCH_SCHEDULE.keys():
     # The calculated_data dictionary where all the calculated match data
     # will be stored.
@@ -228,10 +231,10 @@ for match in MATCH_SCHEDULE.keys():
                 MATCHES[match][f'{alliance_color}ActualRPs']
 
         for team in MATCH_SCHEDULE[match][f'{alliance_color}Teams']:
-            if TEAMS[team]['calculatedData'].get('predictedRPs') is None:
-                TEAMS[team]['calculatedData']['predictedRPs'] = []
-            TEAMS[team]['calculatedData']['predictedRPs'].append(
-                calculated_data[f'{alliance_color}PredictedRPs'])
+            if PREDICTED_RPS_BY_TEAM.get(team) is None:
+                PREDICTED_RPS_BY_TEAM[team] = []
+            PREDICTED_RPS_BY_TEAM[team].append(calculated_data[
+                f'{alliance_color}PredictedRPs'])
 
     # Adds the prediction data to the 'calculatedData' key in the match
     # dictionary.
@@ -241,15 +244,14 @@ for match in MATCH_SCHEDULE.keys():
 
 # All the teams in order of their average predictedRPs from highest to lowest.
 PREDICTED_RP_LIST = {team: (sum(
-    TEAMS[team]['calculatedData']['predictedRPs']) / len( \
-    TEAMS[team]['calculatedData']['predictedRPs'])) for team in \
-    TEAMS}
+    PREDICTED_RPS_BY_TEAM[team]) / len(PREDICTED_RPS_BY_TEAM[team])) \
+    for team in PREDICTED_RPS_BY_TEAM}
 SEED_ORDER = sorted(PREDICTED_RP_LIST.keys(), key=PREDICTED_RP_LIST.get, reverse=True)
 
 # Starts seeding at 1
 for seed, team in enumerate(SEED_ORDER, 1):
     TEAMS[team]['calculatedData']['predictedRPs'] = \
-        sum(TEAMS[team]['calculatedData']['predictedRPs'])
+        sum(PREDICTED_RPS_BY_TEAM[team])
     TEAMS[team]['calculatedData']['predictedSeed'] = seed
 
 # Sends data to 'cache' and 'upload_queue'
