@@ -68,8 +68,7 @@ def calculate_chance_climb_rp(team_numbers):
     """Calculates the chance an alliance gets the climb RP (ranking point).
 
     team_numbers are the team_numbers on the alliance."""
-    # 'calculated_data_by_team' is the list of 'calculatedData'
-    # dictionaries for each team in the alliance
+    # Each team to their 'calculatedData' dictionaries
     calculated_data_by_team = {team_number: \
         TEAMS[team]['calculatedData'] for team_number in \
         team_numbers}
