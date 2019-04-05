@@ -72,11 +72,11 @@ def calculate_chance_climb_rp(team_numbers):
     # The template for each team to their successes for each climb level.
     base_available_teams = {}
     for team_number, team_calculated_data in calculated_data_by_team.items():
-        level_specific_successes = {}
+        success_by_level = {}
         for level in ['1', '2', '3']:
-            level_specific_successes[level] = \
+            success_by_level[level] = \
                 team_calculated_data.get(f'climbSuccessL{level}', 0) / 100
-        base_available_teams[team_number] = level_specific_successes
+        base_available_teams[team_number] = success_by_level
 
     # The two minimum options for the climb RP are one team climbing to
     # level 3 with another on level 1, and two teams climbing to level 2
