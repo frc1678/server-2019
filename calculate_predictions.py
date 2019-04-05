@@ -42,14 +42,14 @@ def calculate_predicted_climb_points(team_numbers):
     """Calculates the predicted climb points for an alliance.
 
     team_numbers is a list of team numbers (integers) on the alliance"""
-    teams_calculated_data = {team_number: \
+    calculated_data_by_team = {team_number: \
         TEAMS[team]['calculatedData'] for team_number in \
         team_numbers}
     total_points = 0
     for team in team_numbers:
-        team_calculated_data = teams_calculated_data[team]
+        team_calculated_data = calculated_data_by_team[team]
         if team_calculated_data['climbSuccessL3'] == max([
-                teams_calculated_data[team_number]['climbSuccessL3'] for
+                calculated_data_by_team[team_number]['climbSuccessL3'] for
                 team_number in team_numbers]):
             total_points += max([3 * float(team_calculated_data['climbSuccessL1']) / 100,
                                  6 * float(team_calculated_data['climbSuccessL2']) / 100,
@@ -63,14 +63,14 @@ def calculate_chance_climb_rp(team_numbers):
     """Calculates the chance an alliance gets the climb RP (ranking point).
 
     team_numbers are the team_numbers on the alliance."""
-    # 'teams_calculated_data' is the list of 'calculatedData'
+    # 'calculated_data_by_team' is the list of 'calculatedData'
     # dictionaries for each team in the alliance
-    teams_calculated_data = {team_number: \
+    calculated_data_by_team = {team_number: \
         TEAMS[team]['calculatedData'] for team_number in \
         team_numbers}
 
     base_available_teams = {}
-    for team, team_calculated_data in teams_calculated_data.items():
+    for team, team_calculated_data in calculated_data_by_team.items():
         level_specific_successes = {}
         for level in ['1', '2', '3']:
             level_specific_successes[level] = \
@@ -130,21 +130,21 @@ def calculate_chance_rocket_rp(team_numbers):
     """Calculates the chance an alliance gets the rocket ranking point.
 
     team_numbers are the team_numbers on the alliance."""
-    teams_calculated_data = [TEAMS[team]['calculatedData'] for team in
+    calculated_data_by_team = [TEAMS[team]['calculatedData'] for team in
                              team_numbers]
     # Calculates the chances that the alliance places 6 lemons, then
     # multiplies it by the chance the alliance places 6 oranges.
     # [-2:] splices the list to only include the two highest lemon scorers.
     lemons_scored = sum(sorted([team_calculated_data['avgLemonsScored'] \
-        for team_calculated_data in teams_calculated_data])[-2:])
+        for team_calculated_data in calculated_data_by_team])[-2:])
     lemon_sd = max([team_calculated_data['sdAvgLemonsScored'] for \
-        team_calculated_data in teams_calculated_data])
+        team_calculated_data in calculated_data_by_team])
     lemon_chance = probability_density(6.0, lemons_scored, lemon_sd)
 
     oranges_scored = sum(sorted([team_calculated_data['avgOrangesScored'] \
-        for team_calculated_data in teams_calculated_data])[-2:])
+        for team_calculated_data in calculated_data_by_team])[-2:])
     orange_sd = max([team_calculated_data['sdAvgOrangesScored'] for \
-        team_calculated_data in teams_calculated_data])
+        team_calculated_data in calculated_data_by_team])
     orange_chance = probability_density(6.0, oranges_scored, orange_sd)
 
     return lemon_chance * orange_chance
