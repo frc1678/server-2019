@@ -35,6 +35,12 @@ AVERAGE_DATA_FIELDS = {
     'avgLemonsScoredL1': 'lemonsScoredL1',
     'avgLemonsScoredL2': 'lemonsScoredL2',
     'avgLemonsScoredL3': 'lemonsScoredL3',
+    'avgOrangeCycles': 'orangeCycles',
+    'avgLemonCycles': 'lemonCycles',
+    'avgOrangeDrops': 'orangeDrops',
+    'avgLemonDrops': 'lemonDrops',
+    'avgOrangeFails': 'orangeFails',
+    'avgLemonFails': 'lemonFails',
     'avgTimeIncap': 'timeIncap',
     'avgTimeClimbing': 'timeClimbing',
 }
