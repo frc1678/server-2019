@@ -370,10 +370,7 @@ def calculate_predicted_solo_points(calculated_data):
     lemon_score += (calculated_data['avgLemonsScored'] - \
         calculated_data['avgLemonsScoredSandstorm']) * 2
     orange_score = calculated_data['avgOrangesScored'] * 3
-    end_game_score = max([3 * float(calculated_data['climbSuccessL1']) / 100,
-                          6 * float(calculated_data['climbSuccessL2']) / 100,
-                          12 * float(calculated_data['climbSuccessL3']) / 100])
-    return sandstorm_score + lemon_score + orange_score + end_game_score
+    return sandstorm_score + lemon_score + orange_score
 
 def calculate_avg_cycle_time(cycles):
     """Calculates the average time for an action based on start and end times.

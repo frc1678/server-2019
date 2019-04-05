@@ -28,11 +28,12 @@ def probability_density(x, mu, sigma):
     else:
         return 1.0 - norm.cdf(x, mu, sigma)
 
-def calculate_predicted_alliance_score(team_numbers):
+def calculate_predicted_alliance_score(team_numbers, pred_climb_points):
     """Calculates the predicted score for an alliance.
 
-    team_numbers is a list of team numbers (integers) on the alliance"""
-    total_score = 0
+    team_numbers is a list of team numbers (integers) on the alliance.
+    pred_climb_points is the predicted climb points for the alliance."""
+    total_score = pred_climb_points
     for team in team_numbers:
         total_score += TEAMS[team]['calculatedData']['predictedSoloPoints']
     return total_score
@@ -41,13 +42,21 @@ def calculate_predicted_climb_points(team_numbers):
     """Calculates the predicted climb points for an alliance.
 
     team_numbers is a list of team numbers (integers) on the alliance"""
+    teams_calculated_data = {team_number: \
+        TEAMS[team]['calculatedData'] for team_number in \
+        team_numbers}
     total_points = 0
     for team in team_numbers:
-        team_calculated_data = TEAMS[team]['calculatedData']
-        # TODO: Only let one robot use climb level 3
-        total_points += max([3 * float(team_calculated_data['climbSuccessL1']) / 100,
-                             6 * float(team_calculated_data['climbSuccessL2']) / 100,
-                             12 * float(team_calculated_data['climbSuccessL3']) / 100])
+        team_calculated_data = teams_calculated_data[team]
+        if team_calculated_data['climbSuccessL3'] == max([
+                teams_calculated_data[team_number]['climbSuccessL3'] for
+                team_number in team_numbers]):
+            total_points += max([3 * float(team_calculated_data['climbSuccessL1']) / 100,
+                                 6 * float(team_calculated_data['climbSuccessL2']) / 100,
+                                 12 * float(team_calculated_data['climbSuccessL3']) / 100])
+        else:
+            total_points += max([3 * float(team_calculated_data['climbSuccessL1']) / 100,
+                                 6 * float(team_calculated_data['climbSuccessL2']) / 100])
     return total_points
 
 def calculate_chance_climb_rp(team_numbers):
@@ -202,10 +211,11 @@ for match in MATCH_SCHEDULE.keys():
     for alliance_color in ['red', 'blue']:
         alliance = MATCH_SCHEDULE[match][f'{alliance_color}Teams']
 
-        calculated_data[f'{alliance_color}PredictedScore'] = \
-            calculate_predicted_alliance_score(alliance)
         calculated_data[f'{alliance_color}PredictedClimbPoints'] = \
             calculate_predicted_climb_points(alliance)
+        calculated_data[f'{alliance_color}PredictedScore'] = \
+            calculate_predicted_alliance_score(alliance, \
+            calculated_data[f'{alliance_color}PredictedClimbPoints'])
         calculated_data[f'{alliance_color}ChanceClimbRP'] = \
             calculate_chance_climb_rp(alliance)
         calculated_data[f'{alliance_color}ChanceRocketRP'] = \
