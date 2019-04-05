@@ -37,6 +37,9 @@ AVERAGE_DATA_FIELDS = {
     'avgLemonsScoredL3': 'lemonsScoredL3',
     'avgTimeIncap': 'timeIncap',
     'avgTimeClimbing': 'timeClimbing',
+    'avgOrangePointsPrevented': 'orangePointsPrevented',
+    'avgLemonPointsPrevented': 'lemonPointsPrevented',
+    'avgPointsPrevented': 'pointsPrevented',
 }
 
 # Name of team calculated average data field of the last four matches to
