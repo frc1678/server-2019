@@ -298,7 +298,7 @@ def decompress_temp_super_team(compressed_temp_super_team):
             compressed_teams = compressed_value.split(',')
             decompressed_value = []
             for compressed_team in compressed_teams:
-                compressed_items2 = compressed_team.split('?')
+                compressed_items2 = compressed_team.rstrip('?').split('?')
                 decompressed_team = {}
                 for compressed_item2 in compressed_items2:
                     # The first character in will always be the key.
