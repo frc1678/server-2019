@@ -295,6 +295,9 @@ def decompress_temp_super_team(compressed_temp_super_team):
         if decompressed_key in ['opponents', 'timeline']:
             # Removes brackets
             compressed_value = compressed_value[1:-1]
+            # Checks if 'opponents' or 'timeline' is empty
+            if compressed_value == '':
+                compressed_teams = []
             compressed_teams = compressed_value.rstrip(',').split(',')
             decompressed_value = []
             for compressed_team in compressed_teams:
