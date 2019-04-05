@@ -259,10 +259,9 @@ TEMP_SUPER_COMPRESSION_KEYS = {
     'E': 'opponents',
     'y': 'rankCounterDefense',
     'z': 'rankResistance',
-    'z': 'notes',
     'F': 'timeline',
     'G': 'type',
-    'H': 'time' ,
+    'H': 'time',
 }
 # Compressed tempSuper value to uncompressed tempSuper value
 TEMP_SUPER_COMPRESSION_VALUES = {
@@ -317,8 +316,9 @@ def decompress_temp_super_team(compressed_temp_super_team):
                         # 'compressed_value' is a float
                         decompressed_value2 = float(compressed_value2)
                     # HACK: Super scout sends incorrectly
-                    if decompressed_key == 'rankResistance':
+                    if decompressed_key2 == 'rankResistance':
                         fix_dict = {
+                            0: 0,
                             1: 3,
                             2: 2,
                             3: 1,
