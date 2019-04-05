@@ -48,14 +48,17 @@ def calculate_predicted_climb_points(team_numbers):
         TEAMS[team]['calculatedData'] for team_number in \
         team_numbers}
     total_points = 0
-    for team in team_numbers:
-        team_calculated_data = calculated_data_by_team[team]
+    for team_number, team_calculated_data in calculated_data_by_team.items():
+        # Only one team can climb to level 3, so if a team is the most
+        # successful level 3 climber, no other teams can reach level 3.
         if team_calculated_data['climbSuccessL3'] == max([
                 calculated_data_by_team[team_number]['climbSuccessL3'] for
                 team_number in team_numbers]):
             total_points += max([3 * float(team_calculated_data['climbSuccessL1']) / 100,
                                  6 * float(team_calculated_data['climbSuccessL2']) / 100,
                                  12 * float(team_calculated_data['climbSuccessL3']) / 100])
+        # If the team is not the most successful, it only considers the
+        # team's level 1 and 2 successes.
         else:
             total_points += max([3 * float(team_calculated_data['climbSuccessL1']) / 100,
                                  6 * float(team_calculated_data['climbSuccessL2']) / 100])
