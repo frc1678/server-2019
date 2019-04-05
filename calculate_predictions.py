@@ -227,6 +227,8 @@ for match in MATCH_SCHEDULE.keys():
         calculated_data[f'{alliance_color}ChanceRocketRP'] = \
             calculate_chance_rocket_rp(alliance)
 
+        # HACK: Makes the predicted rps the actual rps to fix seeding if
+        # the match has passed.
         if MATCHES[match].get(f'{alliance_color}ActualRPs') is None:
             calculated_data[f'{alliance_color}PredictedRPs'] = \
                 calculate_predicted_rps(calculated_data, alliance_color)
