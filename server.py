@@ -6,6 +6,7 @@ startup and has automatic restart.  This script runs all the database
 listeners and the while loop that checks if calculations need to be
 made."""
 # External imports
+import json
 import os
 import shutil
 import signal
@@ -14,6 +15,7 @@ import sys
 import time
 # Internal imports
 import firebase_communicator
+import tba_communicator
 import utils
 
 # Uses default firebase URL
@@ -214,6 +216,30 @@ def handle_ctrl_c(*args):
     print('All streams closed.')
     sys.exit(0)
 
+def cache_match_schedule():
+    """Requests the match schedule from TBA and adds it to the cache."""
+    # HACK: Only pulls the match schedule once since the caching built
+    # into tba_communicator.py is not complete.
+    matches = tba_communicator.request_matches()
+    for match_data in matches:
+        # 'qm' stands for qualification match
+        if match_data['comp_level'] == 'qm':
+            red_teams = match_data['alliances']['red']['team_keys']
+            blue_teams = match_data['alliances']['blue']['team_keys']
+            match_number = match_data['match_number']
+            # Remove 'frc' from team number
+            # (e.g. 'frc1678' -> '1678')
+            red_teams = [team[3:] for team in red_teams]
+            blue_teams = [team[3:] for team in blue_teams]
+            final_match_data = {
+                'matchNumber': match_number,
+                'redTeams': red_teams,
+                'blueTeams': blue_teams,
+            }
+        with open(utils.create_file_path(
+                f'data/cache/match_schedule/{match_number}.json'), 'w') as file:
+            json.dump(final_match_data, file)
+
 # Deletes the entire 'cache' directory to remove any old data.
 # Checks if the directory exists before trying to delete it to avoid
 # causing an error.
@@ -225,6 +251,10 @@ signal.signal(signal.SIGINT, handle_ctrl_c)
 
 # Creates all the database streams and stores them in global dict.
 STREAMS = create_streams()
+
+# In order to make match calculations, the match schedule must be taken
+# from TBA and put into the cache.
+cache_match_schedule()
 
 # Stores the tempTIMDs that have already been calculated in order to
 # prevent them from being recalculated if the data has not changed.
@@ -271,6 +301,9 @@ while True:
 
     # Forwards tempSuper data to Matches and TIMDs.
     subprocess.call('python3 forward_temp_super.py', shell=True)
+
+    # Makes predictions about match results.
+    subprocess.call('python3 calculate_predictions.py', shell=True)
 
     # Runs advanced calculations for every team in the competition.
     subprocess.call('python3 make_advanced_calculations.py', shell=True)
