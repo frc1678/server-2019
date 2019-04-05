@@ -369,6 +369,8 @@ def calculate_predicted_solo_points(calculated_data):
     # Lemons in sandstorm are worth 5 because they also score the cargo
     # they are trapping.
     lemon_score = calculated_data['avgLemonsScoredSandstorm'] * 5
+    # Subtracts the lemons scored in sandstorm from the average lemons
+    # scored to get the average lemons scored in teleop.
     lemon_score += (calculated_data['avgLemonsScored'] - \
         calculated_data['avgLemonsScoredSandstorm']) * 2
     orange_score = calculated_data['avgOrangesScored'] * 3
