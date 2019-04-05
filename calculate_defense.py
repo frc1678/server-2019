@@ -112,7 +112,7 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                 defended_cycles = []
                 intake_time = None
                 for action in timd_data['timeline']:
-                    if action['wasDefended'] is not True:
+                    if action.get('wasDefended', False) is False:
                         if action['type'] == 'intake':
                             intake_time = action['time']
                         continue
