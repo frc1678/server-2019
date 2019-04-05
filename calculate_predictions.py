@@ -251,7 +251,7 @@ PREDICTED_RP_LIST = {team: sum(predicted_rps) / len(predicted_rps) for \
     team, predicted_rps in PREDICTED_RPS_BY_TEAM.items()}
 SEED_ORDER = sorted(PREDICTED_RP_LIST.keys(), key=PREDICTED_RP_LIST.get, reverse=True)
 
-# 'enumerate(, 1)' starts
+# 'enumerate(, 1)' starts seeding at 1
 for seed, team in enumerate(SEED_ORDER, 1):
     TEAMS[team]['calculatedData']['predictedRPs'] = \
         sum(PREDICTED_RPS_BY_TEAM[team])
