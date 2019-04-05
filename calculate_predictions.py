@@ -219,7 +219,6 @@ for match in MATCH_SCHEDULE.keys():
             calculated_data[f'{alliance_color}PredictedRPs'] = \
                 MATCHES[match][f'{alliance_color}ActualRPs']
 
-    for alliance_color in ['red', 'blue']:
         for team in MATCH_SCHEDULE[match][f'{alliance_color}Teams']:
             if TEAMS[team]['calculatedData'].get('predictedRPs') is None:
                 TEAMS[team]['calculatedData']['predictedRPs'] = []
