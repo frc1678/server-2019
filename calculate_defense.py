@@ -142,7 +142,7 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                         else:
                             # Removes trailing asterisk, if it exists
                             time = float(action['time'].split('*')[0])
-                            cycle_times[piece].append(time - action['intakeTime'])
+                            cycle_times[piece].append(action['intakeTime'] - time)
                     elif action['type'] == 'drop':
                         drops[piece] += 1
                 defended_drop_rate = {
