@@ -745,6 +745,18 @@ def team_calculations(timds, team_number):
         if timd.get('rankCounterDefense') != 0:
             counter_defending_matches.append(timd)
 
+    points_prevented_matches = []
+    for timd in timds:
+        if timd['calculatedData'].get('pointsPrevented', 0) > 0:
+            points_prevented_matches.append(timd)
+
+    calculated_data['avgPointsPrevented'] = avg([
+        timd['calculatedData'].get('pointsPrevented') for timd in points_prevented_matches], None)
+    calculated_data['avgOrangePointsPrevented'] = avg([
+        timd['calculatedData'].get('orangePointsPrevented') for timd in points_prevented_matches], None)
+    calculated_data['avgLemonPointsPrevented'] = avg([
+        timd['calculatedData'].get('lemonPointsPrevented') for timd in points_prevented_matches], None)
+
     # If a team didn't play defense, they shouldn't have a 0 for their
     # counter defense rank, because it is undetermined.
     calculated_data['avgRankCounterDefense'] = avg([
