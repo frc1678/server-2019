@@ -193,8 +193,8 @@ for match_number, timds in TIMDS_BY_MATCH.items():
             orange_failed_cycles_caused = 0
             lemon_failed_cycles_caused = 0
             for team_data in alliance_points_prevented.values():
-                orange_points_prevented += team_data['orange']
-                lemon_points_prevented += team_data['lemon']
+                orange_points_prevented += team_data.get('orange', 0)
+                lemon_points_prevented += team_data.get('lemon', 0)
             for team_data in alliance_failed_cycles_caused.values():
                 orange_failed_cycles_caused += 1
                 lemon_failed_cycles_caused += 1
