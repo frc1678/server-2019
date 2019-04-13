@@ -142,8 +142,7 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                         if action['didSucceed'] is False:
                             fails[piece] += 1
                         else:
-                            # Removes trailing asterisk, if it exists
-                            time = float(action['time'].split('*')[0])
+                            time = action['time']
                             cycle_times[piece].append(action['intakeTime'] - time)
                     elif action['type'] == 'drop':
                         drops[piece] += 1
