@@ -194,9 +194,12 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                     lemon_points_prevented,
             }
             for folder in ['cache', 'upload_queue']:
-                with open(f'data/{folder}/team/{team_number}.json',
-                          'r') as file:
-                    file_data = json.load(file)
+                try:
+                    with open(f'data/{folder}/timds/{timd}.json',
+                              'r') as file:
+                        file_data = json.load(file)
+                except FileNotFoundError:
+                    file_data = {}
                 if file_data.get('calculatedData') is None:
                     file_data['calculatedData'] = {}
                 file_data['calculatedData'].update(update_dict)
