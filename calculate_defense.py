@@ -200,7 +200,7 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                 if file_data.get('calculatedData') is None:
                     file_data['calculatedData'] = {}
                 file_data['calculatedData'].update(update_dict)
-                with open(f'data/{folder}/team/{team_number}.json',
+                with open(f'data/{folder}/timds/{timd}.json',
                           'w') as file:
                     json.dump(file_data, file)
             DEFENDER_TEAMS.add(team_number)
