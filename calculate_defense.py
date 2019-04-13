@@ -109,6 +109,8 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                 intake_time = None
                 if timd_data.get('timeline') is None:
                     continue
+                if timd_data['timeline'][0]['type'] != 'intake':
+                    timd_data['timeline'] = timd_data['timeline'][1:]
                 for action in timd_data['timeline']:
                     if action.get('wasDefended', False) is False:
                         if action['type'] == 'intake':
