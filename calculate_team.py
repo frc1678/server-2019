@@ -746,6 +746,14 @@ def team_calculations(timds, team_number):
     calculated_data['avgSpeed'] = avg([
         timd.get('rankSpeed') for timd in timds])
 
+    resisted_timds = []
+    for timd in timds:
+        if timd.get('rankResistance', 0.0) != 0:
+            resisted_timds.append(timd)
+
+    calculated_data['avgResistance'] = avg([
+        timd.get('rankResistance') for timd in resisted_timds])
+
     # When calculating the super average for defense, takes out the
     # matches when they didn't play defense (matches where rankDefense
     # is 0).
