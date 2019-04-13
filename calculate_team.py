@@ -699,7 +699,7 @@ def team_calculations(timds, team_number):
 
     super_defending_timds = []
     for timd in timds:
-        if timd['calculatedData'].get('superFailedCyclesCaused',0) > 0.0:
+        if timd['calculatedData'].get('superFailedCyclesCaused', 0) > 0.0:
             super_defending_timds.append(timd)
 
     calculated_data['avgSuperFailedCyclesCaused'] = avg([timd[
