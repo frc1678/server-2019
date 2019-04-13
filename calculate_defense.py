@@ -115,6 +115,7 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                     if action.get('wasDefended', False) is False:
                         if action['type'] == 'intake':
                             intake_time = action['time']
+                            game_piece = action['piece']
                         continue
                     time = action['time']
                     for start_time, end_time in time_pairs:
@@ -123,6 +124,7 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                         # 'end_time'
                         if start_time > time > end_time:
                             action['intakeTime'] = intake_time
+                            action['piece'] = game_piece
                             defended_cycles.append(action)
                 if defended_cycles != []:
                     defended_cycles_by_team[team_number] = defended_cycles
