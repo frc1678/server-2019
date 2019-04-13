@@ -302,6 +302,9 @@ while True:
     # Forwards tempSuper data to Matches and TIMDs.
     subprocess.call('python3 forward_temp_super.py', shell=True)
 
+    # Calculates 'pointsPrevented'
+    subprocess.call('python3 calculate_defense.py', shell=True)
+
     if TEMP_TIMD_FILES != []:
         # Makes predictions about match results.
         subprocess.call('python3 calculate_predictions.py', shell=True)
