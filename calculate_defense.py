@@ -112,8 +112,7 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                         if action['type'] == 'intake':
                             intake_time = action['time']
                         continue
-                    # Removes trailing asterisk, if it exists
-                    time = float(action['time'].split('*')[0])
+                    time = action['time']
                     for start_time, end_time in time_pairs:
                         # Time counts down from 150.0 to 0.0
                         # Checks if 'time' is between 'start_time' and
