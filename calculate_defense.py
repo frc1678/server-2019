@@ -163,6 +163,8 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                 points_prevented = {}
                 failed_cycles_caused = {}
                 for piece in ['orange', 'lemon']:
+                    if cycles[piece] == 0:
+                        continue
                     avg_drops = calculated_data[f'avg{piece.capitalize()}Drops']
                     avg_fails = calculated_data[f'avg{piece.capitalize()}Fails']
                     avg_cycles = calculated_data[f'avg{piece.capitalize()}Cycles']
