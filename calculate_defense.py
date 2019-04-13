@@ -76,8 +76,7 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                     # Prevents two of the same actions back-to-back
                     if action['type'] != last_action_type:
                         last_action_type = action['type']
-                        # Removes trailing asterisk, if it exists
-                        time = float(action['time'].split('*')[0])
+                        time = action['time']
                         if action['type'] == 'startDefense':
                             last_start_defense = time
                         elif action['type'] == 'endDefense':
