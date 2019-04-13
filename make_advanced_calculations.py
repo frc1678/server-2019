@@ -68,10 +68,10 @@ def calculate_second_pick_ability(calculated_data, max_da, min_da):
     # second pick.
     climbing_weight = 0.25
     oranges_weight = 0.5
-    lemons_weight = 4.0
+    lemons_weight = 1.0
     sandstorm_weight = 1.0
     driving_weight = 18.0
-    defense_weight = 2.0
+    defense_weight = 3.5
 
     # Scores for points gained during sandstorm.
     sand_score = max([float(calculated_data.get('habLineSuccessL1',0)) * 3 / 100,
