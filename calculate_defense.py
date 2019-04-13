@@ -148,12 +148,12 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                     elif action['type'] == 'drop':
                         drops[piece] += 1
                 defended_drop_rate = {
-                    'orange': drops['orange']/cycles['orange'],
-                    'lemon': drops['lemon']/cycles['lemon']
+                    'orange': None if cycles['orange'] == 0 else drops['orange']/cycles['orange'],
+                    'lemon': None if cycles['lemon'] == 0 else drops['lemon']/cycles['lemon']
                 }
                 defended_fail_rate = {
-                    'orange': fails['orange']/cycles['orange'],
-                    'lemon': fails['lemon']/cycles['lemon']
+                    'orange': None if cycles['orange'] == 0 else fails['orange']/cycles['orange'],
+                    'lemon': None if cycles['lemon'] == 0 else fails['lemon']/cycles['lemon']
                 }
                 # Pulls calculated data
                 with open(utils.create_file_path(
