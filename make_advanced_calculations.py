@@ -40,16 +40,16 @@ def calculate_first_pick_ability(calculated_data):
         + 3 * calculated_data['avgOrangesScoredTeleL3']) * level_3_weight
 
     # Scores for points gained during sandstorm.
-    sand_score = max([float(calculated_data['habLineSuccessL1']) * 3 / 100,
-                      float(calculated_data['habLineSuccessL2']) * 6 / 100])
+    sand_score = max([float(calculated_data.get('habLineSuccessL1',0)) * 3 / 100,
+                      float(calculated_data.get('habLineSuccessL2',0)) * 6 / 100])
     sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
     sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
     sand_score *= sandstorm_weight
 
     # Scores for points scored in the endgame.
-    end_game_score = max([3 * float(calculated_data['climbSuccessL1']) / 100,
-                          6 * float(calculated_data['climbSuccessL2']) / 100,
-                          12 * float(calculated_data['climbSuccessL3']) / 100])
+    end_game_score = max([3 * float(calculated_data.get('climbSuccessL1',0)) / 100,
+                          6 * float(calculated_data.get('climbSuccessL2',0)) / 100,
+                          12 * float(calculated_data.get('climbSuccessL3',0)) / 100])
     end_game_score *= climbing_weight
 
     # Adds all the previous scores together to get a full first pick score.
@@ -74,8 +74,8 @@ def calculate_second_pick_ability(calculated_data, max_da, min_da):
     defense_weight = 2.0
 
     # Scores for points gained during sandstorm.
-    sand_score = max([float(calculated_data['habLineSuccessL1']) * 3 / 100,
-                      float(calculated_data['habLineSuccessL2']) * 6 / 100])
+    sand_score = max([float(calculated_data.get('habLineSuccessL1',0)) * 3 / 100,
+                      float(calculated_data.get('habLineSuccessL2',0)) * 6 / 100])
     sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
     sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
     sand_score *= sandstorm_weight
@@ -85,9 +85,9 @@ def calculate_second_pick_ability(calculated_data, max_da, min_da):
     level_1_teleop_score += calculated_data['avgOrangesScoredTeleL1'] * 3 * oranges_weight
 
     # Scores for points scored in the endgame.
-    end_game_score = max([3 * float(calculated_data['climbSuccessL1']) / 100,
-                          6 * float(calculated_data['climbSuccessL2']) / 100,
-                          12 * float(calculated_data['climbSuccessL3']) / 100])
+    end_game_score = max([3 * float(calculated_data.get('climbSuccessL1',0)) / 100,
+                          6 * float(calculated_data.get('climbSuccessL2',0)) / 100,
+                          12 * float(calculated_data.get('climbSuccessL3',0)) / 100])
     end_game_score *= climbing_weight
 
     # If the max_da is 0.0, all the zscores are equal and there is no
