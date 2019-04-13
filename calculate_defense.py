@@ -167,9 +167,10 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                     avg_fail_rate = avg_fails/avg_cycles
                     avg_cycle_time = calculated_data[f'{piece}CycleAll']
                     lost_time = sum([cycle_time - avg_cycle_time for
-                                     cycle_time in cycle_times])
-                    drops_caused = (defended_drop_rate-avg_drop_rate)*drops[piece]
-                    fails_caused = (defended_fail_rate-avg_fail_rate)*fails[piece]
+                                     cycle_time in cycle_times[piece]])
+                    drops_caused = (defended_drop_rate[piece]-avg_drop_rate)*drops[piece]
+                    fails_caused = (defended_fail_rate[piece]-avg_fail_rate)*fails[piece]
+
                     # Cycles lost from slowed cycles
                     lost_cycles = lost_time/avg_cycle_time
                     if piece == 'orange':
