@@ -107,6 +107,8 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                 team_number = timd_name.split('Q')[0]
                 defended_cycles = []
                 intake_time = None
+                if timd_data.get('timeline') is None:
+                    continue
                 for action in timd_data['timeline']:
                     if action.get('wasDefended', False) is False:
                         if action['type'] == 'intake':
