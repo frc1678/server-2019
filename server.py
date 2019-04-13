@@ -246,7 +246,7 @@ while True:
 
     # HACK: Pulls tempTIMDs in a custom stream
     TEMP_TIMD_SHALLOW = DB.child('tempTIMDs').shallow().get().val()
-    if TEMP_TIMD_SHALLOW is None:
+    if TEMP_TIMD_SHALLOW is not None:
         for temp_timd in TEMP_TIMD_SHALLOW:
             if temp_timd not in LAST_TEMP_TIMD_SHALLOW:
                 temp_timd_value = DB.child('tempTIMDs').child(temp_timd).get().val()
