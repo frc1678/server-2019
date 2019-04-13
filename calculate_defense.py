@@ -130,6 +130,7 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                     defended_cycles_by_team[team_number] = defended_cycles
 
             alliance_points_prevented = {}
+            alliance_failed_cycles_caused = {}
             for team, defended_cycles in defended_cycles_by_team.items():
                 drops = {'orange': 0, 'lemon': 0}
                 fails = {'orange': 0, 'lemon': 0}
@@ -160,6 +161,7 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                     calculated_data = json.load(file)['calculatedData']
                 # Points prevented on a single team
                 points_prevented = {}
+                failed_cycles_caused = {}
                 for piece in ['orange', 'lemon']:
                     avg_drops = calculated_data[f'avg{piece.capitalize()}Drops']
                     avg_fails = calculated_data[f'avg{piece.capitalize()}Fails']
@@ -179,7 +181,9 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                     else:
                         points = 2
                     points_prevented[piece] = points*(drops_caused+fails_caused+lost_cycles)
+                    failed_cycles_caused[piece] = drops_caused + fails_caused
                 alliance_points_prevented[team] = points_prevented
+                alliance_failed_cycles_caused = failed_cycles_caused
 
             # Saves TIMD points prevented
             orange_points_prevented = 0
