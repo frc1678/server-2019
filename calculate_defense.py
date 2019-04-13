@@ -203,6 +203,10 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                 'lemonPointsPrevented': lemon_points_prevented,
                 'pointsPrevented': orange_points_prevented + \
                     lemon_points_prevented,
+                'superOrangeFailedCyclesCaused': orange_failed_cycles_caused,
+                'superLemonFailedCyclesCaused': lemon_failed_cycles_caused,
+                'superFailedCyclesCaused': orange_failed_cycles_caused + \
+                    lemon_failed_cycles_caused,
             }
             for folder in ['cache', 'upload_queue']:
                 try:
