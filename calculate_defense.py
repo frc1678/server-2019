@@ -28,7 +28,7 @@ DEFENDER_TEAMS = set()
 for match_number, timds in TIMDS_BY_MATCH.items():
     # Pulls match schedule (for a single match from cache
     with open(utils.create_file_path(
-            'data/cache/match_schedule/{match_number}.json'), 'r') as file:
+            f'data/cache/match_schedule/{match_number}.json'), 'r') as file:
         match_schedule = json.load(file)
 
     timds_by_alliance = {
