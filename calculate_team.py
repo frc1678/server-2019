@@ -789,6 +789,13 @@ def team_calculations(timds, team_number):
     calculated_data['climbSuccessL2'] = climb_success_rate(timds, 2)
     calculated_data['climbSuccessL3'] = climb_success_rate(timds, 3)
 
+    if calculated_data['climbSuccessL3'] == None:
+        calculated_data.pop('climbSuccessL3')
+    if calculated_data['climbSuccessL2'] == None:
+        calculated_data.pop('climbSuccessL2')
+    if calculated_data['climbSuccessL1'] == None:
+        calculated_data.pop('climbSuccessL1')
+
     calculated_data['climbAttemptsL1'] = climb_success_rate(timds, 1, \
         string=True)
     calculated_data['climbAttemptsL2'] = climb_success_rate(timds, 2, \
