@@ -86,7 +86,7 @@ def calculate_chance_climb_rp(team_numbers):
     # level 3 with another on level 1, and two teams climbing to level 2
     # with another on level 1.
     # All possible combinations for the RP are at these levels or above.
-    rp_combinations = [['3', '1'], ['2', '2', '1']]
+    rp_combinations = [[3, 1], [2, 2, 1]]
     rp_combination_chances = []
 
     for rp_combination in rp_combinations:
@@ -106,7 +106,7 @@ def calculate_chance_climb_rp(team_numbers):
                 # (and including) the minimum level and 3.
                 level_success_rates = {level: \
                     available_teams[team][str(level)] for level in \
-                    range(int(min_level), 3+1)}
+                    range(min_level, 3+1)}
                 # Gets the max success rate out of all the levels
                 max_successes[team] = max(level_success_rates.values())
             # After each team's highest success rate is taken, the
