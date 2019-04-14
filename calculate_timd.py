@@ -150,8 +150,7 @@ def filter_timeline_actions(timd, **filters):
                 if requirement == 'sand' and action['time'] <= 135.0:
                     break
                 elif requirement == 'tele' and action['time'] > 135.0:
-                    break
-            # If the filter specifies to 
+                    break 
             # Otherwise, it checks the requirement normally
             else:
                 if action.get(data_field) != requirement:
