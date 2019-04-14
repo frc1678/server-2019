@@ -181,10 +181,10 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
             # In order to find the best option for timings, it sets
             # up a matrix of time differences between each action in
             # each tempTIMD.
-            timings = np.zeros((len(simplified_timelines[scout]),
-                                majority_length))
+            timings = {}
             for false_index, false_action in \
                     enumerate(simplified_timelines[scout]):
+                timings[false_index] = {}
                 for comparison_index, comparison_action in \
                         enumerate(list(time_reference.values())[0]):
                     timings[false_index][comparison_index] = \
@@ -194,16 +194,21 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
             # Once the matrix of timing differences has been
             # created, the lowest difference is targeted to line up
             # against each other until the entire matrix is deleted.
-            while timings.size > 0:
+            while len(timings.keys()) > 0:
                 # lowest_index is in the format of ([y coordinate],
                 # [x coordinate]), which requires lowest_index[1][0] to
                 # get the x coordinate, and lowest_index[0][0] for the y
                 # coordinate.
-                lowest_index = np.where(timings == timings.min())
-                correct_length_timelines[scout][lowest_index[1][0]] = \
-                    simplified_timelines[scout][lowest_index[0][0]]
-                timings = np.delete(timings, int(lowest_index[1][0]), axis=1)
-                timings = np.delete(timings, int(lowest_index[0][0]), axis=0)
+                lowest_index = [150, 0, 0]
+                for false_index, comparisons in timings.items():
+                    for comparison_index, difference in comparisons.items():
+                        if difference < lowest_index[1]:
+                            lowest_index = [difference, false_index, \
+                                comparison_index]
+                correct_length_timelines[scout][lowest_index[2]] = \
+                    simplified_timelines[scout][lowest_index[1]]
+                timings.pop(lowest_index[1])
+                [timings[index].pop(lowest_index[2]) for index in timings]
 
     final_simplified_timd = [{} for action in range(majority_length)]
     # Iterates through the sprking's timeline to compare all the actions.
