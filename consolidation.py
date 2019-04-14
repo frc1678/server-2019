@@ -179,8 +179,8 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
             correct_length_timelines[scout] = [{} for action in
                                                range(majority_length)]
             # In order to find the best option for timings, it sets
-            # up a matrix of time differences between each action in
-            # each tempTIMD.
+            # up a dictionary of dictionaries containing the time
+            # differences between each action in each tempTIMD.
             timings = {}
             for false_index, false_action in \
                     enumerate(simplified_timelines[scout]):
@@ -191,20 +191,24 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
                             abs(float(comparison_action) -
                                 float(false_action['time']))
 
-            # Once the matrix of timing differences has been
+            # Once the dictionary of timing differences has been
             # created, the lowest difference is targeted to line up
-            # against each other until the entire matrix is deleted.
+            # against each other until the entire dictionary is deleted.
             while len(timings.keys()) > 0:
-                # lowest_index is in the format of ([y coordinate],
-                # [x coordinate]), which requires lowest_index[1][0] to
-                # get the x coordinate, and lowest_index[0][0] for the y
-                # coordinate.
+                # lowest_index is a list of three items, the lowest time
+                # difference between comparison actions and false
+                # actions, and the index in timings where the lowest
+                # difference can be found.
                 lowest_index = [150, 0, 0]
                 for false_index, comparisons in timings.items():
                     for comparison_index, difference in comparisons.items():
-                        if difference < lowest_index[1]:
+                        if difference < lowest_index[0]:
                             lowest_index = [difference, false_index, \
                                 comparison_index]
+
+                # After finding the index of the lowest difference, the
+                # false action is put in the corresponding place in the
+                # correct length timeline for the false scout.
                 correct_length_timelines[scout][lowest_index[2]] = \
                     simplified_timelines[scout][lowest_index[1]]
                 timings.pop(lowest_index[1])
