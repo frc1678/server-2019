@@ -167,6 +167,44 @@ for team in TEAMS.keys():
         calculate_second_pick_ability(TEAMS[team]['calculatedData'],
                                       MAX_DA, MIN_DA)
 
+# Creates path to the file which has the timds.
+timd_files = os.listdir(utils.create_file_path('data/cache/timds'))
+# Removes '.json' from the end of every timd name.
+timds = [timd_files.split('.json')[0] for timd_file in timd_files]
+# Adds each match a team played in to a dictionary.
+team_matches = [timd.split('Q')[1] for timd in timd_files if timd.split('Q')[0] == team]
+
+# Gathers the matches in the competition. These matches are cached from
+# the tba match schedule when the server first runs.
+MATCH_SCHEDULE = {}
+for match in os.listdir(utils.create_file_path('data/cache/match_schedule')):
+    with open(utils.create_file_path(f'data/cache/match_schedule/{match}')) as file:
+        match_data = json.load(file)
+    # '.split()' removes '.txt' file ending
+    MATCH_SCHEDULE[match.split('.')[0]] = match_data
+# Gets the teams for a match in either alliance
+for alliance_color in ['red', 'blue']:
+    alliances = MATCH_SCHEDULE[team_matches][f'{alliance_color}Teams']
+    if team in alliances:
+        alliance = alliances
+    else:
+        pass
+
+for alliance_team in alliance:
+    if alliance_team != team:
+        teams_played_with = []
+        teams_played_with.append(alliance_team)
+
+scaled_driver_abilities = []
+for buddy_teams in teams_played_with:
+    alliance_teams_driver_ability = TEAMS[buddy_teams]['calculatedData']['driverAbility']
+    alliance_scaled_driver_ability = 1 * (alliance_teams_driver_ability - MIN_DA)/(MAX_DA - MIN_DA)
+    scaled_driver_abilities.append(alliance_scaled_driver_ability)
+
+#Currently no average function!!
+normalized_driver_ability = avg(scaled_driver_abilities) * TEAMS[team]['calculatedDate']['driverAbility']
+
+
 # Sends data to 'cache' and 'upload_queue'
 for team, data in TEAMS.items():
     with open(utils.create_file_path(f'data/cache/teams/{team}.json'), 'w') as file:
