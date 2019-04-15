@@ -725,9 +725,13 @@ def team_calculations(timds, team_number):
     calculated_data['avgSpeed'] = avg([
         timd.get('rankSpeed') for timd in timds])
 
+    # rankResistance measures how much a team avoided being affected by
+    # defenders. If super scouts ranked their resistance as zero, that means
+    # they weren't defended in that match. Only timds where they resisted
+    # defense (resisted_timds) should count towards avgResistance
     resisted_timds = []
     for timd in timds:
-        if timd.get('rankResistance', 0.0) != 0:
+        if timd.get('rankResistance', 0) != 0:
             resisted_timds.append(timd)
 
     calculated_data['avgResistance'] = avg([
