@@ -216,7 +216,9 @@ for team in TEAMS:
     # driver ability.
     normalized_driver_ability = utils.avg(scaled_driver_abilities) * \
         TEAMS[team]['calculatedDate']['driverAbility']
-
+    # Adds normalized_driver_ability to 'calculatedData'
+    TEAMS[team]['calculatedData']['normalizedDriverAbility'] = \
+        normalized_driver_ability
 
 # Sends data to 'cache' and 'upload_queue'
 for team, data in TEAMS.items():
