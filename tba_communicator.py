@@ -43,7 +43,7 @@ def make_request(api_url, show_output=True, acceptable_cache_age=0):
     # Returns the cached request if it was pulled within the
     # 'acceptable_cache_age' limit.
     last_request_time = cached_requests.get(api_url, {}).get('last_requested', 0)
-    if (time.time() - last_request_time) > acceptable_cache_age:
+    if (time.time() - last_request_time) < acceptable_cache_age:
         return cached_requests[api_url]['data']
 
     # 'cache_last_modified' is the time that the data in the cache was
