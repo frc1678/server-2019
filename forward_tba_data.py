@@ -61,7 +61,7 @@ for match_key in MATCH_KEYS:
     # 'qm' stands for qualification match
     # Example 'match_key' formats: '2019caoc_qm29', '2019caoc_qf3m1'
     if match_key.split('_')[1][:2] == 'qm':
-        match = tba_communicator.request_match(match_key)
+        match = tba_communicator.request_match(match_key, acceptable_cache_age=60)
         match_number = match['match_number']
         teams_by_alliance = {
             'red': match['alliances']['red']['team_keys'],
