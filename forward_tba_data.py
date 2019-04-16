@@ -59,12 +59,14 @@ for team in RANKINGS:
 MATCH_KEYS = tba_communicator.request_match_keys()
 # Match key to match data
 MATCH_DATA = {}
+print('Retrieving all match data from TBA...')
 for match_key in MATCH_KEYS:
     # 'qm' stands for qualification match
     # Example 'match_key' formats: '2019caoc_qm29', '2019caoc_qf3m1'
     if match_key.split('_')[1][:2] == 'qm':
-        match = tba_communicator.request_match(match_key)
+        match = tba_communicator.request_match(match_key, show_output=False)
         MATCH_DATA[match_key] = match
+print('All TBA match data successfully retrieved.')
 
 for match_key, match in MATCH_DATA.items():
     match_number = match['match_number']
