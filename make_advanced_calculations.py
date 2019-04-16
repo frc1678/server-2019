@@ -167,13 +167,6 @@ for team in TEAMS.keys():
         calculate_second_pick_ability(TEAMS[team]['calculatedData'],
                                       MAX_DA, MIN_DA)
 
-# Creates path to the file which has the timds.
-timd_files = os.listdir(utils.create_file_path('data/cache/timds'))
-# Removes '.json' from the end of every timd name.
-timds = [timd_files.split('.json')[0] for timd_file in timd_files]
-# Adds each match a team played in to a dictionary.
-team_matches = [timd.split('Q')[1] for timd in timd_files if timd.split('Q')[0] == team]
-
 # Gathers the matches in the competition. These matches are cached from
 # the tba match schedule when the server first runs.
 MATCH_SCHEDULE = {}
@@ -182,27 +175,47 @@ for match in os.listdir(utils.create_file_path('data/cache/match_schedule')):
         match_data = json.load(file)
     # '.split()' removes '.txt' file ending
     MATCH_SCHEDULE[match.split('.')[0]] = match_data
-# Gets the teams for a match in either alliance
-for alliance_color in ['red', 'blue']:
-    alliances = MATCH_SCHEDULE[team_matches][f'{alliance_color}Teams']
-    if team in alliances:
-        alliance = alliances
-    else:
-        pass
 
-for alliance_team in alliance:
-    if alliance_team != team:
-        teams_played_with = []
-        teams_played_with.append(alliance_team)
+TIMD_FILES = os.listdir(utils.create_file_path('data/cache/timds'))
+# Removes '.json' file ending.
+TIMDS = [timd_file.split('.')[0] for timd_file in TIMD_FILES]
+for team in TEAMS:
+    # Adds each match a team played in to a list.
+    team_matches = [timd.split('Q')[1] for timd in TIMDS if timd.split('Q')[0] == team]
+    # Goes through the matches a team plays in and gets their alliance parters.
+    for team_match in team_matches:
+        # Gets teams from the red an blue alliance for the match
+        red_alliance = MATCH_SCHEDULE[team_match]['redTeams']
+        blue_alliance = MATCH_SCHEDULE[team_match]['blueTeams']
+        # Checks if the team is in the red alliance
+        if team in red_alliance:
+            # Sets alliance the alliance equal to those teams
+            alliance = red_alliance
+        # Checks if the team is in the blue alliance
+        if team in blue_alliance:
+            # Sets alliance the alliance equal to those teams
+            alliance = blue_alliance
+        else:
+            print('Error: Team not in match schedule.')
+        # Removes own team and leaves only alliance partners in the list
+        alliance.remove(team)
 
-scaled_driver_abilities = []
-for buddy_teams in teams_played_with:
-    alliance_teams_driver_ability = TEAMS[buddy_teams]['calculatedData']['driverAbility']
-    alliance_scaled_driver_ability = 1 * (alliance_teams_driver_ability - MIN_DA)/(MAX_DA - MIN_DA)
-    scaled_driver_abilities.append(alliance_scaled_driver_ability)
-
-#Currently no average function!!
-normalized_driver_ability = avg(scaled_driver_abilities) * TEAMS[team]['calculatedDate']['driverAbility']
+    # List for the scaled driver ability of the alliance partners
+    scaled_driver_abilities = []
+    for alliance_team in alliance:
+        # Gets 'driverAbility' score for alliance partners
+        alliance_teams_driver_ability = \
+            TEAMS[alliance_team]['calculatedData']['driverAbility']
+        # Scales driver ability from zero to one.
+        alliance_scaled_driver_ability = 1 * \
+            (alliance_teams_driver_ability - MIN_DA)/(MAX_DA - MIN_DA)
+        # Adds the scaled driver abilities to a list
+        scaled_driver_abilities.append(alliance_scaled_driver_ability)
+    # Multiplies the scaled alliance partner's driver ability by the
+    # team's nonscaled driver ability to get the team's normalized
+    # driver ability.
+    normalized_driver_ability = utils.avg(scaled_driver_abilities) * \
+        TEAMS[team]['calculatedDate']['driverAbility']
 
 
 # Sends data to 'cache' and 'upload_queue'
