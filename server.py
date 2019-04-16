@@ -251,6 +251,7 @@ while True:
             if temp_timd not in CACHED_TEMP_TIMD_KEYS:
                 temp_timd_value = DB.child('tempTIMDs').child(temp_timd).get().val()
                 temp_timd_stream_handler(temp_timd, temp_timd_value)
+                CACHED_TEMP_TIMD_KEYS.append(temp_timd)
 
 
     # Checks list of tempTIMDs from files to determine what calculations
