@@ -227,8 +227,14 @@ cache_match_schedule()
 
 # Wipes 'temp_timds' cache folder
 delete_cache_data_folder('temp_timds')
-# Stores the last shallow request on 'tempTIMDs'
+# Pulls all tempTIMDs in a single request
+# (Improves efficiency on server restart)
+INITIAL_TEMP_TIMDS = DB.child('tempTIMDs').get().val()
+for temp_timd, temp_timd_value in INITIAL_TEMP_TIMDS.items():
+    temp_timd_stream_handler(temp_timd, temp_timd_value)
+# Stores the keys of cached 'tempTIMDs'
 CACHED_TEMP_TIMD_KEYS = []
+CACHED_TEMP_TIMD_KEYS.append(INITIAL_TEMP_TIMDS.keys())
 
 # Stores the tempTIMDs that have already been calculated in order to
 # prevent them from being recalculated if the data has not changed.
