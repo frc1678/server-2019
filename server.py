@@ -228,7 +228,7 @@ cache_match_schedule()
 # Wipes 'temp_timds' cache folder
 delete_cache_data_folder('temp_timds')
 # Stores the last shallow request on 'tempTIMDs'
-LAST_TEMP_TIMD_SHALLOW = []
+CACHED_TEMP_TIMD_KEYS = []
 
 # Stores the tempTIMDs that have already been calculated in order to
 # prevent them from being recalculated if the data has not changed.
@@ -248,7 +248,7 @@ while True:
     TEMP_TIMD_SHALLOW = DB.child('tempTIMDs').shallow().get().val()
     if TEMP_TIMD_SHALLOW is not None:
         for temp_timd in TEMP_TIMD_SHALLOW:
-            if temp_timd not in LAST_TEMP_TIMD_SHALLOW:
+            if temp_timd not in CACHED_TEMP_TIMD_KEYS:
                 temp_timd_value = DB.child('tempTIMDs').child(temp_timd).get().val()
                 temp_timd_stream_handler(temp_timd, temp_timd_value)
 
