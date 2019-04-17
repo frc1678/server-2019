@@ -48,9 +48,12 @@ for temp_timd in TEMP_TIMDS:
     temp_timd_data = decompressed_temp_timd[temp_timd_name]
 
     timd_name = temp_timd_name.split('-')[0]
-    with open(utils.create_file_path(
-            f'data/cache/timds/{timd_name}.json'), 'r') as file:
-        timd_data = json.load(file)
+    try:
+        with open(utils.create_file_path(
+                f'data/cache/timds/{timd_name}.json'), 'r') as file:
+            timd_data = json.load(file)
+    except FileNotFoundError:
+        timd_data = {}
 
     # Remove data fields that are not shared between tempTIMDs and TIMDs.
     # tempTIMD specific data fields
