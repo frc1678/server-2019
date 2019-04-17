@@ -176,6 +176,32 @@ def calculate_timd_data(timd):
     calculated_data['pinningFouls'] = len(filter_timeline_actions(
         timd, type='pinningFoul'))
 
+    calculated_data['orangeCycles'] = len(filter_timeline_actions(
+        timd, type='intake', piece='orange'))
+    calculated_data['lemonCycles'] = len(filter_timeline_actions(
+        timd, type='intake', piece='lemon'))
+
+    cycle_actions = [action for action in timd.get('timeline', []) if \
+        action['type'] in ['placement', 'intake', 'drop']]
+    if len(cycle_actions) > 0:
+        # If the last action is an intake, it shouldn't count as a
+        # cycle, so it is subtracted from its cycle data field.
+        if cycle_actions[-1]['type'] == 'intake':
+            piece = cycle_actions[-1]['piece']
+            # HACK: Subtracts the extra intake from the already
+            # calculated number of cycles. Should be included in that
+            # calculation.
+            calculated_data[f'{piece}Cycles'] -= 1
+
+    calculated_data['orangeDrops'] = len(filter_timeline_actions(
+        timd, type='drop', piece='orange'))
+    calculated_data['lemonDrops'] = len(filter_timeline_actions(
+        timd, type='drop', piece='lemon'))
+    calculated_data['orangeFails'] = len(filter_timeline_actions(
+        timd, type='placement', didSucceed=False, piece='orange'))
+    calculated_data['lemonFails'] = len(filter_timeline_actions(
+        timd, type='placement', didSucceed=False, piece='lemon'))
+
     calculated_data['orangesScoredSandstorm'] = len(
         filter_timeline_actions(timd, type='placement', piece='orange', \
         didSucceed=True, time='sand'))
