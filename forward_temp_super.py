@@ -13,7 +13,10 @@ import decompressor
 import firebase_communicator
 import utils
 
-def avg(lis):
+def avg_without_zeroes(lis):
+    """Removes 0 values from a list and returns the average.
+
+    lis is the list that is averaged"""
     lis = [item for item in lis if item != 0]
     if lis == []:
         return None
@@ -77,7 +80,7 @@ for match, files in FILES_BY_MATCH.items():
                     value_lis.append(team_data[key])
 
             for key, values in team_data_from_opponent.items():
-                temp_super_teams[team_number][key] = avg(values)
+                temp_super_teams[team_number][key] = avg_without_zeroes(values)
 
     for team_number, data in temp_super_teams.items():
         timd_name = f'{team_number}Q{match}'
