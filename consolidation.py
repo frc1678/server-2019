@@ -193,17 +193,21 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
 
             # Once the matrix of timing differences has been
             # created, the lowest difference is targeted to line up
-            # against each other until the entire matrix is deleted.
-            while timings.size > 0:
-                # lowest_index is in the format of ([y coordinate],
-                # [x coordinate]), which requires lowest_index[1][0] to
-                # get the x coordinate, and lowest_index[0][0] for the y
-                # coordinate.
-                lowest_index = np.where(timings == timings.min())
-                correct_length_timelines[scout][lowest_index[1][0]] = \
-                    simplified_timelines[scout][lowest_index[0][0]]
-                timings = np.delete(timings, int(lowest_index[1][0]), axis=1)
-                timings = np.delete(timings, int(lowest_index[0][0]), axis=0)
+            # against each other until the entire matrix is turned to
+            # 150.
+            if timings.size:
+                while timings.min() < 150:
+                    # lowest_index is in the format of ([y coordinate],
+                    # [x coordinate]), which requires lowest_index[1][0]
+                    # to get the x coordinate, and lowest_index[0][0]
+                    # for the y coordinate.
+                    lowest_index = np.where(timings == timings.min())
+                    correct_length_timelines[scout][lowest_index[1][0]] = \
+                        simplified_timelines[scout][lowest_index[0][0]]
+                    timings[int(lowest_index[0][0])] = \
+                        np.full([1, len(timings[0])], 150)
+                    for row in range(len(timings)):
+                        timings[row][int(lowest_index[1][0])] = 150
 
     final_simplified_timd = [{} for action in range(majority_length)]
     # Iterates through the sprking's timeline to compare all the actions.
