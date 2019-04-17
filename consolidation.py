@@ -195,7 +195,7 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
             # created, the lowest difference is targeted to line up
             # against each other until the entire matrix is turned to
             # 150.
-            if timings.size:
+            if timings.size > 0:
                 while timings.min() < 150:
                     # lowest_index is in the format of ([y coordinate],
                     # [x coordinate]), which requires lowest_index[1][0]
