@@ -234,7 +234,7 @@ for temp_timd, temp_timd_value in INITIAL_TEMP_TIMDS.items():
     temp_timd_stream_handler(temp_timd, temp_timd_value)
 # Stores the keys of cached 'tempTIMDs'
 CACHED_TEMP_TIMD_KEYS = []
-CACHED_TEMP_TIMD_KEYS.append(INITIAL_TEMP_TIMDS.keys())
+CACHED_TEMP_TIMD_KEYS += INITIAL_TEMP_TIMDS.keys()
 
 # Stores the tempTIMDs that have already been calculated in order to
 # prevent them from being recalculated if the data has not changed.
