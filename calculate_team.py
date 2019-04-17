@@ -697,19 +697,20 @@ def team_calculations(timds, team_number):
         calculated_data['failedCyclesCausedPerSecond'] = calculated_data[
             'failedCyclesCaused'] / calculated_data['totalTimeDefending']
 
+    # A list of the timds where the super indicated the team was defending.
     super_defending_timds = []
     for timd in timds:
-        if timd['calculatedData'].get('superFailedCyclesCaused', 0) > 0.0:
+        if timd['calculatedData'].get('superFailedCyclesCaused', 0) > 0:
             super_defending_timds.append(timd)
 
-    calculated_data['avgSuperFailedCyclesCaused'] = avg([timd[
-        'calculatedData'].get('superFailedCyclesCaused') for timd in \
-        super_defending_timds], None)
-    calculated_data['avgSuperOrangeFailedCyclesCaused'] = avg([timd[
+    calculated_data['avgSuperOrangeFailedCyclesCaused'] = utils.avg([timd[
         'calculatedData'].get('superOrangeFailedCyclesCaused') for timd in \
         super_defending_timds], None)
-    calculated_data['avgSuperLemonFailedCyclesCaused'] = avg([timd[
+    calculated_data['avgSuperLemonFailedCyclesCaused'] = utils.avg([timd[
         'calculatedData'].get('superLemonFailedCyclesCaused') for timd in \
+        super_defending_timds], None)
+    calculated_data['avgSuperFailedCyclesCaused'] = utils.avg([timd[
+        'calculatedData'].get('superFailedCyclesCaused') for timd in \
         super_defending_timds], None)
 
     # Calculations for percent successes for different actions using the
