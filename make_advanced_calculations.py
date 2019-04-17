@@ -148,8 +148,8 @@ def calculate_third_pick_ability(calculated_data):
                           12 * float(calculated_data.get('climbSuccessL3', 0)) / 100])
     end_game_score *= climbing_weight
 
-    # If the robot doesn't meet the requirements for a third pick robot,
-    # their third pick score is 0.
+    # A third pick robot must have a driver ability greater than 0
+    # (average) and must score an average of more than 1 cargo per match.
     if (calculated_data['driverAbility'] <= 0) or \
         (calculated_data['avgOrangesScored'] <= 1):
         return 0
