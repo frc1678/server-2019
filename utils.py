@@ -32,16 +32,3 @@ def create_file_path(path_after_main, create_directories=True):
         # 'os.makedirs' will create multiple directories, if needed)
         os.makedirs(os.path.join(MAIN_DIRECTORY, directories), exist_ok=True)
     return os.path.join(MAIN_DIRECTORY, path_after_main)
-
-def avg(lis, exception=0.0):
-    """Calculates the average of a list.
-
-    lis is the list that is averaged.
-    exception is returned if there is a divide by zero error. The
-    default is 0.0 because the main usage in in percentage calculations.
-    """
-    lis = [item for item in lis if item is not None]
-    if len(lis) == 0:
-        return exception
-    else:
-        return sum(lis) / len(lis)

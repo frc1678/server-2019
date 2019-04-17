@@ -16,12 +16,10 @@ with open(utils.create_file_path('data/api_keys/tba_key.txt')) as file:
 # Many file editors will automatically add a newline at the end of files.
 API_KEY = API_KEY.rstrip('\n')
 
-def make_request(api_url, show_output=True):
+def make_request(api_url):
     """Sends a single web request to the TBA API v3 and caches result.
 
-    api_url is the url of the API request (the path after '/api/v3')
-    show_output shows print statements about the status of the
-    request.  Defaults to True"""
+    api_url is the url of the API request (the path after '/api/v3')"""
     base_url = 'https://www.thebluealliance.com/api/v3/'
     full_url = base_url + api_url
     request_headers = {'X-TBA-Auth-Key': API_KEY}
@@ -44,17 +42,14 @@ def make_request(api_url, show_output=True):
     if cache_last_modified is not None:
         request_headers['If-Modified-Since'] = cache_last_modified
 
-    if show_output is True:
-        print(f'Retrieving data from TBA...\nURL: {api_url}')
+    print(f'Retrieving data from TBA...\nURL: {api_url}')
     while True:
         try:
             request = requests.get(full_url, headers=request_headers)
         except requests.exceptions.ConnectionError:
-            # Errors will always be shown, even if 'show_output' is False.
             print('Error: No internet connection.  Trying again in 3 seconds...')
         else:
-            if show_output is True:
-                print('TBA data successfully retrieved.')
+            print('TBA data successfully retrieved.')
             break
         time.sleep(3)
 
@@ -74,32 +69,31 @@ def make_request(api_url, show_output=True):
 
         return request.json()
     else:
-        # Errors will always be shown, even if 'show_output' is False.
         print(f'Request failed with status code {request.status_code}')
         return {}
 
-def request_match(match_key, show_output=True):
+def request_match(match_key):
     """Requests data for a single match from the TBA API.
 
     match_key is a string.  (e.g. '2019caoc_qm29', '2019caoc_qf3m1')"""
-    return make_request(f'match/{match_key}', show_output)
+    return make_request(f'match/{match_key}')
 
-def request_rankings(show_output=True):
+def request_rankings():
     """Requests the team rankings for an event from the TBA API."""
-    return make_request(f'event/{EVENT_CODE}/rankings', show_output)
+    return make_request(f'event/{EVENT_CODE}/rankings')
 
-def request_matches(show_output=True):
+def request_matches():
     """Requests the match schedule from the TBA API."""
-    return make_request(f'event/{EVENT_CODE}/matches/simple', show_output)
+    return make_request(f'event/{EVENT_CODE}/matches/simple')
 
-def request_match_keys(show_output=True):
+def request_match_keys():
     """Requests match keys (names) from the TBA API.
 
     Match key format: {event_code}_{match_number}
     (e.g. '2019caoc_qm29' [qualification match 29],
     '2019caoc_qf3m1' [quarter finals 3-1])"""
-    return make_request(f'event/{EVENT_CODE}/matches/keys', show_output)
+    return make_request(f'event/{EVENT_CODE}/matches/keys')
 
-def request_teams(show_output=True):
+def request_teams():
     """Requests the team list from the TBA API."""
-    return make_request(f'event/{EVENT_CODE}/teams/simple', show_output)
+    return make_request(f'event/{EVENT_CODE}/teams/simple')
