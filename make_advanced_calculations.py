@@ -114,6 +114,49 @@ def calculate_second_pick_ability(calculated_data, max_da, min_da):
             defense_weight) - (defense_weight - 1)
     return sand_score + level_1_teleop_score + end_game_score + driver_ability + defense_ability
 
+def calculate_third_pick_ability(calculated_data):
+    """Calculates the relative third pick score for a team.
+
+    calculated_data is the dictionary of calculated_data calculated for
+    a team."""
+    # Weights for how much each aspect of the robot is considered for a
+    # third pick
+    level_1_weight = 0.9
+    level_2_weight = 1.1
+    level_3_weight = 1.1
+    sandstorm_weight = 1.0
+    climbing_weight = 0.2
+
+    # Scores for points scored on level 1, 2, and 3.
+    level_1_teleop_score = (2 * calculated_data['avgLemonsScoredTeleL1']
+        + 3 * calculated_data['avgOrangesScoredTeleL1']) * level_1_weight
+    level_2_teleop_score = (2 * calculated_data['avgLemonsScoredTeleL2']
+        + 3 * calculated_data['avgOrangesScoredTeleL2']) * level_2_weight
+    level_3_teleop_score = (2 * calculated_data['avgLemonsScoredTeleL3']
+        + 3 * calculated_data['avgOrangesScoredTeleL3']) * level_3_weight
+
+    # Scores for points gained during sandstorm.
+    sand_score = max([float(calculated_data.get('habLineSuccessL1', 0)) * 3 / 100,
+                      float(calculated_data.get('habLineSuccessL2', 0)) * 6 / 100])
+    sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
+    sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
+    sand_score *= sandstorm_weight
+
+    # Scores for points scored in the endgame.
+    end_game_score = max([3 * float(calculated_data.get('climbSuccessL1', 0)) / 100,
+                          6 * float(calculated_data.get('climbSuccessL2', 0)) / 100,
+                          12 * float(calculated_data.get('climbSuccessL3', 0)) / 100])
+    end_game_score *= climbing_weight
+
+    # A third pick robot must have a driver ability greater than 0
+    # (average) and must score an average of more than 1 cargo per match.
+    if (calculated_data['driverAbility'] <= 0) or \
+        (calculated_data['avgOrangesScored'] <= 1):
+        return 0
+
+    # Adds all the previous scores together to get a full third pick score.
+    return sand_score + level_1_teleop_score + level_2_teleop_score + level_3_teleop_score + end_game_score
+
 def calculate_zscores(team_average_field, team_zscore_field):
     """Calculates the zscore for a team average data point across all teams.
 
@@ -166,6 +209,8 @@ for team in TEAMS.keys():
     TEAMS[team]['calculatedData']['secondPickAbility'] = \
         calculate_second_pick_ability(TEAMS[team]['calculatedData'],
                                       MAX_DA, MIN_DA)
+    TEAMS[team]['calculatedData']['thirdPickAbility'] = \
+        calculate_third_pick_ability(TEAMS[team]['calculatedData'])
 
 # Sends data to 'cache' and 'upload_queue'
 for team, data in TEAMS.items():
