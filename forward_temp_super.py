@@ -94,7 +94,3 @@ for match, files in FILES_BY_MATCH.items():
             file_data.update(data)
             with open(f'data/{folder}/timds/{timd_name}.json', 'w') as file:
                 json.dump(file_data, file)
-
-
-    with open('log2.json', 'w') as file:
-        json.dump(temp_super_teams, file)
