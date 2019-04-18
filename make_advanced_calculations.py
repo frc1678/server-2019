@@ -182,13 +182,13 @@ TIMDS = [timd_file.split('.')[0] for timd_file in TIMD_FILES]
 for team in TEAMS:
     # Matches a team has played
     matches = [timd.split('Q')[1] for timd in TIMDS if timd.split('Q')[0] == team]
-    # Goes through the matches a team plays in and gets their alliance parters.
+    # Gets the alliance partners of a team across their matches
     alliance_members = []
     for match in matches:
-        # Gets teams from the red an blue alliance for the match
+        # Uses 'list()' to not associate the match schedule when
+        # alliance is deleted from.
         red_alliance = list(MATCH_SCHEDULE[match]['redTeams'])
         blue_alliance = list(MATCH_SCHEDULE[match]['blueTeams'])
-        # Checks if the team is in the red alliance
         if str(team) in red_alliance:
             # Sets alliance the alliance equal to those teams
             alliance = red_alliance
@@ -201,7 +201,7 @@ for team in TEAMS:
         # Removes own team and leaves only alliance partners in the list
         alliance.remove(str(team))
         alliance_members += alliance
-    # List for the scaled driver ability of the alliance partners
+    # Scaled driver ability of the team's alliance partners
     scaled_driver_abilities = []
     for alliance_team in alliance_members:
         # Gets 'driverAbility' score for alliance partners
