@@ -203,10 +203,10 @@ for team in TEAMS:
         alliance_members += alliance
     # Scaled driver ability of the team's alliance partners
     scaled_driver_abilities = []
-    for alliance_team in alliance_members:
+    for team in alliance_members:
         # Gets 'driverAbility' score for alliance partners
         alliance_teams_driver_ability = \
-            TEAMS[alliance_team]['calculatedData']['driverAbility']
+            TEAMS[team]['calculatedData']['driverAbility']
         # Scales driver ability from zero to one.
         alliance_scaled_driver_ability = 1 * \
             (alliance_teams_driver_ability - MIN_DA)/(MAX_DA - MIN_DA)
