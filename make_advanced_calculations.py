@@ -213,8 +213,8 @@ for team in TEAMS:
         scaled_driver_ability = 1 * \
             (driver_ability - MIN_DA)/(MAX_DA - MIN_DA)
         scaled_driver_abilities.append(scaled_driver_ability)
-    # Multiplies the scaled alliance partner's driver ability by the
-    # team's nonscaled driver ability to get the team's normalized
+    # Multiplies the average scaled alliance partner's driver ability
+    # by the team's nonscaled driver ability to get the team's normalized
     # driver ability.
     normalized_driver_ability = utils.avg(scaled_driver_abilities) * \
         TEAMS[team]['calculatedData']['driverAbility']
