@@ -45,7 +45,7 @@ def calculate_predicted_climb_points(team_numbers):
 
     team_numbers is a list of team numbers (integers) on the alliance"""
     calculated_data_by_team = {team_number: \
-        TEAMS[team]['calculatedData'] for team_number in \
+        TEAMS[team_number]['calculatedData'] for team_number in \
         team_numbers}
     total_points = 0
     for team_number, team_calculated_data in calculated_data_by_team.items():
