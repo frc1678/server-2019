@@ -163,20 +163,14 @@ def calculate_predicted_rps(calculated_data, color):
     calculated_data is the prediction data for the match.
     color is the alliance color which is being calculated."""
     if color == 'red':
-        if calculated_data.get('bluePredictedScore') is None:
-            win = 2
-        else:
-            win = 2 if calculated_data['redPredictedScore'] > \
-                calculated_data['bluePredictedScore'] else 0
+        win = 2 if calculated_data['redPredictedScore'] > \
+            calculated_data.get('bluePredictedScore', 0) else 0
         total = win + calculated_data['redChanceClimbRP'] + \
             calculated_data['redChanceRocketRP']
         return total
     else:
-        if calculated_data.get('redPredictedScore') is None:
-            win = 2
-        else:
-            win = 2 if calculated_data['bluePredictedScore'] > \
-                calculated_data['redPredictedScore'] else 0
+        win = 2 if calculated_data['bluePredictedScore'] > \
+                calculated_data.get('redPredictedScore', 0) else 0
         total = win + calculated_data['blueChanceClimbRP'] + \
             calculated_data['blueChanceRocketRP']
         return total
