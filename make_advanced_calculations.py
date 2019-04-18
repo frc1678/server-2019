@@ -192,18 +192,15 @@ for team in TEAMS:
         if str(team) in red_alliance:
             # Sets alliance the alliance equal to those teams
             alliance = red_alliance
-            # Removes own team and leaves only alliance partners in the list
-            alliance.remove(str(team))
-            alliance_members += alliance
         # Checks if the team is in the blue alliance
         elif str(team) in blue_alliance:
             # Sets alliance the alliance equal to those teams
             alliance = blue_alliance
-            alliance.remove(str(team))
-            alliance_members += alliance
         else:
             print('Error: Team not in match schedule.')
-
+        # Removes own team and leaves only alliance partners in the list
+        alliance.remove(str(team))
+        alliance_members += alliance
     # List for the scaled driver ability of the alliance partners
     scaled_driver_abilities = []
     for alliance_team in alliance_members:
