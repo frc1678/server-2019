@@ -181,13 +181,13 @@ TIMD_FILES = os.listdir(utils.create_file_path('data/cache/timds'))
 TIMDS = [timd_file.split('.')[0] for timd_file in TIMD_FILES]
 for team in TEAMS:
     # Matches a team has played
-    team_matches = [timd.split('Q')[1] for timd in TIMDS if timd.split('Q')[0] == team]
+    matches = [timd.split('Q')[1] for timd in TIMDS if timd.split('Q')[0] == team]
     # Goes through the matches a team plays in and gets their alliance parters.
     alliance_members = []
-    for team_match in team_matches:
+    for match in matches:
         # Gets teams from the red an blue alliance for the match
-        red_alliance = list(MATCH_SCHEDULE[team_match]['redTeams'])
-        blue_alliance = list(MATCH_SCHEDULE[team_match]['blueTeams'])
+        red_alliance = list(MATCH_SCHEDULE[match]['redTeams'])
+        blue_alliance = list(MATCH_SCHEDULE[match]['blueTeams'])
         # Checks if the team is in the red alliance
         if str(team) in red_alliance:
             # Sets alliance the alliance equal to those teams
