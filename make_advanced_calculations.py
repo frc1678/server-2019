@@ -12,8 +12,8 @@ def calculate_driver_ability(calculated_data):
     """Calculates the relative driver ability for a team using driver zscores.
 
     calculated_data is the calculated data for the team being calculated."""
-    agility_weight = 0.7
-    speed_weight = 0.3
+    agility_weight = 0.65
+    speed_weight = 0.35
     driver_ability = calculated_data['agilityZScore'] * agility_weight + \
                      calculated_data['speedZScore'] * speed_weight
     return driver_ability
@@ -66,12 +66,13 @@ def calculate_second_pick_ability(calculated_data, max_da, min_da):
     used to weight driver ability."""
     # Weights for how much each aspect of the robot is considered for a
     # second pick.
-    climbing_weight = 0.25
-    oranges_weight = 0.5
-    lemons_weight = 4.0
-    sandstorm_weight = 1.0
-    driving_weight = 18.0
-    defense_weight = 2.0
+
+    climbing_weight = 0.5
+    oranges_weight = 0.2
+    lemons_weight = 0.4
+    sandstorm_weight = 0.2
+    driving_weight = 25.0
+    defense_weight = 3.0
 
     # Scores for points gained during sandstorm.
     sand_score = max([float(calculated_data['habLineSuccessL1']) * 3 / 100,
