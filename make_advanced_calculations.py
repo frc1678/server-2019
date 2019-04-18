@@ -183,26 +183,30 @@ for team in TEAMS:
     # Adds each match a team played in to a list.
     team_matches = [timd.split('Q')[1] for timd in TIMDS if timd.split('Q')[0] == team]
     # Goes through the matches a team plays in and gets their alliance parters.
+    alliance_members = []
     for team_match in team_matches:
         # Gets teams from the red an blue alliance for the match
-        red_alliance = MATCH_SCHEDULE[team_match]['redTeams']
-        blue_alliance = MATCH_SCHEDULE[team_match]['blueTeams']
+        red_alliance = list(MATCH_SCHEDULE[team_match]['redTeams'])
+        blue_alliance = list(MATCH_SCHEDULE[team_match]['blueTeams'])
         # Checks if the team is in the red alliance
         if team in red_alliance:
             # Sets alliance the alliance equal to those teams
             alliance = red_alliance
+            # Removes own team and leaves only alliance partners in the list
+            alliance.remove(str(team))
+            alliance_members += alliance
         # Checks if the team is in the blue alliance
-        if team in blue_alliance:
+        elif team in blue_alliance:
             # Sets alliance the alliance equal to those teams
             alliance = blue_alliance
+            alliance.remove(str(team))
+            alliance_members += alliance
         else:
             print('Error: Team not in match schedule.')
-        # Removes own team and leaves only alliance partners in the list
-        alliance.remove(team)
 
     # List for the scaled driver ability of the alliance partners
     scaled_driver_abilities = []
-    for alliance_team in alliance:
+    for alliance_team in alliance_members:
         # Gets 'driverAbility' score for alliance partners
         alliance_teams_driver_ability = \
             TEAMS[alliance_team]['calculatedData']['driverAbility']
@@ -215,7 +219,7 @@ for team in TEAMS:
     # team's nonscaled driver ability to get the team's normalized
     # driver ability.
     normalized_driver_ability = utils.avg(scaled_driver_abilities) * \
-        TEAMS[team]['calculatedDate']['driverAbility']
+        TEAMS[team]['calculatedData']['driverAbility']
     # Adds normalized_driver_ability to 'calculatedData'
     TEAMS[team]['calculatedData']['normalizedDriverAbility'] = \
         normalized_driver_ability
