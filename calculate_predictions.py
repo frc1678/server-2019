@@ -98,6 +98,14 @@ def calculate_chance_climb_rp(team_numbers):
         # The chances that each minimum level requirement is met.
         level_chances = []
         for min_level in rp_combination:
+<<<<<<< HEAD
+=======
+            # If there are no available teams left, the chance of the
+            # combination is 0.
+            if len(available_teams) == 0:
+                rp_combination_chances.append(0)
+                break
+>>>>>>> 3105bd3... Add comment for climb rp chance of 0
             # Team to their highest success rate out of the level(s) at
             # or above the minimum required level.
             max_successes = {}
