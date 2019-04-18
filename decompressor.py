@@ -262,6 +262,10 @@ TEMP_SUPER_COMPRESSION_KEYS = {
     'F': 'timeline',
     'G': 'type',
     'H': 'time',
+    'J': 'pushingBattles',
+    'K': 'winner',
+    'M': 'loser',
+    'N': 'winMarginIsLarge',
 }
 # Compressed tempSuper value to uncompressed tempSuper value
 TEMP_SUPER_COMPRESSION_VALUES = {
@@ -272,6 +276,44 @@ TEMP_SUPER_COMPRESSION_VALUES = {
     'a': 'startDefense',
     'b': 'endDefense',
 }
+
+def decompress_temp_super_pushing_battles(compressed_temp_super):
+    """HACK: Decompresses pushing_battles for a single tempSuper.
+
+    NOT called by decompress_temp_super()
+
+    compressed_temp_super is the full tempSuper"""
+    temp_super_key = compressed_temp_super.split('|')[0]
+    compressed_value = compressed_temp_super.split('|')[1]
+    compressed_header = compressed_value.split('!')[0]
+
+    # Currently, there is only 1 header: 'pushingBattles'
+    if compressed_header[0] != 'J':
+        print('Error: incorrect compressed tempSuper format.')
+        return
+    decompressed_pushing_battles = []
+    compressed_pushing_battles = compressed_header[2:-1].rstrip(';').split(';')
+    for compressed_pushing_battle in compressed_pushing_battles:
+        compressed_items = compressed_pushing_battle.rstrip(',').split(',')
+        decompressed_pushing_battle = {}
+        for compressed_item in compressed_items:
+            # The first character in the team data will always be the key.
+            compressed_key = compressed_item[0]
+            decompressed_key = TEMP_SUPER_COMPRESSION_KEYS[compressed_key]
+            # Every character after the key is the value.
+            compressed_value = compressed_item[1:]
+            if compressed_value in TEMP_SUPER_COMPRESSION_VALUES:
+                decompressed_value = TEMP_SUPER_COMPRESSION_VALUES[compressed_value]
+            # Checks if the value only contains characters 0-9
+            elif compressed_value.isdigit():
+                decompressed_value = int(compressed_value)
+            else:
+                print('Error: Unable to decompress tempSuper value.')
+                return
+            decompressed_pushing_battle[decompressed_key] = decompressed_value
+        decompressed_pushing_battles.append(decompressed_pushing_battle)
+    return decompressed_pushing_battles
+
 
 def decompress_temp_super_team(compressed_temp_super_team):
     """Decompresses a single tempSuper team.
