@@ -189,14 +189,14 @@ for team in TEAMS:
         red_alliance = list(MATCH_SCHEDULE[team_match]['redTeams'])
         blue_alliance = list(MATCH_SCHEDULE[team_match]['blueTeams'])
         # Checks if the team is in the red alliance
-        if team in red_alliance:
+        if str(team) in red_alliance:
             # Sets alliance the alliance equal to those teams
             alliance = red_alliance
             # Removes own team and leaves only alliance partners in the list
             alliance.remove(str(team))
             alliance_members += alliance
         # Checks if the team is in the blue alliance
-        elif team in blue_alliance:
+        elif str(team) in blue_alliance:
             # Sets alliance the alliance equal to those teams
             alliance = blue_alliance
             alliance.remove(str(team))
