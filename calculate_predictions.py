@@ -98,6 +98,8 @@ def calculate_chance_climb_rp(team_numbers):
         # The chances that each minimum level requirement is met.
         level_chances = []
         for min_level in rp_combination:
+            # If there are no available teams left, the chance of the
+            # combination is 0.
             if len(available_teams) == 0:
                 rp_combination_chances.append(0)
                 break
