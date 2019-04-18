@@ -168,7 +168,7 @@ for team in TEAMS.keys():
                                       MAX_DA, MIN_DA)
 
 # Gathers the matches in the competition. These matches are cached from
-# the tba match schedule when the server first runs.
+# TBA when the server first runs.
 MATCH_SCHEDULE = {}
 for match_file in os.listdir(utils.create_file_path('data/cache/match_schedule')):
     with open(utils.create_file_path(f'data/cache/match_schedule/{match_file}')) as file:
@@ -180,7 +180,7 @@ TIMD_FILES = os.listdir(utils.create_file_path('data/cache/timds'))
 # Removes '.json' file ending.
 TIMDS = [timd_file.split('.')[0] for timd_file in TIMD_FILES]
 for team in TEAMS:
-    # Adds each match a team played in to a list.
+    # Matches a team has played
     team_matches = [timd.split('Q')[1] for timd in TIMDS if timd.split('Q')[0] == team]
     # Goes through the matches a team plays in and gets their alliance parters.
     alliance_members = []
