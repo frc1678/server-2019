@@ -37,7 +37,7 @@ def calculate_predicted_alliance_score(team_numbers, pred_climb_points):
     # Adds the predicted climb points for the alliance.
     total_score += pred_climb_points
     for team in team_numbers:
-        total_score += TEAMS[team]['calculatedData']['predictedSoloPoints']
+        total_score += TEAMS[team]['calculatedData'].get('predictedSoloPoints', 0)
     return total_score
 
 def calculate_predicted_climb_points(team_numbers):
