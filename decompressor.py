@@ -294,6 +294,8 @@ def decompress_temp_super_pushing_battles(compressed_temp_super):
         return
     decompressed_pushing_battles = []
     compressed_pushing_battles = compressed_header[2:-1].rstrip(';').split(';')
+    if compresssed_pushing_battles == ['']:
+        return []
     for compressed_pushing_battle in compressed_pushing_battles:
         compressed_items = compressed_pushing_battle.rstrip(',').split(',')
         decompressed_pushing_battle = {}
