@@ -284,6 +284,7 @@ def decompress_temp_super_pushing_battles(compressed_temp_super):
 
     compressed_temp_super is the full tempSuper"""
     temp_super_key = compressed_temp_super.split('|')[0]
+    match_number = temp_super_key.split('-')[0].split('Q')[1]
     compressed_value = compressed_temp_super.split('|')[1]
     compressed_header = compressed_value.split('!')[0]
 
@@ -296,6 +297,7 @@ def decompress_temp_super_pushing_battles(compressed_temp_super):
     for compressed_pushing_battle in compressed_pushing_battles:
         compressed_items = compressed_pushing_battle.rstrip(',').split(',')
         decompressed_pushing_battle = {}
+        decompressed_pushing_battle['matchNumber'] = match_number
         for compressed_item in compressed_items:
             # The first character in the team data will always be the key.
             compressed_key = compressed_item[0]
