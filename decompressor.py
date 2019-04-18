@@ -311,7 +311,6 @@ def decompress_temp_super_team(compressed_temp_super_team):
                     # Every character after the key is the value.
                     compressed_value2 = compressed_item2[1:]
                     if compressed_value2 in TEMP_SUPER_COMPRESSION_VALUES:
-                        # Decompresses the key and the value.
                         decompressed_value2 = TEMP_SUPER_COMPRESSION_VALUES[compressed_value2]
                     # Checks if the value only contains characters 0-9
                     elif compressed_value2.isdigit():
@@ -332,7 +331,6 @@ def decompress_temp_super_team(compressed_temp_super_team):
                 decompressed_value.append(decompressed_team)
         # Checks if the value is a letter that can be decompressed.
         elif compressed_value in TEMP_SUPER_COMPRESSION_VALUES:
-            # Decompresses the key and the value.
             decompressed_value = TEMP_SUPER_COMPRESSION_VALUES[compressed_value]
         # Checks if the value only contains characters 0-9
         elif compressed_value.isdigit():
