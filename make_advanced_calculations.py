@@ -168,27 +168,27 @@ for team in TEAMS.keys():
                                       MAX_DA, MIN_DA)
 
 # Gathers the matches in the competition. These matches are cached from
-# the tba match schedule when the server first runs.
+# TBA when the server first runs.
 MATCH_SCHEDULE = {}
-for match in os.listdir(utils.create_file_path('data/cache/match_schedule')):
-    with open(utils.create_file_path(f'data/cache/match_schedule/{match}')) as file:
+for match_file in os.listdir(utils.create_file_path('data/cache/match_schedule')):
+    with open(utils.create_file_path(f'data/cache/match_schedule/{match_file}')) as file:
         match_data = json.load(file)
     # '.split()' removes '.txt' file ending
-    MATCH_SCHEDULE[match.split('.')[0]] = match_data
+    MATCH_SCHEDULE[match_file.split('.')[0]] = match_data
 
 TIMD_FILES = os.listdir(utils.create_file_path('data/cache/timds'))
 # Removes '.json' file ending.
 TIMDS = [timd_file.split('.')[0] for timd_file in TIMD_FILES]
 for team in TEAMS:
-    # Adds each match a team played in to a list.
-    team_matches = [timd.split('Q')[1] for timd in TIMDS if timd.split('Q')[0] == team]
-    # Goes through the matches a team plays in and gets their alliance parters.
+    # Matches a team has played
+    matches = [timd.split('Q')[1] for timd in TIMDS if timd.split('Q')[0] == team]
+    # Gets the alliance partners of a team across their matches
     alliance_members = []
-    for team_match in team_matches:
-        # Gets teams from the red an blue alliance for the match
-        red_alliance = list(MATCH_SCHEDULE[team_match]['redTeams'])
-        blue_alliance = list(MATCH_SCHEDULE[team_match]['blueTeams'])
-        # Checks if the team is in the red alliance
+    for match in matches:
+        # Uses 'list()' to not associate the match schedule when
+        # alliance is deleted from.
+        red_alliance = list(MATCH_SCHEDULE[match]['redTeams'])
+        blue_alliance = list(MATCH_SCHEDULE[match]['blueTeams'])
         if str(team) in red_alliance:
             # Sets alliance the alliance equal to those teams
             alliance = red_alliance
@@ -202,23 +202,23 @@ for team in TEAMS:
         alliance.remove(str(team))
         alliance_members += alliance
 
-    # List for the scaled driver ability of the alliance partners
+    # Scaled driver ability of the team's alliance partners
     scaled_driver_abilities = []
-    for alliance_team in alliance_members:
-        # Gets 'driverAbility' score for alliance partners
-        alliance_teams_driver_ability = \
-            TEAMS[alliance_team]['calculatedData']['driverAbility']
-        # Scales driver ability from zero to one.
-        alliance_scaled_driver_ability = 1 * \
-            (alliance_teams_driver_ability - MIN_DA)/(MAX_DA - MIN_DA)
+    for team in alliance_members:
+        driver_ability = \
+            TEAMS[team]['calculatedData']['driverAbility']
+        # Scales driver ability so that the lowest driver ability is
+        # counted as 0, and the highest is counted as 1. All other
+        # values in between are scaled linearly.
+        scaled_driver_ability = 1 * \
+            (driver_ability - MIN_DA)/(MAX_DA - MIN_DA)
         # Adds the scaled driver abilities to a list
-        scaled_driver_abilities.append(alliance_scaled_driver_ability)
+        scaled_driver_abilities.append(scaled_driver_ability)
     # Multiplies the scaled alliance partner's driver ability by the
     # team's nonscaled driver ability to get the team's normalized
     # driver ability.
     normalized_driver_ability = utils.avg(scaled_driver_abilities) * \
         TEAMS[team]['calculatedData']['driverAbility']
-    # Adds normalized_driver_ability to 'calculatedData'
     TEAMS[team]['calculatedData']['normalizedDriverAbility'] = \
         normalized_driver_ability
 
