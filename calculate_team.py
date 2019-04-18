@@ -784,9 +784,13 @@ def team_calculations(timds, team_number):
         timd['crossedHabLine'] for timd in lfm_timds if
         timd.get('startingLevel') == 2]))
 
-    calculated_data['climbSuccessL1'] = climb_success_rate(timds, 1)
-    calculated_data['climbSuccessL2'] = climb_success_rate(timds, 2)
-    calculated_data['climbSuccessL3'] = climb_success_rate(timds, 3)
+    climbs = filter_timeline_actions(timds, {'type': 'climb'})
+    for level in [1, 2, 3]:
+        level_attempts = len([climb for climb in climbs if \
+                              climb['attempted']['self'] == level])
+        if level_attempts > 0:
+            calculated_data[f'climbSuccessL{level}'] = \
+                climb_success_rate(timds, level)
 
     calculated_data['climbAttemptsL1'] = climb_success_rate(timds, 1, \
         string=True)
