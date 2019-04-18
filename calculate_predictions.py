@@ -253,8 +253,11 @@ SEED_ORDER = sorted(PREDICTED_RP_LIST.keys(), key=PREDICTED_RP_LIST.get, reverse
 
 # 'enumerate(, 1)' starts seeding at 1
 for seed, team in enumerate(SEED_ORDER, 1):
-    TEAMS[team]['calculatedData']['predictedRPs'] = \
-        sum(PREDICTED_RPS_BY_TEAM[team])
+    if TEAMS.get(team) is not None:
+        TEAMS[team]['calculatedData']['predictedRPs'] = \
+            sum(PREDICTED_RPS_BY_TEAM[team])
+    else:
+        TEAMS[team] = {'calculatedData': {'predictedRPs': 0}}
     TEAMS[team]['calculatedData']['predictedSeed'] = seed
 
 # Sends data to 'cache' and 'upload_queue'
