@@ -192,12 +192,12 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
                                 float(false_action['time']))
 
             # Once the matrix of timing differences has been
-            # created, the lowest difference is targeted to line up the
+            # created, the lowest difference is used to line up the
             # incorrect length timeline with the correct length
             # timeline. To avoid one action being compared with multiple
-            # other actions, after an action has been matched, all other
-            # instances (The row and column of the action) are set to
-            # 200, which is higher than any possible time difference.
+            # other actions, all other instances of the action (The row
+            # and column) are set to 200, which is higher than any
+            # possible time difference.
             if timings.size > 0:
                 # The loop runs until there are no more timings in the
                 # matrix less than 200.
