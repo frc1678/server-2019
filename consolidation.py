@@ -196,8 +196,9 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
             # incorrect length timeline with the correct length
             # timeline. To avoid one action being compared with multiple
             # other actions, all other instances of the action (The row
-            # and column) are set to 200, which is higher than any
-            # possible time difference.
+            # and column) are set to 200 to signify that it has been
+            # used. 200 is used because it is higher than any possible
+            # time difference.
             if timings.size > 0:
                 # The loop runs until there are no more time differences
                 # in the matrix less than 200.
