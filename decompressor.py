@@ -349,7 +349,8 @@ def decompress_temp_super(compressed_temp_super):
 
     compressed_temp_super is a string."""
     temp_super_key = compressed_temp_super.split('|')[0]
-    compressed_teams = compressed_temp_super.split('|')[1].rstrip('_').split('_')
+    compressed_value = compressed_temp_super.split('|')[1]
+    compressed_teams = compressed_value.split('!')[1].rstrip('_').split('_')
 
     decompressed_temp_super = []
 
