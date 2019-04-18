@@ -51,10 +51,7 @@ for team in RANKINGS:
     team_data = {
         'actualRPs': team['extra_stats'][0],
         'matchesPlayed': team['matches_played'],
-        # TODO: Move actual seed into non-calculated match data
-        'calculatedData': {
-            'actualSeed': team['rank'],
-        },
+        'actualSeed': team['rank'],
     }
     save_data(f'teams/{team_number}.json', team_data)
 
