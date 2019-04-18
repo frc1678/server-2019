@@ -185,7 +185,7 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                     points_prevented[piece] = points*(drops_caused+fails_caused+lost_cycles)
                     failed_cycles_caused[piece] = drops_caused + fails_caused
                 alliance_points_prevented[team] = points_prevented
-                alliance_failed_cycles_caused = failed_cycles_caused
+                alliance_failed_cycles_caused[team] = failed_cycles_caused
 
             # Saves TIMD points prevented
             orange_points_prevented = 0
@@ -196,8 +196,8 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                 orange_points_prevented += team_data.get('orange', 0)
                 lemon_points_prevented += team_data.get('lemon', 0)
             for team_data in alliance_failed_cycles_caused.values():
-                orange_failed_cycles_caused += 1
-                lemon_failed_cycles_caused += 1
+                orange_failed_cycles_caused += team_data.get('orange', 0)
+                lemon_failed_cycles_caused += team_data.get('lemon', 0)
             update_dict = {
                 'orangePointsPrevented': orange_points_prevented,
                 'lemonPointsPrevented': lemon_points_prevented,
