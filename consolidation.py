@@ -199,8 +199,8 @@ def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
             # and column) are set to 200, which is higher than any
             # possible time difference.
             if timings.size > 0:
-                # The loop runs until there are no more timings in the
-                # matrix less than 200.
+                # The loop runs until there are no more time differences
+                # in the matrix less than 200.
                 while timings.min() < 200:
                     # lowest_index is in the format of ([y coordinate],
                     # [x coordinate]), which requires lowest_index[1][0]
