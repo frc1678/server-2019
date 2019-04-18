@@ -8,6 +8,8 @@ import decompressor
 import utils
 
 TEMP_SUPER_FILES = os.listdir(utils.create_file_path('data/cache/temp_super'))
+TEMP_SUPER_FILES.sort(key=lambda file_name: file_name.split('-')[0].split('Q')[1])
+
 PUSHING_BATTLES = []
 for temp_super_file in TEMP_SUPER_FILES:
     with open(utils.create_file_path(
