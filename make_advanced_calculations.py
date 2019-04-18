@@ -170,11 +170,11 @@ for team in TEAMS.keys():
 # Gathers the matches in the competition. These matches are cached from
 # the tba match schedule when the server first runs.
 MATCH_SCHEDULE = {}
-for match in os.listdir(utils.create_file_path('data/cache/match_schedule')):
-    with open(utils.create_file_path(f'data/cache/match_schedule/{match}')) as file:
+for match_file in os.listdir(utils.create_file_path('data/cache/match_schedule')):
+    with open(utils.create_file_path(f'data/cache/match_schedule/{match_file}')) as file:
         match_data = json.load(file)
     # '.split()' removes '.txt' file ending
-    MATCH_SCHEDULE[match.split('.')[0]] = match_data
+    MATCH_SCHEDULE[match_file.split('.')[0]] = match_data
 
 TIMD_FILES = os.listdir(utils.create_file_path('data/cache/timds'))
 # Removes '.json' file ending.
