@@ -201,6 +201,7 @@ for team in TEAMS:
         # Removes own team and leaves only alliance partners in the list
         alliance.remove(str(team))
         alliance_members += alliance
+
     # List for the scaled driver ability of the alliance partners
     scaled_driver_abilities = []
     for alliance_team in alliance_members:
