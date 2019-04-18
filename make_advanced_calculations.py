@@ -212,7 +212,6 @@ for team in TEAMS:
         # values in between are scaled linearly.
         scaled_driver_ability = 1 * \
             (driver_ability - MIN_DA)/(MAX_DA - MIN_DA)
-        # Adds the scaled driver abilities to a list
         scaled_driver_abilities.append(scaled_driver_ability)
     # Multiplies the scaled alliance partner's driver ability by the
     # team's nonscaled driver ability to get the team's normalized
