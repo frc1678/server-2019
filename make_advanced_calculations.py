@@ -218,7 +218,6 @@ for team in TEAMS:
     # driver ability.
     normalized_driver_ability = utils.avg(scaled_driver_abilities) * \
         TEAMS[team]['calculatedData']['driverAbility']
-    # Adds normalized_driver_ability to 'calculatedData'
     TEAMS[team]['calculatedData']['normalizedDriverAbility'] = \
         normalized_driver_ability
 
