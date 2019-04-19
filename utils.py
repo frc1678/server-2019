@@ -45,3 +45,37 @@ def avg(lis, exception=0.0):
         return exception
     else:
         return sum(lis) / len(lis)
+
+def update_json_file(file_path, updated_data):
+    """Updates data in a JSON file.  (Preserves old data)
+
+    file_path is the absolute path of the file to be updated (string)
+    updated_data is the data to add to the JSON file (dict)"""
+    try:
+        with open(file_path, 'r') as file:
+            file_data = json.load(file)
+    except FileNotFoundError:
+        file_data = {}
+    # Used for nested dictionaries (i.e. 'calculatedData')
+    for key, value in updated_data.items():
+        if isinstance(value, dict):
+            file_data[key] = file_data.get(key, {})
+            file_data[key].update(value)
+        else:
+            file_data[key] = value
+    with open(file_path, 'w') as file:
+        json.dump(file_data, file)
+
+def no_none_get(dictionary, key, alternative):
+    """Gets the value for a key in a dictionary if it exists.
+
+    dictionary is where the value is taken from.
+    key is the key that is attempted to be retrieved from the dictionary.
+    alternative is what returns if the key doesn't exist."""
+    if key in list(dictionary.keys()):
+        if dictionary[key] is not None:
+            return dictionary[key]
+        else:
+            return alternative
+    else:
+        return alternative
