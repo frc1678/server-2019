@@ -99,7 +99,7 @@ def calculate_second_pick_ability(calculated_data, max_da, min_da):
         # weights it into the pick ability. Scales all driverAbilities
         # between 0 and 'driving_weight'.
         driver_ability = driving_weight * \
-            (calculated_data['driverAbility'] - min_da)/(max_da - min_da)
+            (calculated_data['normalizedDriverAbility'] - min_da)/(max_da - min_da)
 
     # When the average rank defense is None, the defense_ability should
     # be 0, because the team didn't play defense.
@@ -150,7 +150,7 @@ def calculate_third_pick_ability(calculated_data):
 
     # A third pick robot must have a driver ability greater than 0
     # (average) and must score an average of more than 1 cargo per match.
-    if (calculated_data['driverAbility'] <= 0) or \
+    if (calculated_data['normalizedDriverAbility'] <= 0) or \
         (calculated_data['avgOrangesScored'] <= 1):
         return 0
 
