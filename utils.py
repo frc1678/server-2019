@@ -52,10 +52,12 @@ def update_json_file(file_path, updated_data):
 
     file_path is the absolute path of the file to be updated (string)
     updated_data is the data to add to the JSON file (dict)"""
-    try:
+    # JSON library doesn't support loading from files that don't exist,
+    # so before loading data, checks if the path is an actual file.
+    if os.path.isfile(file_path) is True:
         with open(file_path, 'r') as file:
             file_data = json.load(file)
-    except FileNotFoundError:
+    else:
         file_data = {}
     # Used for nested dictionaries (i.e. 'calculatedData')
     for key, value in updated_data.items():
