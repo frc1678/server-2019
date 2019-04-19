@@ -21,8 +21,8 @@ for temp_super_file in TEMP_SUPER_FILES:
     PUSHING_BATTLES += decompressed_pushing_battles
 
 # Constants
-CONSTANT_C = 100
-CONSTANT_K = 40
+CONSTANT_C = 160
+CONSTANT_K = 100
 CONSTANT_VALUE = {
     'largeWin': 1.0,
     # Relative worth of a small win compared to a large win
@@ -33,8 +33,8 @@ CONSTANT_VALUE = {
 ELOS = {}
 
 for pushing_battle in PUSHING_BATTLES:
-    winner_old_elo = ELOS.get(pushing_battle['winner'], 400)
-    loser_old_elo = ELOS.get(pushing_battle['loser'], 400)
+    winner_old_elo = ELOS.get(pushing_battle['winner'], 500)
+    loser_old_elo = ELOS.get(pushing_battle['loser'], 500)
 
     winner_weighted_ranking = 10 ** (winner_old_elo / CONSTANT_C)
     loser_weighted_ranking = 10 ** (loser_old_elo / CONSTANT_C)
