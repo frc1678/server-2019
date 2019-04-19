@@ -40,8 +40,8 @@ def calculate_first_pick_ability(calculated_data):
         + 3 * calculated_data['avgOrangesScoredTeleL3']) * level_3_weight
 
     # Scores for points gained during sandstorm.
-    sand_score = max([float(calculated_data.get('habLineSuccessL1', 0)) * 3 / 100,
-                      float(calculated_data.get('habLineSuccessL2', 0)) * 6 / 100])
+    sand_score = max([float(utils.no_none_get(calculated_data, 'habLineSuccessL1', 0)) * 3 / 100,
+                      float(utils.no_none_get(calculated_data, 'habLineSuccessL2', 0)) * 6 / 100])
     sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
     sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
     sand_score *= sandstorm_weight
@@ -74,8 +74,8 @@ def calculate_second_pick_ability(calculated_data, max_da, min_da):
     defense_weight = 3.0
 
     # Scores for points gained during sandstorm.
-    sand_score = max([float(calculated_data.get('habLineSuccessL1', 0)) * 3 / 100,
-                      float(calculated_data.get('habLineSuccessL2', 0)) * 6 / 100])
+    sand_score = max([float(utils.no_none_get(calculated_data, 'habLineSuccessL1', 0)) * 3 / 100,
+                      float(utils.no_none_get(calculated_data, 'habLineSuccessL2', 0)) * 6 / 100])
     sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
     sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
     sand_score *= sandstorm_weight
@@ -136,8 +136,8 @@ def calculate_third_pick_ability(calculated_data):
         + 3 * calculated_data['avgOrangesScoredTeleL3']) * level_3_weight
 
     # Scores for points gained during sandstorm.
-    sand_score = max([float(calculated_data.get('habLineSuccessL1', 0)) * 3 / 100,
-                      float(calculated_data.get('habLineSuccessL2', 0)) * 6 / 100])
+    sand_score = max([float(utils.no_none_get(calculated_data, 'habLineSuccessL1', 0)) * 3 / 100,
+                      float(utils.no_none_get(calculated_data, 'habLineSuccessL2', 0)) * 6 / 100])
     sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
     sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
     sand_score *= sandstorm_weight

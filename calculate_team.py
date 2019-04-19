@@ -721,10 +721,8 @@ def team_calculations(timds, team_number):
     # Percentages and fractions of hab line successes.
     # Only calculates hab level success if they attempted to cross from
     # that level.
-    if hab_level_one != []:
-        calculated_data['habLineSuccessL1'] = round(100 * utils.avg(hab_level_one))
-    if hab_level_two != []:
-        calculated_data['habLineSuccessL2'] = round(100 * utils.avg(hab_level_two))
+    calculated_data['habLineSuccessL1'] = round(100 * utils.avg(hab_level_one))
+    calculated_data['habLineSuccessL2'] = round(100 * utils.avg(hab_level_two))
     calculated_data['habLineAttemptsL1'] = f'{sum(hab_level_one)} / {len(hab_level_one)}'
     calculated_data['habLineAttemptsL2'] = f'{sum(hab_level_two)} / {len(hab_level_two)}'
 
