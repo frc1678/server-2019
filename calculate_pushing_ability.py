@@ -56,5 +56,8 @@ for pushing_battle in PUSHING_BATTLES:
     ELOS[pushing_battle['winner']] = winner_new_elo
     ELOS[pushing_battle['loser']] = loser_new_elo
 
-with open(utils.create_file_path('data/exports/pushing-abiity-elos.json'), 'w') as file:
+for team in ELOS.keys():
+    utils.update_json_file(utils.create_file_path(
+        f'data/cache/teams/{team}.json'), {'calculatedData': {'pushAbility': ELOS[team]}})
+with open(utils.create_file_path('data/exports/pushing-ability-elos.json'), 'w') as file:
     json.dump(ELOS, file)
