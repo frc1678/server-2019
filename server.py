@@ -290,6 +290,9 @@ while True:
             print(f"Did calculations for {timd}")
             LATEST_CALCULATIONS_BY_TIMD[timd] = FILES_BY_TIMD[timd]
 
+    # Calculates pushing ELO rankings for teams.
+    subprocess.call('python3 calculate_pushing_ability.py', shell=True)
+
     # Forwards tempSuper data to Matches and TIMDs.
     subprocess.call('python3 forward_temp_super.py', shell=True)
 
