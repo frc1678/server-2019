@@ -50,13 +50,13 @@ SCOUT_NAMES = [
     # Strategist/Super Scout
     'Justin', 'Hanson',
     # Citrus Service/Scout
-    'David', 'Louise', 'Lasthenia', 'Nick',
+    'David', 'Louise', 'Lasthenia', 'Noemi',
     # Super Scout
     'Erik', 'Connor', 'Freddy',
     # Scout
-    'Noemi', 'Henry', 'Gabi', 'Zachary', 'Kate', 'Aidan', 'Jack S',
-    'Jude', 'Ellie', 'Asha', 'Mohamed', 'Joseph', 'Walsh', 'Nathan',
-    'Sofia',
+    'Nick', 'Mohamed', 'Gabi', 'Zachary', 'Kate', 'Aidan', 'Walsh',
+    'Nathan', 'Jack S', 'Jude', 'Henry', 'Sofia', 'Ellie', 'Eithne',
+    'Asha',
     # Other
     'Sam', 'Gemma', 'Jack D',
     # '.zfill(2)' adds leading zeroes to 2 digits
