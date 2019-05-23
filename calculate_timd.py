@@ -25,19 +25,6 @@ import consolidation
 import decompressor
 import utils
 
-def avg(lis, exception=0.0):
-    """Calculates the average of a list.
-
-    lis is the list that is averaged.
-    exception is returned if there is a divide by zero error. The
-    default is 0.0 because the main usage in in percentage calculations.
-    """
-    lis = [item for item in lis if item is not None]
-    if len(lis) == 0:
-        return exception
-    else:
-        return sum(lis) / len(lis)
-
 def percent_success(actions):
     """Finds the percent of times didSucceed is true in a list of actions.
 
@@ -48,7 +35,7 @@ def percent_success(actions):
     # returns a float between 0 and 1 of what percentage of times the
     # value was True.
     # Example: [True, True, False, True] returns 75.
-    return round(100 * avg(successes))
+    return round(100 * utils.avg(successes))
 
 def filter_cycles(cycle_list, **filters):
     """Puts cycles through filters to meet specific requirements
@@ -94,7 +81,7 @@ def calculate_avg_cycle_time(cycles):
         # counts down in the timeline.
         cycle_times.append(cycle[0].get('time') -
                            cycle[1].get('time'))
-    return avg(cycle_times, None)
+    return utils.avg(cycle_times, None)
 
 def calculate_total_action_duration(cycles):
     """Calculates the total duration for an action based on start and end times.
@@ -188,6 +175,32 @@ def calculate_timd_data(timd):
         timd, shotOutOfField=True))
     calculated_data['pinningFouls'] = len(filter_timeline_actions(
         timd, type='pinningFoul'))
+
+    calculated_data['orangeCycles'] = len(filter_timeline_actions(
+        timd, type='intake', piece='orange'))
+    calculated_data['lemonCycles'] = len(filter_timeline_actions(
+        timd, type='intake', piece='lemon'))
+
+    cycle_actions = [action for action in timd.get('timeline', []) if \
+        action['type'] in ['placement', 'intake', 'drop']]
+    if len(cycle_actions) > 0:
+        # If the last action is an intake, it shouldn't count as a
+        # cycle, so it is subtracted from its cycle data field.
+        if cycle_actions[-1]['type'] == 'intake':
+            piece = cycle_actions[-1]['piece']
+            # HACK: Subtracts the extra intake from the already
+            # calculated number of cycles. Should be included in that
+            # calculation.
+            calculated_data[f'{piece}Cycles'] -= 1
+
+    calculated_data['orangeDrops'] = len(filter_timeline_actions(
+        timd, type='drop', piece='orange'))
+    calculated_data['lemonDrops'] = len(filter_timeline_actions(
+        timd, type='drop', piece='lemon'))
+    calculated_data['orangeFails'] = len(filter_timeline_actions(
+        timd, type='placement', didSucceed=False, piece='orange'))
+    calculated_data['lemonFails'] = len(filter_timeline_actions(
+        timd, type='placement', didSucceed=False, piece='lemon'))
 
     calculated_data['orangesScoredSandstorm'] = len(
         filter_timeline_actions(timd, type='placement', piece='orange', \

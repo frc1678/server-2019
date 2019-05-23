@@ -46,6 +46,7 @@ def avg(lis, exception=0.0):
     else:
         return sum(lis) / len(lis)
 
+
 def update_json_file(file_path, updated_data):
     """Updates data in a JSON file.  (Preserves old data)
 
@@ -81,3 +82,4 @@ def no_none_get(dictionary, key, alternative):
             return alternative
     else:
         return alternative
+
