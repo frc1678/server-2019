@@ -66,7 +66,6 @@ def calculate_second_pick_ability(calculated_data, max_da, min_da):
     used to weight driver ability."""
     # Weights for how much each aspect of the robot is considered for a
     # second pick.
-
     climbing_weight = 0.25
     oranges_weight = 0.5
     lemons_weight = 1.0
