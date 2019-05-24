@@ -12,8 +12,8 @@ def calculate_driver_ability(calculated_data):
     """Calculates the relative driver ability for a team using driver zscores.
 
     calculated_data is the calculated data for the team being calculated."""
-    agility_weight = 0.7
-    speed_weight = 0.3
+    agility_weight = 0.65
+    speed_weight = 0.35
     driver_ability = calculated_data['agilityZScore'] * agility_weight + \
                      calculated_data['speedZScore'] * speed_weight
     return driver_ability
