@@ -776,7 +776,6 @@ def team_calculations(timds, team_number):
     calculated_data['avgOrangePointsPrevented'] = utils.avg([
         timd['calculatedData'].get('orangePointsPrevented') for timd in points_prevented_matches], None)
     calculated_data['avgLemonPointsPrevented'] = utils.avg([
-
         timd['calculatedData'].get('lemonPointsPrevented') for timd in points_prevented_matches], None)
 
     # If a team didn't play defense, they shouldn't have a 0 for their
