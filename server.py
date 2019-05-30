@@ -227,11 +227,6 @@ cache_match_schedule()
 
 # Wipes 'temp_timds' cache folder
 delete_cache_data_folder('temp_timds')
-# Pulls all tempTIMDs in a single request
-# (Improves efficiency on server restart)
-INITIAL_TEMP_TIMDS = DB.child('tempTIMDs').get().val()
-for temp_timd, temp_timd_value in INITIAL_TEMP_TIMDS.items():
-    temp_timd_stream_handler(temp_timd, temp_timd_value)
 # Stores the keys of cached 'tempTIMDs'
 CACHED_TEMP_TIMD_KEYS = []
 CACHED_TEMP_TIMD_KEYS += INITIAL_TEMP_TIMDS.keys()
@@ -240,6 +235,12 @@ CACHED_TEMP_TIMD_KEYS += INITIAL_TEMP_TIMDS.keys()
 # prevent them from being recalculated if the data has not changed.
 LATEST_CALCULATIONS_BY_TIMD = {}
 
+# Pulls all tempTIMDs in a single request
+# (Improves efficiency on server restart)
+INITIAL_TEMP_TIMDS = DB.child('tempTIMDs').get().val()
+if INITIAL_TEMP_TIMDS is not None:
+    for temp_timd, temp_timd_value in INITIAL_TEMP_TIMDS.items():
+        temp_timd_stream_handler(temp_timd, temp_timd_value)
 while True:
     # Goes through each of the streams to check if it is still active
     for stream_name, stream in STREAMS.items():
