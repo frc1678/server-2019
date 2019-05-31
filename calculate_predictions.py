@@ -165,7 +165,7 @@ def calculate_predicted_rps(calculated_data, color):
         return total
     else:
         win = 2 if calculated_data['bluePredictedScore'] > \
-                calculated_data.get('redPredictedScore', 0) else 0
+            calculated_data.get('redPredictedScore', 0) else 0
         total = win + calculated_data['blueChanceClimbRP'] + \
             calculated_data['blueChanceRocketRP']
         return total
