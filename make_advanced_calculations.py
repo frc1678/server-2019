@@ -266,23 +266,12 @@ if TEAMS != {}:
         # driver ability.
         normalized_driver_ability = utils.avg(scaled_driver_abilities) * \
             TEAMS[team]['calculatedData']['driverAbility']
-        # Scales driver ability so that the lowest driver ability is
-        # counted as 0, and the highest is counted as 1. All other
-        # values in between are scaled linearly.
-        scaled_driver_ability = 1 * \
-            (driver_ability - MIN_DA)/(MAX_DA - MIN_DA)
-        scaled_driver_abilities.append(scaled_driver_ability)
-    # Multiplies the average scaled alliance partner's driver ability
-    # by the team's nonscaled driver ability to get the team's normalized
-    # driver ability.
-    normalized_driver_ability = utils.avg(scaled_driver_abilities) * \
-        TEAMS[team]['calculatedData']['driverAbility']
-    TEAMS[team]['calculatedData']['normalizedDriverAbility'] = \
-        normalized_driver_ability
+        TEAMS[team]['calculatedData']['normalizedDriverAbility'] = \
+            normalized_driver_ability
 
-# Sends data to 'cache' and 'upload_queue'
-for team, data in TEAMS.items():
-    with open(utils.create_file_path(f'data/cache/teams/{team}.json'), 'w') as file:
-        json.dump(data, file)
-    with open(utils.create_file_path(f'data/upload_queue/teams/{team}.json'), 'w') as file:
-        json.dump(data, file)
+    # Sends data to 'cache' and 'upload_queue'
+    for team, data in TEAMS.items():
+        with open(utils.create_file_path(f'data/cache/teams/{team}.json'), 'w') as file:
+            json.dump(data, file)
+        with open(utils.create_file_path(f'data/upload_queue/teams/{team}.json'), 'w') as file:
+            json.dump(data, file)

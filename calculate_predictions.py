@@ -37,7 +37,7 @@ def calculate_predicted_alliance_score(team_numbers, pred_climb_points):
     # Adds the predicted climb points for the alliance.
     total_score += pred_climb_points
     for team in team_numbers:
-        total_score += TEAMS[team]['calculatedData']['predictedSoloPoints']
+        total_score += TEAMS[team]['calculatedData'].get('predictedSoloPoints', 0)
     return total_score
 
 def calculate_predicted_climb_points(team_numbers):
@@ -45,7 +45,7 @@ def calculate_predicted_climb_points(team_numbers):
 
     team_numbers is a list of team numbers (integers) on the alliance"""
     calculated_data_by_team = {team_number: \
-        TEAMS[team]['calculatedData'] for team_number in \
+        TEAMS[team_number]['calculatedData'] for team_number in \
         team_numbers}
     total_points = 0
     for team_number, team_calculated_data in calculated_data_by_team.items():
@@ -98,6 +98,11 @@ def calculate_chance_climb_rp(team_numbers):
         # The chances that each minimum level requirement is met.
         level_chances = []
         for min_level in rp_combination:
+            # If there are no available teams left, the chance of the
+            # combination is 0.
+            if len(available_teams) == 0:
+                rp_combination_chances.append(0)
+                break
             # Team to their highest success rate out of the level(s) at
             # or above the minimum required level.
             max_successes = {}

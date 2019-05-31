@@ -763,6 +763,9 @@ def team_calculations(timds, team_number):
         if timd.get('rankCounterDefense') != 0:
             counter_defending_matches.append(timd)
 
+    calculated_data['avgRankCounterDefense'] = utils.avg([
+        timd.get('rankCounterDefense') for timd in counter_defending_matches], None)
+
     points_prevented_matches = []
     for timd in timds:
         if timd['calculatedData'].get('pointsPrevented', 0) > 0:
