@@ -965,11 +965,9 @@ for timd in os.listdir(utils.create_file_path('data/cache/timds')):
 FINAL_TEAM_DATA = {'calculatedData': team_calculations(TIMDS, TEAM_NUMBER)}
 
 # Save data in local cache
-with open(utils.create_file_path(
-        f'data/cache/teams/{TEAM_NUMBER}.json'), 'w') as file:
-    json.dump(FINAL_TEAM_DATA, file)
+utils.update_json_file(utils.create_file_path(
+    f'data/cache/teams/{TEAM_NUMBER}.json'), FINAL_TEAM_DATA)
 
 # Save data in Firebase upload queue
-with open(utils.create_file_path(
-        f'data/upload_queue/teams/{TEAM_NUMBER}.json'), 'w') as file:
-    json.dump(FINAL_TEAM_DATA, file)
+utils.update_json_file(utils.create_file_path(
+    f'data/upload_queue/teams/{TEAM_NUMBER}.json'), FINAL_TEAM_DATA)
