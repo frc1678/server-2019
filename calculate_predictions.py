@@ -220,6 +220,10 @@ for match in MATCH_SCHEDULE.keys():
     for alliance_color in ['red', 'blue']:
         alliance = MATCH_SCHEDULE[match][f'{alliance_color}Teams']
 
+        alliance = [team for team in alliance if \
+            TEAMS.get(team) is not None]
+        if len(alliance) == 0:
+            continue
         calculated_data[f'{alliance_color}PredictedClimbPoints'] = \
             calculate_predicted_climb_points(alliance)
         calculated_data[f'{alliance_color}PredictedScore'] = \
