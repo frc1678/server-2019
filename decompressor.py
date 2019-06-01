@@ -289,10 +289,12 @@ def decompress_temp_super_pushing_battles(compressed_temp_super):
     compressed_header = compressed_value.split('!')[0]
 
     # Currently, there is only 1 header: 'pushingBattles'
+    # TODO: Add support for multiple headers
     if compressed_header[0] != 'J':
         print('Error: incorrect compressed tempSuper format.')
         return
     decompressed_pushing_battles = []
+    # '[2:-1]' removes the key ('J') and brackets
     compressed_pushing_battles = compressed_header[2:-1].rstrip(';').split(';')
     if compressed_pushing_battles == ['']:
         return []
