@@ -838,6 +838,7 @@ def team_calculations(timds, team_number):
         False for timd in lfm_timds]))
     calculated_data['lfmPercentNoShow'] = round(100 * utils.avg([
         timd.get('isNoShow') for timd in lfm_timds]))
+    calculated_data['lfmPercentDysfunctional'] = calculated_data['lfmPercentIncap'] + calculated_data['lfmPercentNoShow']
     calculated_data['lfmPercentIncapEntireMatch'] = round(100 * utils.avg([
         timd['calculatedData'].get('isIncapEntireMatch') for timd in
         lfm_timds]))
