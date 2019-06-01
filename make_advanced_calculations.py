@@ -206,13 +206,14 @@ if TEAMS != {}:
     MIN_DA = min([team_data['calculatedData']['driverAbility'] for team_data
                   in TEAMS.values()])
     for team in TEAMS.keys():
-        TEAMS[team]['calculatedData']['firstPickAbility'] = \
-            calculate_first_pick_ability(TEAMS[team]['calculatedData'])
-        TEAMS[team]['calculatedData']['secondPickAbility'] = \
-            calculate_second_pick_ability(TEAMS[team]['calculatedData'],
-                                          MAX_DA, MIN_DA)
-        TEAMS[team]['calculatedData']['thirdPickAbility'] = \
-            calculate_third_pick_ability(TEAMS[team]['calculatedData'])
+        if TEAMS[team].get('calculatedData') is not None:
+            TEAMS[team]['calculatedData']['firstPickAbility'] = \
+                calculate_first_pick_ability(TEAMS[team]['calculatedData'])
+            TEAMS[team]['calculatedData']['secondPickAbility'] = \
+                calculate_second_pick_ability(TEAMS[team]['calculatedData'],
+                                              MAX_DA, MIN_DA)
+            TEAMS[team]['calculatedData']['thirdPickAbility'] = \
+                calculate_third_pick_ability(TEAMS[team]['calculatedData'])
 
     # Gathers the matches in the competition. These matches are cached from
     # TBA when the server first runs.
