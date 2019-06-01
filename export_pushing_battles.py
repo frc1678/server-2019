@@ -8,6 +8,7 @@ import decompressor
 import utils
 
 TEMP_SUPER_FILES = os.listdir(utils.create_file_path('data/cache/temp_super'))
+# Sorts by match number, since ELO needs to be in chronological order
 TEMP_SUPER_FILES.sort(key=lambda file_name: file_name.split('-')[0].split('Q')[1])
 
 PUSHING_BATTLES = []
@@ -20,6 +21,7 @@ for temp_super_file in TEMP_SUPER_FILES:
             compressed_temp_super)
     PUSHING_BATTLES += decompressed_pushing_battles
 
+# Orders pushing battle keys for CSV export
 CSV_HEADERS = ['matchNumber', 'winner', 'loser', 'winMarginIsLarge']
 
 with open(utils.create_file_path('data/exports/pushing-battles.csv'), 'w') as file:
