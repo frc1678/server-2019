@@ -318,7 +318,6 @@ def decompress_temp_super_pushing_battles(compressed_temp_super):
         decompressed_pushing_battles.append(decompressed_pushing_battle)
     return decompressed_pushing_battles
 
-
 def decompress_temp_super_team(compressed_temp_super_team):
     """Decompresses a single tempSuper team.
 
