@@ -8,7 +8,7 @@ import decompressor
 import utils
 
 TEMP_SUPER_FILES = os.listdir(utils.create_file_path('data/cache/temp_super'))
-# Sorts by match number, since ELO needs to be in chronological order
+# Sorts by match number, since Elo needs to be in chronological order
 TEMP_SUPER_FILES.sort(key=lambda file_name: file_name.split('-')[0].split('Q')[1])
 
 PUSHING_BATTLES = []
