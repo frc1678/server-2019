@@ -34,8 +34,7 @@ CONSTANT_VALUE = {
 ELOS = {}
 
 for pushing_battle in PUSHING_BATTLES:
-    # Uses 500 as the replacement value because 500 should be the
-    # starting Elo if a team doesn't already have one.
+    # Uses 500 as the starting Elo for a team that doesn't already have one.
     winner_old_elo = ELOS.get(pushing_battle['winner'], 500)
     loser_old_elo = ELOS.get(pushing_battle['loser'], 500)
 
