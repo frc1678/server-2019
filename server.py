@@ -229,7 +229,6 @@ cache_match_schedule()
 delete_cache_data_folder('temp_timds')
 # Stores the keys of cached 'tempTIMDs'
 CACHED_TEMP_TIMD_KEYS = []
-CACHED_TEMP_TIMD_KEYS += INITIAL_TEMP_TIMDS.keys()
 
 # Stores the tempTIMDs that have already been calculated in order to
 # prevent them from being recalculated if the data has not changed.
@@ -241,6 +240,7 @@ INITIAL_TEMP_TIMDS = DB.child('tempTIMDs').get().val()
 if INITIAL_TEMP_TIMDS is not None:
     for temp_timd, temp_timd_value in INITIAL_TEMP_TIMDS.items():
         temp_timd_stream_handler(temp_timd, temp_timd_value)
+    CACHED_TEMP_TIMD_KEYS += INITIAL_TEMP_TIMDS.keys()
 while True:
     # Goes through each of the streams to check if it is still active
     for stream_name, stream in STREAMS.items():
@@ -289,6 +289,9 @@ while True:
             subprocess.call(f'python3 calculate_timd.py {timd}', shell=True)
             print(f"Did calculations for {timd}")
             LATEST_CALCULATIONS_BY_TIMD[timd] = FILES_BY_TIMD[timd]
+
+    # Calculates pushing ELO rankings for teams.
+    subprocess.call('python3 calculate_pushing_ability.py', shell=True)
 
     # Forwards tempSuper data to Matches and TIMDs.
     subprocess.call('python3 forward_temp_super.py', shell=True)

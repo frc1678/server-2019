@@ -99,7 +99,7 @@ def calculate_second_pick_ability(calculated_data, max_da, min_da):
         # weights it into the pick ability. Scales all driverAbilities
         # between 0 and 'driving_weight'.
         driver_ability = driving_weight * \
-            (calculated_data['driverAbility'] - min_da)/(max_da - min_da)
+            (calculated_data['normalizedDriverAbility'] - min_da)/(max_da - min_da)
 
     # When the average rank defense is None, the defense_ability should
     # be 0, because the team didn't play defense.
@@ -150,7 +150,7 @@ def calculate_third_pick_ability(calculated_data):
 
     # A third pick robot must have a driver ability greater than 0
     # (average) and must score an average of more than 1 cargo per match.
-    if (calculated_data['driverAbility'] <= 0) or \
+    if (calculated_data['normalizedDriverAbility'] <= 0) or \
         (calculated_data['avgOrangesScored'] <= 1):
         return 0
 
@@ -164,13 +164,16 @@ def calculate_zscores(team_average_field, team_zscore_field):
     the zscore is taken from.
     team_zscore_field is the name of the team zscore data field in which
     the calculated zscore is put into."""
-    averages = {team: data['calculatedData'][team_average_field] for
+    averages = {team: data['calculatedData'].get(team_average_field, 0.0) for
                 team, data in TEAMS.items()}
 
     mean = numpy.mean(list(averages.values()))
     sd = numpy.std(list(averages.values()))
     for team, average in averages.items():
-        TEAMS[team]['calculatedData'][team_zscore_field] = (average - mean) / sd
+        if sd == 0.0:
+            TEAMS[team]['calculatedData'][team_zscore_field] = 0.0
+        else:
+            TEAMS[team]['calculatedData'][team_zscore_field] = (average - mean) / sd
 
 # Gathers the calculated data from all the teams.
 TEAMS = {}
@@ -205,14 +208,6 @@ if TEAMS != {}:
                   in TEAMS.values()])
     MIN_DA = min([team_data['calculatedData']['driverAbility'] for team_data
                   in TEAMS.values()])
-    for team in TEAMS.keys():
-        TEAMS[team]['calculatedData']['firstPickAbility'] = \
-            calculate_first_pick_ability(TEAMS[team]['calculatedData'])
-        TEAMS[team]['calculatedData']['secondPickAbility'] = \
-            calculate_second_pick_ability(TEAMS[team]['calculatedData'],
-                                          MAX_DA, MIN_DA)
-        TEAMS[team]['calculatedData']['thirdPickAbility'] = \
-            calculate_third_pick_ability(TEAMS[team]['calculatedData'])
 
     # Gathers the matches in the competition. These matches are cached from
     # TBA when the server first runs.
@@ -267,6 +262,20 @@ if TEAMS != {}:
             TEAMS[team]['calculatedData']['driverAbility']
         TEAMS[team]['calculatedData']['normalizedDriverAbility'] = \
             normalized_driver_ability
+
+    MAX_NORM_DA = max([team_data['calculatedData']['normalizedDriverAbility'] for team_data
+                  in TEAMS.values()])
+    MIN_NORM_DA = min([team_data['calculatedData']['normalizedDriverAbility'] for team_data
+                  in TEAMS.values()])
+    for team in TEAMS.keys():
+        if TEAMS[team].get('calculatedData') is not None:
+            TEAMS[team]['calculatedData']['firstPickAbility'] = \
+                calculate_first_pick_ability(TEAMS[team]['calculatedData'])
+            TEAMS[team]['calculatedData']['secondPickAbility'] = \
+                calculate_second_pick_ability(TEAMS[team]['calculatedData'],
+                                              MAX_NORM_DA, MIN_NORM_DA)
+            TEAMS[team]['calculatedData']['thirdPickAbility'] = \
+                calculate_third_pick_ability(TEAMS[team]['calculatedData'])
 
     # Sends data to 'cache' and 'upload_queue'
     for team, data in TEAMS.items():
