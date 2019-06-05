@@ -12,8 +12,8 @@ def calculate_driver_ability(calculated_data):
     """Calculates the relative driver ability for a team using driver zscores.
 
     calculated_data is the calculated data for the team being calculated."""
-    agility_weight = 0.7
-    speed_weight = 0.3
+    agility_weight = 0.65
+    speed_weight = 0.35
     driver_ability = calculated_data['agilityZScore'] * agility_weight + \
                      calculated_data['speedZScore'] * speed_weight
     return driver_ability
@@ -99,7 +99,7 @@ def calculate_second_pick_ability(calculated_data, max_da, min_da):
         # weights it into the pick ability. Scales all driverAbilities
         # between 0 and 'driving_weight'.
         driver_ability = driving_weight * \
-            (calculated_data['driverAbility'] - min_da)/(max_da - min_da)
+            (calculated_data['normalizedDriverAbility'] - min_da)/(max_da - min_da)
 
     # When the average rank defense is None, the defense_ability should
     # be 0, because the team didn't play defense.
@@ -150,7 +150,7 @@ def calculate_third_pick_ability(calculated_data):
 
     # A third pick robot must have a driver ability greater than 0
     # (average) and must score an average of more than 1 cargo per match.
-    if (calculated_data['driverAbility'] <= 0) or \
+    if (calculated_data['normalizedDriverAbility'] <= 0) or \
         (calculated_data['avgOrangesScored'] <= 1):
         return 0
 
@@ -164,13 +164,16 @@ def calculate_zscores(team_average_field, team_zscore_field):
     the zscore is taken from.
     team_zscore_field is the name of the team zscore data field in which
     the calculated zscore is put into."""
-    averages = {team: data['calculatedData'][team_average_field] for
+    averages = {team: data['calculatedData'].get(team_average_field, 0.0) for
                 team, data in TEAMS.items()}
 
     mean = numpy.mean(list(averages.values()))
     sd = numpy.std(list(averages.values()))
     for team, average in averages.items():
-        TEAMS[team]['calculatedData'][team_zscore_field] = (average - mean) / sd
+        if sd == 0.0:
+            TEAMS[team]['calculatedData'][team_zscore_field] = 0.0
+        else:
+            TEAMS[team]['calculatedData'][team_zscore_field] = (average - mean) / sd
 
 # Gathers the calculated data from all the teams.
 TEAMS = {}
@@ -197,7 +200,6 @@ for team in TEAMS.keys():
     TEAMS[team]['calculatedData']['driverAbility'] = \
         calculate_driver_ability(TEAMS[team]['calculatedData'])
 
-
 # TODO: Move if-statement immediately after pulling data
 if TEAMS != {}:
     # Calculates the highest and lowest driverAbility for any team and uses
@@ -206,6 +208,7 @@ if TEAMS != {}:
                   in TEAMS.values()])
     MIN_DA = min([team_data['calculatedData']['driverAbility'] for team_data
                   in TEAMS.values()])
+
     # Gathers the matches in the competition. These matches are cached from
     # TBA when the server first runs.
     MATCH_SCHEDULE = {}
@@ -246,6 +249,7 @@ if TEAMS != {}:
         for team_ in alliance_members:
             driver_ability = \
                 TEAMS[team_]['calculatedData']['driverAbility']
+
             # Scales driver ability so that the lowest driver ability is
             # counted as 0, and the highest is counted as 1. All other
             # values in between are scaled linearly.

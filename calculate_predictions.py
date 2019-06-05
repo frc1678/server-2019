@@ -37,7 +37,7 @@ def calculate_predicted_alliance_score(team_numbers, pred_climb_points):
     # Adds the predicted climb points for the alliance.
     total_score += pred_climb_points
     for team in team_numbers:
-        total_score += TEAMS[team]['calculatedData']['predictedSoloPoints']
+        total_score += TEAMS[team]['calculatedData'].get('predictedSoloPoints', 0)
     return total_score
 
 def calculate_predicted_climb_points(team_numbers):
@@ -45,7 +45,7 @@ def calculate_predicted_climb_points(team_numbers):
 
     team_numbers is a list of team numbers (integers) on the alliance"""
     calculated_data_by_team = {team_number: \
-        TEAMS[team]['calculatedData'] for team_number in \
+        TEAMS[team_number]['calculatedData'] for team_number in \
         team_numbers}
     total_points = 0
     for team_number, team_calculated_data in calculated_data_by_team.items():
@@ -98,6 +98,11 @@ def calculate_chance_climb_rp(team_numbers):
         # The chances that each minimum level requirement is met.
         level_chances = []
         for min_level in rp_combination:
+            # If there are no available teams left, the chance of the
+            # combination is 0.
+            if len(available_teams) == 0:
+                rp_combination_chances.append(0)
+                break
             # Team to their highest success rate out of the level(s) at
             # or above the minimum required level.
             max_successes = {}
@@ -159,13 +164,13 @@ def calculate_predicted_rps(calculated_data, color):
     color is the alliance color which is being calculated."""
     if color == 'red':
         win = 2 if calculated_data['redPredictedScore'] > \
-            calculated_data['bluePredictedScore'] else 0
+            calculated_data.get('bluePredictedScore', 0) else 0
         total = win + calculated_data['redChanceClimbRP'] + \
             calculated_data['redChanceRocketRP']
         return total
     else:
         win = 2 if calculated_data['bluePredictedScore'] > \
-            calculated_data['redPredictedScore'] else 0
+            calculated_data.get('redPredictedScore', 0) else 0
         total = win + calculated_data['blueChanceClimbRP'] + \
             calculated_data['blueChanceRocketRP']
         return total
@@ -215,6 +220,10 @@ for match in MATCH_SCHEDULE.keys():
     for alliance_color in ['red', 'blue']:
         alliance = MATCH_SCHEDULE[match][f'{alliance_color}Teams']
 
+        alliance = [team for team in alliance if \
+            TEAMS.get(team) is not None]
+        if len(alliance) == 0:
+            continue
         calculated_data[f'{alliance_color}PredictedClimbPoints'] = \
             calculate_predicted_climb_points(alliance)
         calculated_data[f'{alliance_color}PredictedScore'] = \
@@ -224,6 +233,9 @@ for match in MATCH_SCHEDULE.keys():
             calculate_chance_climb_rp(alliance)
         calculated_data[f'{alliance_color}ChanceRocketRP'] = \
             calculate_chance_rocket_rp(alliance)
+
+        if MATCHES.get(match) is None:
+            MATCHES[match] = {}
 
         # Uses actual rps instead of predicted rps when available.
         # HACK: This should be handled when calculating predicted rps instead.
@@ -253,8 +265,9 @@ SEED_ORDER = sorted(PREDICTED_RP_LIST.keys(), key=PREDICTED_RP_LIST.get, reverse
 
 # 'enumerate(, 1)' starts seeding at 1
 for seed, team in enumerate(SEED_ORDER, 1):
-    TEAMS[team]['calculatedData']['predictedRPs'] = \
-        sum(PREDICTED_RPS_BY_TEAM[team])
+    if TEAMS.get(team) is not None:
+        TEAMS[team]['calculatedData']['predictedRPs'] = \
+            sum(PREDICTED_RPS_BY_TEAM[team])
     TEAMS[team]['calculatedData']['predictedSeed'] = seed
 
 # Sends data to 'cache' and 'upload_queue'

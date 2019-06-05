@@ -39,8 +39,25 @@ def collect_file_data(file_path_, firebase_collection):
     # "/<firebase-collection>/<document-name>/<data-field>": <data-value>
     # (e.g. /TIMDs/1678Q3/startingLocation": "left")
     for data_field, data_value in file_data.items():
-        multi_location_data[os.path.join(firebase_collection, \
-            document_name, data_field)] = data_value
+        # TODO: Clean up variable names
+        if isinstance(data_value, dict):
+            for key, value_ in data_value.items():
+                if isinstance(key, dict):
+                    for key2, value2 in value_.items():
+                        path = os.path.join(data_field, key2)
+                        value = value2
+                        multi_location_data[os.path.join(firebase_collection, \
+                            document_name, path)] = value
+                else:
+                    path = os.path.join(data_field, key)
+                    value = value_
+                    multi_location_data[os.path.join(firebase_collection, \
+                        document_name, path)] = value
+        else:
+            path = data_field
+            value = data_value
+            multi_location_data[os.path.join(firebase_collection, \
+                document_name, path)] = value
 
     return multi_location_data
 
@@ -65,6 +82,17 @@ for firebase_key, cache_key in FIREBASE_TO_CACHE_KEY.items():
         FINAL_DATA.update(collect_file_data(file_path, firebase_key))
 
         FILES_TO_REMOVE.append(file_path)
+
+# Before sending the data, iterates through all of it and removes any
+# NaNs (Not a Number) in the data.  (Relies on NaN != NaN)
+for path, value in FINAL_DATA.items():
+    if path.split('/')[-1] == 'timeline':
+        for action in value:
+            for key, value_ in action.items():
+                if isinstance(value_, float) and value_ != value_:
+                    action[key] = None
+    if isinstance(value_, float) and value != value:
+        FINAL_DATA[path] = None
 
 # Sends the data to firebase.
 DB.update(FINAL_DATA)

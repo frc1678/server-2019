@@ -1,13 +1,13 @@
 # 1678 Server 2019
 
-Data processing Python server that interfaces with scouting and visualization apps in a FRC scouting system
+Data processing Python server that interfaces with collection and visualization apps in a FRC scouting system
 
 ## Style Guide
 
 We follow the standard [PEP8 Style Guidelines](https://www.python.org/dev/peps/pep-0008/).
 To enforce style, we use `pylint`, which can be installed with
 
-```pip install pylint```
+`pip install pylint`
 
 To test your code, use `pylint ./*.py`. If you are not located in your repository folder, replace `.` with the path to your repository folder.
 
@@ -131,7 +131,7 @@ Here's a list of useful addons + configurations to Sublime Text that can be usef
     * `"use_tab_stops": true`
 
 ### Dependencies
-* python3.7
-* python3.7-pip
+* python3.6
+* python3.6-pip
 * All packages listed in `requirements.txt`
     * (Install with `pip install -r requirements.txt`)
