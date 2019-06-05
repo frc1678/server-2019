@@ -7,7 +7,6 @@ directories and sends it to firebase in a single request."""
 # External imports
 import json
 import os
-import numpy
 # Internal imports
 import firebase_communicator
 import utils
@@ -67,6 +66,8 @@ for firebase_key, cache_key in FIREBASE_TO_CACHE_KEY.items():
 
         FILES_TO_REMOVE.append(file_path)
 
+# Before sending the data, iterates through all of it and removes any
+# NaNs in the data.
 for path, value in FINAL_DATA.items():
     if path.split('/')[-1] == 'timeline':
         for action in value:
