@@ -1,5 +1,6 @@
 """Holds variables + functions that are shared across server files."""
 # External imports
+import json
 import os
 # No internal imports
 
@@ -46,12 +47,12 @@ def avg(lis, exception=0.0):
     else:
         return sum(lis) / len(lis)
 
-
 def update_json_file(file_path, updated_data):
     """Updates data in a JSON file.  (Preserves old data)
 
     file_path is the absolute path of the file to be updated (string)
     updated_data is the data to add to the JSON file (dict)"""
+
     # JSON library doesn't support loading from files that don't exist,
     # so before loading data, checks if the path is an actual file.
     if os.path.isfile(file_path) is True:
@@ -82,4 +83,3 @@ def no_none_get(dictionary, key, alternative):
             return alternative
     else:
         return alternative
-

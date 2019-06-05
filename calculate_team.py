@@ -763,16 +763,19 @@ def team_calculations(timds, team_number):
         if timd.get('rankCounterDefense') != 0:
             counter_defending_matches.append(timd)
 
+    calculated_data['avgRankCounterDefense'] = utils.avg([
+        timd.get('rankCounterDefense') for timd in counter_defending_matches], None)
+
     points_prevented_matches = []
     for timd in timds:
         if timd['calculatedData'].get('pointsPrevented', 0) > 0:
             points_prevented_matches.append(timd)
 
-    calculated_data['avgPointsPrevented'] = avg([
+    calculated_data['avgPointsPrevented'] = utils.avg([
         timd['calculatedData'].get('pointsPrevented') for timd in points_prevented_matches], None)
-    calculated_data['avgOrangePointsPrevented'] = avg([
+    calculated_data['avgOrangePointsPrevented'] = utils.avg([
         timd['calculatedData'].get('orangePointsPrevented') for timd in points_prevented_matches], None)
-    calculated_data['avgLemonPointsPrevented'] = avg([
+    calculated_data['avgLemonPointsPrevented'] = utils.avg([
         timd['calculatedData'].get('lemonPointsPrevented') for timd in points_prevented_matches], None)
 
     # If a team didn't play defense, they shouldn't have a 0 for their
@@ -835,6 +838,7 @@ def team_calculations(timds, team_number):
         False for timd in lfm_timds]))
     calculated_data['lfmPercentNoShow'] = round(100 * utils.avg([
         timd.get('isNoShow') for timd in lfm_timds]))
+    calculated_data['lfmPercentDysfunctional'] = calculated_data['lfmPercentIncap'] + calculated_data['lfmPercentNoShow']
     calculated_data['lfmPercentIncapEntireMatch'] = round(100 * utils.avg([
         timd['calculatedData'].get('isIncapEntireMatch') for timd in
         lfm_timds]))
@@ -962,11 +966,9 @@ for timd in os.listdir(utils.create_file_path('data/cache/timds')):
 FINAL_TEAM_DATA = {'calculatedData': team_calculations(TIMDS, TEAM_NUMBER)}
 
 # Save data in local cache
-with open(utils.create_file_path(
-        f'data/cache/teams/{TEAM_NUMBER}.json'), 'w') as file:
-    json.dump(FINAL_TEAM_DATA, file)
+utils.update_json_file(utils.create_file_path(
+    f'data/cache/teams/{TEAM_NUMBER}.json'), FINAL_TEAM_DATA)
 
 # Save data in Firebase upload queue
-with open(utils.create_file_path(
-        f'data/upload_queue/teams/{TEAM_NUMBER}.json'), 'w') as file:
-    json.dump(FINAL_TEAM_DATA, file)
+utils.update_json_file(utils.create_file_path(
+    f'data/upload_queue/teams/{TEAM_NUMBER}.json'), FINAL_TEAM_DATA)

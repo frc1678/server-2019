@@ -51,10 +51,7 @@ for team in RANKINGS:
     team_data = {
         'actualRPs': team['extra_stats'][0],
         'matchesPlayed': team['matches_played'],
-        # TODO: Move actual seed into non-calculated match data
-        'calculatedData': {
-            'actualSeed': team['rank'],
-        },
+        'actualSeed': team['rank'],
     }
     save_data(f'teams/{team_number}.json', team_data)
 
@@ -67,7 +64,7 @@ for match_key in MATCH_KEYS:
     # 'qm' stands for qualification match
     # Example 'match_key' formats: '2019caoc_qm29', '2019caoc_qf3m1'
     if match_key.split('_')[1][:2] == 'qm':
-        match = tba_communicator.request_match(match_key, show_output=False, acceptable_cache_age=60)
+        match = tba_communicator.request_match(match_key, show_output=False, acceptable_cache_age=30)
         MATCH_DATA[match_key] = match
 print('All TBA match data successfully retrieved.')
 
