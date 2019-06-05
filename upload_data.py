@@ -83,6 +83,17 @@ for firebase_key, cache_key in FIREBASE_TO_CACHE_KEY.items():
 
         FILES_TO_REMOVE.append(file_path)
 
+# Before sending the data, iterates through all of it and removes any
+# NaNs (Not a Number) in the data.  (Relies on NaN != NaN)
+for path, value in FINAL_DATA.items():
+    if path.split('/')[-1] == 'timeline':
+        for action in value:
+            for key, value_ in action.items():
+                if isinstance(value_, float) and value_ != value_:
+                    action[key] = None
+    if isinstance(value_, float) and value != value:
+        FINAL_DATA[path] = None
+
 # Sends the data to firebase.
 DB.update(FINAL_DATA)
 
