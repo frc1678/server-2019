@@ -256,8 +256,6 @@ for seed, team in enumerate(SEED_ORDER, 1):
     if TEAMS.get(team) is not None:
         TEAMS[team]['calculatedData']['predictedRPs'] = \
             sum(PREDICTED_RPS_BY_TEAM[team])
-    else:
-        TEAMS[team] = {'calculatedData': {'predictedRPs': 0}}
     TEAMS[team]['calculatedData']['predictedSeed'] = seed
 
 # Sends data to 'cache' and 'upload_queue'
