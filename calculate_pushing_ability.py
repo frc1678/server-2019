@@ -7,6 +7,7 @@ import os
 import decompressor
 import utils
 
+# Gathers all the temp super data and sorts them by match number
 TEMP_SUPER_FILES = os.listdir(utils.create_file_path('data/cache/temp_super'))
 TEMP_SUPER_FILES.sort(key=lambda file_name: file_name.split('-')[0].split('Q')[1])
 
@@ -33,6 +34,8 @@ CONSTANT_VALUE = {
 ELOS = {}
 
 for pushing_battle in PUSHING_BATTLES:
+    # Uses 500 as the replacement value because 500 should be the
+    # starting Elo if a team doesn't already have one.
     winner_old_elo = ELOS.get(pushing_battle['winner'], 500)
     loser_old_elo = ELOS.get(pushing_battle['loser'], 500)
 
