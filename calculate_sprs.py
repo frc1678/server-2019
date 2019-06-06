@@ -81,7 +81,7 @@ for temp_timd in TEMP_TIMDS:
         else:
             register_value(scout_name, key, False)
 
-    # Compares the # of occurrences of each action type in the timeline
+    # Compares the number of occurrences of each action type in the timeline
     for type_ in ['intake', 'placement', 'drop', 'pinningFoul', 'climb',
                   'incap', 'unincap', 'startDefense', 'endDefense']:
         temp_timd_type_occurrences = 0
@@ -111,11 +111,11 @@ for scout_name, scout_breakdown in SPRS.items():
             total += breakdown['total']
     SPRS[scout_name]['overall'] = correct / total
 
-# Saves SPRS
+# Saves SPRS in a json file
 with open(utils.create_file_path('data/sprs/sprs.json'), 'w') as file:
     json.dump(SPRS, file)
 
-# Exports SPRS to CSV file
+# Exports SPRS to a CSV file
 SPR_KEYS = ['scoutName', 'overall', 'matchesScouted']
 with open(utils.create_file_path(f'data/sprs/sprs.csv'),
           'w') as file:
