@@ -1,10 +1,11 @@
 #!/usr/bin/python3.6
-"""Main server file.  Runs based on listeners + infinite while loop.
+"""Main server file. Runs calculations using listeners + infinite loop.
 
-Called directly by a systemctl service that automatically runs on
-startup and has automatic restart.  This script runs all the database
-listeners and the while loop that checks if calculations need to be
-made."""
+Runs on one of two available Ubuntu 18.04 LTS computers in the stands at
+competition. This script runs all the database listeners and the while
+loop that checks if calculations need to be made.
+
+HACK: Runs some calculations (added mid-season) continuously."""
 # External imports
 import json
 import os
@@ -23,21 +24,21 @@ import utils
 DB = firebase_communicator.configure_firebase()
 
 def delete_cache_data_folder(folder_name):
-    """Deletes a cache folder and its contents, then recreates it.
+    """Deletes a cache folder and its contents, then recreates the folder.
 
-    This is to remove any outdated data, since all data is re-downloaded
-    when a Firebase stream is restarted."""
+    Removes any outdated data, since all data is re-downloaded when a
+    Firebase stream is restarted."""
     # Checks if the directory exists before trying to delete it to avoid
     # causing an error.
-    if os.path.isdir(utils.create_file_path(f'data/cache/{folder_name}',
-                                            False)):
-        shutil.rmtree(utils.create_file_path(f'data/cache/{folder_name}',
-                                             False))
+    if os.path.isdir(utils.create_file_path(
+            f'data/cache/{folder_name}', False)):
+        shutil.rmtree(utils.create_file_path(
+            f'data/cache/{folder_name}', False))
 
 def register_modified_temp_timd(temp_timd_name):
-    """Removes a modified tempTIMD from LATEST_CALCULATIONS_BY_TIMD.
+    """Removes a modified tempTIMD from 'LATEST_CALCULATIONS_BY_TIMD'.
 
-    This is called when a tempTIMD is removed or edited.  This function
+    Called when a tempTIMD is removed or edited.  This function
     will cause the relevant data to be recalculated to reflect the new
     data."""
     timd_name = temp_timd_name.split('-')[0]
@@ -50,10 +51,11 @@ def register_modified_temp_timd(temp_timd_name):
         # Need to delete TIMD data + recalculate team + match data if
         # this happens.
 
-
 def match_num_stream_handler(snapshot):
-    """Runs when 'currentMatchNumber' is updated on firebase"""
+    """Runs when 'currentMatchNumber' is updated on Firebase."""
     # Validates that data was correctly received and is in its expected format
+    # Documentation of 'put' and 'patch' Firebase Database events
+    # https://firebase.google.com/docs/reference/rest/database/#section-streaming
     if (snapshot['event'] == 'put' and snapshot['path'] == '/' and
             isinstance(snapshot['data'], int)):
         # Forwards TBA data to Teams, TIMDs, and Matches.
@@ -64,7 +66,9 @@ def match_num_stream_handler(snapshot):
 
 def cycle_num_stream_handler(snapshot):
     """Runs when 'cycleNumber' is updated on firebase"""
-    # Validates that data was correctly received and is in its expected format
+    # Validates that data was correctly received and is in its expected format.
+    # Documentation of 'put' and 'patch' Firebase Database events
+    # https://firebase.google.com/docs/reference/rest/database/#section-streaming
     if (snapshot['event'] == 'put' and snapshot['path'] == '/'):
         cycle_number = snapshot['data']
         previous_qr = DB.child('scoutManagement/QRcode').get().val()
@@ -72,17 +76,18 @@ def cycle_num_stream_handler(snapshot):
             cycle_number = 0
         # Prevents different QRs from being created with the same cycle number.
         if previous_qr.split('_')[0] != str(cycle_number):
-            subprocess.call(f'python3 update_assignments.py {cycle_number}',
-                            shell=True)
+            subprocess.call(
+                f'python3 update_assignments.py {cycle_number}',
+                shell=True)
 
-def temp_timd_stream_handler(temp_timd_name, temp_timd_value):
+def temp_timd_stream_handler(temp_timd_name, temp_timd_value_):
     """Runs when any new tempTIMDs are uploaded"""
     # HACK: Remove trailing '\n' (newlines) in compressed tempTIMD
     # data.  This is a bug in the Scout app.
-    temp_timd_value = temp_timd_value.rstrip('\n')
+    temp_timd_value_ = temp_timd_value_.rstrip('\n')
     # This means that this tempTIMD has been deleted from Firebase
-    # and we should delete it from our local copy.
-    if temp_timd_value is None:
+    # and we should delete our local copy.
+    if temp_timd_value_ is None:
         os.remove(utils.create_file_path(
             f'data/cache/temp_timds/{temp_timd_name}.txt'))
         # Causes the corresponding TIMD to be recalculated
@@ -90,8 +95,8 @@ def temp_timd_stream_handler(temp_timd_name, temp_timd_value):
     else:
         with open(utils.create_file_path(
                 f'data/cache/temp_timds/{temp_timd_name}.txt'),
-                  'w') as file:
-            file.write(temp_timd_value)
+                'w') as file:
+            file.write(temp_timd_value_)
         timd_name = temp_timd_name.split('-')[0]
         # This means an already existing tempTIMD has been modified
         # and needs to be recalculated.
@@ -232,6 +237,7 @@ CACHED_TEMP_TIMD_KEYS = []
 
 # Stores the tempTIMDs that have already been calculated in order to
 # prevent them from being recalculated if the data has not changed.
+# TODO: Replace with variable containing TIMDs that need to be (re)calculated.
 LATEST_CALCULATIONS_BY_TIMD = {}
 
 # Pulls all tempTIMDs in a single request
