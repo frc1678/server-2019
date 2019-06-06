@@ -289,7 +289,7 @@ while True:
     # Runs calculations for each TIMD that has new data since the last
     # time it ran.
     # The calculation of TIMDs causes the corresponding match and team
-    # data to be recalculated. #TODO: Update this comment w/future development
+    # data to be recalculated.
     for timd in FILES_BY_TIMD:
         if LATEST_CALCULATIONS_BY_TIMD.get(timd) != FILES_BY_TIMD[timd]:
             subprocess.call(f'python3 calculate_timd.py {timd}', shell=True)
