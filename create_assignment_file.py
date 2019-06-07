@@ -45,20 +45,10 @@ def create_assignment_file(matches, scout_names):
 
 
 SCOUT_NAMES = [
-    # Scouting Developer
-    'Carl', 'Ethan', 'Emily', 'Teo',
-    # Strategist/Super Scout
-    'Justin', 'Hanson',
-    # Citrus Service/Scout
-    'David', 'Louise', 'Lasthenia', 'Noemi',
-    # Super Scout
-    'Erik', 'Connor', 'Freddy',
-    # Scout
-    'Nick', 'Mohamed', 'Gabi', 'Zachary', 'Kate', 'Aidan', 'Walsh',
-    'Nathan', 'Jack S', 'Jude', 'Henry', 'Sofia', 'Ellie', 'Eithne',
-    'Asha',
-    # Other
-    'Sam', 'Gemma', 'Jack D',
+    # for each competition, replace these fake names with the first names
+    # of anyone who might scout. If two scouts have the same first name, add
+    # their last initial
+    'Harry', 'Hermione', 'Ron', 'Albus D', 'Albus P',
     # '.zfill(2)' adds leading zeroes to 2 digits
     # (e.g. '7' becomes '07')
     # Used by the Scout app to alphabetize scout names
@@ -69,7 +59,8 @@ ASSIGNMENT_FILE = create_assignment_file(MATCHES, SCOUT_NAMES)
 
 with open(utils.create_file_path('data/assignments/assignments.json', True), 'w') as file:
     json.dump(ASSIGNMENT_FILE, file)
-
+# the server loads assignments.txt onto tablets using send_assignment_file.py
+# but uses assignments.json (instead of assignments.txt) for everything else
 with open(utils.create_file_path('data/assignments/assignments.txt', True), 'w') as file:
     # 'json.dumps()' returns a JSON string
     file.write(json.dumps(ASSIGNMENT_FILE))
