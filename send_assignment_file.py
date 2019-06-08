@@ -56,11 +56,11 @@ def validate_file(device_id):
     assignments.txt file.
 
     device_id is the serial number of the device"""
-    # Reads the local version of assignments.txt
+    # Reads the server version of assignments.txt
     with open(ASSIGNMENT_FILE_PATH, 'r') as file:
         computer_data = file.read()
     # Reads the assignments.txt file on the tablet
-    # The -s flag tells adb the serial number of which device to use
+    # The ADB -s flag specifies a device using its serial number
     tablet_data = subprocess.check_output(
         f'adb -s {device_id} shell cat /mnt/sdcard/bluetooth/assignments.txt',
         shell=True)
