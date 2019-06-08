@@ -84,7 +84,6 @@ def make_request(api_url, show_output=True, acceptable_cache_age=0):
         }
         with open(utils.create_file_path('data/cache/tba/tba.json'), 'w') as file_:
             json.dump(cached_requests, file_)
-
         return request.json()
     else:
         # Errors will always be shown, even if 'show_output' is False.
