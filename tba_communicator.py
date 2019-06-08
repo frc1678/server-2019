@@ -90,6 +90,7 @@ def make_request(api_url, show_output=True, acceptable_cache_age=0):
         print(f'Request failed with status code {request.status_code}')
         return {}
 
+# TODO: Research better methods to pass optional arguments through functions
 def request_match(match_key, show_output=True, acceptable_cache_age=0):
     """Requests data for a single match from the TBA API.
 
