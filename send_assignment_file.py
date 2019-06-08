@@ -68,7 +68,6 @@ def validate_file(device_id):
     tablet_data = tablet_data.decode('utf-8')
     # Replaces '\r\n' with '\n' to match the UNIX format for newlines
     tablet_data = tablet_data.replace('\r\n', '\n')
-
     return tablet_data == computer_data
 
 while True:
