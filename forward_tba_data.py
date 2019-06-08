@@ -37,9 +37,9 @@ def save_data(file_path, data):
     # Removes preceding slash
     if file_path[0] == '/':
         file_path = file_path[1:]
-    update_json_file(utils.create_file_path(f'data/cache/{file_path}'), data)
-    update_json_file(utils.create_file_path(
-        f'data/upload_queue/{file_path}'), data)
+    for directory in ['cache', 'upload_queue']:
+        absolute_path = utils.create_file_path(f'data/{directory}/{file_path}')
+        update_json_file(absolute_path, data)
 
 
 # Team data
