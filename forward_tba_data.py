@@ -18,8 +18,8 @@ def update_json_file(file_path, updated_data):
             file_data = json.load(file)
     except FileNotFoundError:
         file_data = {}
-    # Used for nested dictionaries (i.e. 'calculatedData')
     for key, value in updated_data.items():
+        # Used for nested dictionaries (i.e. 'calculatedData')
         if isinstance(value, dict):
             file_data[key] = file_data.get(key, {})
             file_data[key].update(value)
