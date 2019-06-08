@@ -38,9 +38,9 @@ DEVICE_NAMES = {
     'G000H404610600EK': 'Backup 4',
     'G0K0KH02623400GT': 'Backup 5',
     # Super scout tablets
-    'HA0XCRB2': 'Red Super',
-    'HA0XCUFX': 'Blue Super',
-    'HA0XC9A4': 'Purple Super',
+    'redacted': 'Red Super',
+    'redacted': 'Blue Super',
+    'redacted': 'Purple Super',
 }
 
 ASSIGNMENT_FILE_PATH = utils.create_file_path(
