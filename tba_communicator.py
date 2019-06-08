@@ -23,9 +23,10 @@ def make_request(api_url, show_output=True, acceptable_cache_age=0):
 
     api_url is the url of the API request (the path after '/api/v3')
     show_output shows print statements about the status of the
-    request.  Defaults to True
+    request.  Defaults to True.
     acceptable_cache_age is the maximum age (in seconds) of data that
-    can be pulled from the cache."""
+    can be pulled from the cache.  Pulling from the cache is disabled by
+    default."""
     base_url = 'https://www.thebluealliance.com/api/v3/'
     full_url = base_url + api_url
     request_headers = {'X-TBA-Auth-Key': API_KEY}
