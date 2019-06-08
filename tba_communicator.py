@@ -1,6 +1,8 @@
-"""Sends web requests to The Blue Alliance (TBA) API.
+"""Sends web requests to The Blue Alliance (TBA) APIv3
 
-Caches data to prevent duplicate data retrieval from the TBA API."""
+Caches data to prevent duplicate data retrieval from the TBA API.
+
+API documentation: https://www.thebluealliance.com/apidocs/v3"""
 # External imports
 import json
 import requests
