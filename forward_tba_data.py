@@ -94,7 +94,7 @@ for match_key, match in MATCH_DATA.items():
         for driver_station, team_number in enumerate(teams, 1):
             starting_level = alliance_score_breakdown[
                 f'preMatchLevelRobot{driver_station}']
-            # Decompresses 'starting_level'
+            # Converts format of 'starting_level'
             decompression = {
                 'HabLevel1': 1,
                 'HabLevel2': 2,
