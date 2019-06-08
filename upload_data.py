@@ -62,7 +62,6 @@ def collect_file_data(file_path_, firebase_collection):
             value = data_value
             multi_location_data[os.path.join(firebase_collection, \
                 document_name, path)] = value
-
     return multi_location_data
 
 FINAL_DATA = {}
