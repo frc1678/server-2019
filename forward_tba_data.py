@@ -60,6 +60,7 @@ MATCH_KEYS = tba_communicator.request_match_keys()
 # Match key to match data
 MATCH_DATA = {}
 print('Retrieving all match data from TBA...')
+# Retrieves each match in a separate request to enable more efficient caching.
 for match_key in MATCH_KEYS:
     # 'qm' stands for qualification match
     # Example 'match_key' formats: '2019caoc_qm29', '2019caoc_qf3m1'
