@@ -80,7 +80,6 @@ for firebase_key, cache_key in FIREBASE_TO_CACHE_KEY.items():
             f'data/upload_queue/{cache_key}')):
         file_path = utils.create_file_path(
             f'data/upload_queue/{cache_key}/{file}')
-
         # Collects and adds the data from a single file to 'FINAL_DATA'
         FINAL_DATA.update(collect_file_data(file_path, firebase_key))
 
