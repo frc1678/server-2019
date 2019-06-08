@@ -39,10 +39,14 @@ def collect_file_data(file_path_, firebase_collection):
     # "/<firebase-collection>/<document-name>/<data-field>": <data-value>
     # (e.g. /TIMDs/1678Q3/startingLocation": "left")
     for data_field, data_value in file_data.items():
+        # NOTE: This code re-defines variables outside of its scope and
+        # its behavior may differ from its appearance.
         # TODO: Clean up variable names
         if isinstance(data_value, dict):
             for key, value_ in data_value.items():
                 if isinstance(key, dict):
+                    # NOTE: This if-block probably doesn't trigger,
+                    # since a key cannot be a dict.
                     for key2, value2 in value_.items():
                         path = os.path.join(data_field, key2)
                         value = value2
