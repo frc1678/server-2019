@@ -94,7 +94,7 @@ for path, value in FINAL_DATA.items():
             for key, value_ in action.items():
                 if isinstance(value_, float) and value_ != value_:
                     action[key] = None
-    if isinstance(value_, float) and value != value:
+    if isinstance(value, float) and value != value:
         FINAL_DATA[path] = None
 
 # Sends the data to firebase.
