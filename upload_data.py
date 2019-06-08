@@ -87,6 +87,7 @@ for firebase_key, cache_key in FIREBASE_TO_CACHE_KEY.items():
 
 # Before sending the data, iterates through all of it and removes any
 # NaNs (Not a Number) in the data.  (Relies on NaN != NaN)
+# HACK: NaNs should be handled during calculation.
 for path, value in FINAL_DATA.items():
     if path.split('/')[-1] == 'timeline':
         for action in value:
