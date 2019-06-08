@@ -65,7 +65,8 @@ for match_key in MATCH_KEYS:
     # 'qm' stands for qualification match
     # Example 'match_key' formats: '2019caoc_qm29', '2019caoc_qf3m1'
     if match_key.split('_')[1][:2] == 'qm':
-        match = tba_communicator.request_match(match_key, show_output=False, acceptable_cache_age=30)
+        match = tba_communicator.request_match(match_key, \
+            show_output=False, acceptable_cache_age=30)
         MATCH_DATA[match_key] = match
 print('All TBA match data successfully retrieved.')
 
