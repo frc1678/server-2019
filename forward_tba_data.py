@@ -8,17 +8,17 @@ import json
 import tba_communicator
 import utils
 
-def update_json_file(file_path, updated_data):
+def update_json_file(file_path, update_data):
     """Updates data in a JSON file.  (Preserves old data)
 
     file_path is the absolute path of the file to be updated (string)
-    updated_data is the data to add to the JSON file (dict)"""
+    update_data is the data to add to the JSON file (dict)"""
     try:
         with open(file_path, 'r') as file:
             file_data = json.load(file)
     except FileNotFoundError:
         file_data = {}
-    for key, value in updated_data.items():
+    for key, value in update_data.items():
         # Used for nested dictionaries (i.e. 'calculatedData')
         if isinstance(value, dict):
             file_data[key] = file_data.get(key, {})
