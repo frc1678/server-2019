@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python3.6
 """Calculates pushing ability ELOs."""
 # External imports
 import json
@@ -21,8 +21,11 @@ for temp_super_file in TEMP_SUPER_FILES:
             compressed_temp_super)
     PUSHING_BATTLES += decompressed_pushing_battles
 
-# Constants
+# Constants:
+# C is used for calculating win probability. When team A has CONSTANT_C
+# more Elo than team B, team A is predicted to win 10 out of 11 battles
 CONSTANT_C = 160
+# K is proportional to how much a single match affects Elo ratings
 CONSTANT_K = 100
 CONSTANT_VALUE = {
     'largeWin': 1.0,
