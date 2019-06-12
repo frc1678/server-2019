@@ -47,6 +47,10 @@ for pushing_battle in PUSHING_BATTLES:
     # Expected win percentage for the robot that ended up winning.
     winner_expected_win_percentage = winner_weighted_ranking / (
         winner_weighted_ranking + loser_weighted_ranking)
+    # If f(x) = winner_expected_win_percentage
+    # and x = winner_old_elo - loser_old_elo
+    # then the graph of f(x) is a logistic curve.
+    # f(x) = 1/(1+10**(-x/CONSTANT_C))
 
     if pushing_battle['winMarginIsLarge'] is True:
         win_value = CONSTANT_VALUE['largeWin']
