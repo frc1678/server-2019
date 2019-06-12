@@ -44,10 +44,10 @@ for pushing_battle in PUSHING_BATTLES:
     winner_weighted_ranking = 10 ** (winner_old_elo / CONSTANT_C)
     loser_weighted_ranking = 10 ** (loser_old_elo / CONSTANT_C)
 
-    # Expected win percentage for the robot that ended up winning.
-    winner_expected_win_percentage = winner_weighted_ranking / (
+    # Expected win rate for the robot that ended up winning.
+    winner_expected_win_rate = winner_weighted_ranking / (
         winner_weighted_ranking + loser_weighted_ranking)
-    # If f(x) = winner_expected_win_percentage
+    # If f(x) = winner_expected_win_rate
     # and x = winner_old_elo - loser_old_elo
     # then the graph of f(x) is a logistic curve.
     # f(x) = 1/(1+10**(-x/CONSTANT_C))
@@ -58,9 +58,9 @@ for pushing_battle in PUSHING_BATTLES:
         win_value = CONSTANT_VALUE['smallWin']
 
     winner_new_elo = winner_old_elo + CONSTANT_K * (win_value - \
-        winner_expected_win_percentage)
+        winner_expected_win_rate)
     loser_new_elo = loser_old_elo - CONSTANT_K * (win_value - \
-        winner_expected_win_percentage)
+        winner_expected_win_rate)
 
     ELOS[pushing_battle['winner']] = winner_new_elo
     ELOS[pushing_battle['loser']] = loser_new_elo
