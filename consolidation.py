@@ -29,7 +29,7 @@ def consolidate_times(times):
     if std == 0:
         return round(mean, 1)
 
-    # If one of the float_list items is equivelent to the mean, it's
+    # If one of the float_list items is equivalent to the mean, it's
     # weight will be undefined, so we can just return the mean.
     if mean in float_list:
         return mean
@@ -101,8 +101,8 @@ def max_occurrences(comparison_list, sprking):
     # Handling for an empty occurrence list.
     if len(occurence_list.values()) == 0:
         return None
-    # If the highest occurence on the occurence list is the same as
-    # the lowest occurence, the correct value for the datapoint is
+    # If the highest occurrence on the occurrence list is the same as
+    # the lowest occurrence, the correct value for the data point is
     # the value output by the scout with the best spr. This triggers
     # both when all the scout values are the same (The max and min
     # would both be three) and when all the scout values are
@@ -115,7 +115,7 @@ def max_occurrences(comparison_list, sprking):
         return max(occurence_list, key=occurence_list.get)
 
 def consolidate_timeline_action(temp_timd_timelines, action_type, sprking):
-    """Takes an action type out of timelines and consolidates it seperately.
+    """Takes an action type out of timelines and consolidates it separately.
 
     Returns a consolidated timeline only made up of the action type that
     was passed as action_type.
@@ -270,7 +270,7 @@ def climb_consolidation(input_timelines, sprking):
     input_timelines is the dictionary of the scouts to their specific
     timelines.
     sprking is the scout with the best spr out of the scouts, used when
-    max_occurrences is called. More info in the docstring for
+    max_occurrences is called. More info in the doc-string for
     max_occurrences.
     """
 
@@ -354,9 +354,9 @@ def consolidate_temp_timds(temp_timds):
                 # consolidation.
                 final_timeline = []
 
-                # Seperates all the basic actions out and consolidates
+                # Separates all the basic actions out and consolidates
                 # them one at a time. All the actions are consolidated
-                # seperately so that the timings on each action are
+                # separately so that the timings on each action are
                 # split apart, making it more easy to line up, identify,
                 # and consolidate the timeline.
                 for action_type in ['pinningFoul', 'incap', 'unincap', \
@@ -365,9 +365,9 @@ def consolidate_temp_timds(temp_timds):
                     final_timeline += consolidate_timeline_action(
                         timelines, action_type, sprking)
 
-                # Also consolidates climb seperately in order to
-                # seperate it from intakes and placements. Climb needs a
-                # seperate function because of its relatively strange
+                # Also consolidates climb separately in order to
+                # separate it from intakes and placements. Climb needs a
+                # separate function because of its relatively strange
                 # structure.
                 climb = climb_consolidation(timelines, sprking)
                 if climb is not None:
@@ -397,7 +397,7 @@ def consolidate_temp_timds(temp_timds):
             # tempTIMD to compare against each other. (Code note - This
             # code is using .get and not simply referencing the key out
             # of the dictionary because .get doesn't error out when the
-            # key doesn't exist. It instead returns NoneType).
+            # key doesn't exist. Instead, it returns NoneType).
             data_field_comparison_list = {}
             for scout, temp_timd in temp_timds.items():
                 temp_data_field = temp_timd.get(data_field)
