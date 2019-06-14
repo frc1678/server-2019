@@ -19,22 +19,11 @@ Called by server.py with the name of the TIMD to be calculated."""
 import json
 import os
 import sys
+import subprocess
 # Internal imports
 import consolidation
 import decompressor
 import utils
-
-def avg(lis, exception=0.0):
-    """Calculates the average of a list.
-
-    lis is the list that is averaged.
-    exception is returned if there is a divide by zero error. The
-    default is 0.0 because the main usage in in percentage calculations.
-    """
-    if len(lis) == 0:
-        return exception
-    else:
-        return sum(lis) / len(lis)
 
 def percent_success(actions):
     """Finds the percent of times didSucceed is true in a list of actions.
@@ -46,7 +35,7 @@ def percent_success(actions):
     # returns a float between 0 and 1 of what percentage of times the
     # value was True.
     # Example: [True, True, False, True] returns 75.
-    return round(100 * avg(successes))
+    return round(100 * utils.avg(successes))
 
 def filter_cycles(cycle_list, **filters):
     """Puts cycles through filters to meet specific requirements
@@ -71,7 +60,7 @@ def filter_cycles(cycle_list, **filters):
                     break
             # Otherwise, it checks the requirement normally
             else:
-                if cycle[1][data_field] != requirement:
+                if cycle[1].get(data_field) != requirement:
                     break
         # If all the requirements are met, it adds the cycle to the
         # returned filtered cycles.
@@ -92,15 +81,18 @@ def calculate_avg_cycle_time(cycles):
         # counts down in the timeline.
         cycle_times.append(cycle[0].get('time') -
                            cycle[1].get('time'))
-    return avg(cycle_times, None)
+    return utils.avg(cycle_times, None)
 
-def calculate_total_incap_time(cycles):
-    """Calculates the total time for incap based on incap and unincap times.
+def calculate_total_action_duration(cycles):
+    """Calculates the total duration for an action based on start and end times.
 
     Finds the time difference between each action pair passed and
-    returns the sum of the differences.
-    cycles is a list of tuples where both the first action is an incap
-    and the second action is unincap."""
+    returns the sum of the differences.  Used for both defense and incap
+    cycles.
+
+    cycles is a list of tuples where the first action marks the start of
+    a period (incap or defense), and the second action marks the end of
+    that period."""
     cycle_times = []
     for cycle in cycles:
         # Subtracts the second time from the first because the time
@@ -121,7 +113,7 @@ def filter_timeline_actions(timd, **filters):
     # For each action, if any of the specifications are not met, the
     # loop breaks and it moves on to the next action, but if all the
     # specifications are met, it adds it to the filtered timeline.
-    for action in timd.get('timeline'):
+    for action in timd.get('timeline', []):
         for data_field, requirement in filters.items():
             # If the data_field requirement is level 1, it instead
             # checks for it not being level 2 or 3, because level 1 can
@@ -136,6 +128,15 @@ def filter_timeline_actions(timd, **filters):
             elif data_field == 'zone' and requirement == 'loadingStation':
                 if action['zone'] not in ['leftLoadingStation',
                                           'rightLoadingStation']:
+                    break
+            # If the filter specifies time, it can either specify
+            # sandstorm by making the requirement 'sand' or specify
+            # teleop by making the requirement 'tele'.
+            #TODO: Rename 'sand' and 'tele'
+            elif data_field == 'time':
+                if requirement == 'sand' and action['time'] <= 135.0:
+                    break
+                elif requirement == 'tele' and action['time'] > 135.0:
                     break
             # Otherwise, it checks the requirement normally
             else:
@@ -172,8 +173,82 @@ def calculate_timd_data(timd):
         timd, type='placement', didSucceed=True, piece='lemon'))
     calculated_data['orangeFouls'] = len(filter_timeline_actions(
         timd, shotOutOfField=True))
-    calculated_data['lemonsSpilled'] = len(filter_timeline_actions(
-        timd, type='spill'))
+    calculated_data['pinningFouls'] = len(filter_timeline_actions(
+        timd, type='pinningFoul'))
+
+    calculated_data['orangeCycles'] = len(filter_timeline_actions(
+        timd, type='intake', piece='orange'))
+    calculated_data['lemonCycles'] = len(filter_timeline_actions(
+        timd, type='intake', piece='lemon'))
+
+    cycle_actions = [action for action in timd.get('timeline', []) if \
+        action['type'] in ['placement', 'intake', 'drop']]
+    if len(cycle_actions) > 0:
+        # If the last action is an intake, it shouldn't count as a
+        # cycle, so it is subtracted from its cycle data field.
+        if cycle_actions[-1]['type'] == 'intake':
+            piece = cycle_actions[-1]['piece']
+            # HACK: Subtracts the extra intake from the already
+            # calculated number of cycles. Should be included in that
+            # calculation.
+            calculated_data[f'{piece}Cycles'] -= 1
+
+    calculated_data['orangeDrops'] = len(filter_timeline_actions(
+        timd, type='drop', piece='orange'))
+    calculated_data['lemonDrops'] = len(filter_timeline_actions(
+        timd, type='drop', piece='lemon'))
+    calculated_data['orangeFails'] = len(filter_timeline_actions(
+        timd, type='placement', didSucceed=False, piece='orange'))
+    calculated_data['lemonFails'] = len(filter_timeline_actions(
+        timd, type='placement', didSucceed=False, piece='lemon'))
+
+    calculated_data['orangesScoredSandstorm'] = len(
+        filter_timeline_actions(timd, type='placement', piece='orange', \
+        didSucceed=True, time='sand'))
+    calculated_data['lemonsScoredSandstorm'] = len(
+        filter_timeline_actions(timd, type='placement', piece='lemon', \
+        didSucceed=True, time='sand'))
+    calculated_data['orangesScoredTeleL1'] = len(
+        filter_timeline_actions(timd, type='placement', piece='orange', \
+        level=1, didSucceed=True, time='tele'))
+    calculated_data['orangesScoredTeleL2'] = len(
+        filter_timeline_actions(timd, type='placement', piece='orange', \
+        level=2, didSucceed=True, time='tele'))
+    calculated_data['orangesScoredTeleL3'] = len(
+        filter_timeline_actions(timd, type='placement', piece='orange', \
+        level=3, didSucceed=True, time='tele'))
+    calculated_data['lemonsScoredTeleL1'] = len(
+        filter_timeline_actions(timd, type='placement', piece='lemon', \
+        level=1, didSucceed=True, time='tele'))
+    calculated_data['lemonsScoredTeleL2'] = len(
+        filter_timeline_actions(timd, type='placement', piece='lemon', \
+        level=2, didSucceed=True, time='tele'))
+    calculated_data['lemonsScoredTeleL3'] = len(
+        filter_timeline_actions(timd, type='placement', piece='lemon', \
+        level=3, didSucceed=True, time='tele'))
+
+    calculated_data['orangesScoredL1'] = len(
+        filter_timeline_actions(timd, type='placement', piece='orange', \
+        level=1, didSucceed=True))
+    calculated_data['orangesScoredL2'] = len(
+        filter_timeline_actions(timd, type='placement', piece='orange', \
+        level=2, didSucceed=True))
+    calculated_data['orangesScoredL3'] = len(
+        filter_timeline_actions(timd, type='placement', piece='orange', \
+        level=3, didSucceed=True))
+    calculated_data['lemonsScoredL1'] = len(
+        filter_timeline_actions(timd, type='placement', piece='lemon', \
+        level=1, didSucceed=True))
+    calculated_data['lemonsScoredL2'] = len(
+        filter_timeline_actions(timd, type='placement', piece='lemon', \
+        level=2, didSucceed=True))
+    calculated_data['lemonsScoredL3'] = len(
+        filter_timeline_actions(timd, type='placement', piece='lemon', \
+        level=3, didSucceed=True))
+
+    calculated_data['totalFailedCyclesCaused'] = sum([
+        action['failedCyclesCaused'] for action in
+        filter_timeline_actions(timd, type='endDefense')])
 
     # The next set of calculated data points are the success
     # percentages, these are the percentages (displayed as an integer)
@@ -222,14 +297,19 @@ def calculate_timd_data(timd):
     # first item and the placement or drop is the second. This is used
     # when calculating cycle times.
     cycle_list = []
-    for action in timd.get('timeline'):
+    for action in timd.get('timeline', []):
         if action.get('type') in ['intake', 'placement', 'drop']:
-            cycle_list.append(action)
+            # If the action is a failed loading station intake, it
+            # shouldn't play a part in cycles, so it is filtered out.
+            if not (action.get('type') == 'intake' and
+                    action.get('didSucceed') is False):
+                cycle_list.append(action)
 
-    if len(cycle_list) > 0:
+    # There must be at least 2 actions to have a cycle
+    if len(cycle_list) > 1:
         # If the first action in the list is a placement, it is a
         # preload, which doesn't count when calculating cycle times.
-        if cycle_list[0].get('type') == 'placement':
+        if cycle_list[0].get('type') in ['placement', 'drop']:
             cycle_list.pop(0)
         # If the last action in the list is an intake, it means the
         # robot finished with a game object, in which the cycle was
@@ -260,7 +340,7 @@ def calculate_timd_data(timd):
     # by checking if they have any actions in the match other than incap
     # and unincap. If they don't have any other actions, they were incap
     # the entire match.
-    for action in timd.get('timeline'):
+    for action in timd.get('timeline', []):
         if action.get('type') not in ['incap', 'unincap'] and \
                 action.get('time') <= 135.0:
             calculated_data['isIncapEntireMatch'] = False
@@ -271,44 +351,50 @@ def calculate_timd_data(timd):
     # Creates a list of the climb dictionary or nothing if there is no
     # climb. If there is a climb, the time of the climb is the amount
     # of time they spent climbing.
-    for action in timd.get('timeline'):
+    for action in timd.get('timeline', []):
         if action['type'] == 'climb':
             calculated_data['timeClimbing'] = action['time']
+            calculated_data['selfClimbLevel'] = action['actual']['self']
+            calculated_data['robot1ClimbLevel'] = action['actual']['robot1']
+            calculated_data['robot2ClimbLevel'] = action['actual']['robot2']
 
     # Creates a list of all the incap and unincap actions in the timeline.
-    incap_and_impaired_items = []
-    for action in timd.get('timeline'):
+    incap_items = []
+    for action in timd.get('timeline', []):
         if action.get('type') in ['incap', 'unincap']:
-            incap_and_impaired_items.append(action)
-    if len(incap_and_impaired_items) > 0:
+            incap_items.append(action)
+    if len(incap_items) > 0:
         # If the last action in the list is an incap, it means they
         # finished the match incap, so it adds an unincap at the end of
         # the timeline.
-        if incap_and_impaired_items[-1]['type'] == 'incap':
-            incap_and_impaired_items.append({'type': 'unincap', 'time' : 0.0})
-        paired_incap_list = make_paired_cycle_list(incap_and_impaired_items)
+        if incap_items[-1]['type'] == 'incap':
+            incap_items.append({'type': 'unincap', 'time': 0.0})
+        paired_incap_list = make_paired_cycle_list(incap_items)
 
-        # Calculates the timeImpaired and timeIncap by calculating the
-        # total amount of time the robot spent incap for either causes
-        # that indicate the robot was impaired, or causes that indicate
-        # the robot is incapacitated.
-        impaired_items = []
-        incapacitated_items = []
-        for cycle in paired_incap_list:
-            if cycle[0]['cause'] in ['brokenMechanism', 'twoGamePieces']:
-                impaired_items.append(cycle)
-            else:
-                incapacitated_items.append(cycle)
-        calculated_data['timeImpaired'] = calculate_total_incap_time(
-            impaired_items)
-        calculated_data['timeIncap'] = calculate_total_incap_time(
-            incapacitated_items)
+        # Calculates the timeIncap by calculating the total amount of
+        # time the robot spent incap during the match.
+        calculated_data['timeIncap'] = calculate_total_action_duration(
+            paired_incap_list)
     else:
-        # Otherwise, the time that the robot spent impaired and incap is
-        # naturally 0.
-        calculated_data['timeImpaired'] = 0.0
+        # Otherwise, the time that the robot spent incap is naturally 0.
         calculated_data['timeIncap'] = 0.0
 
+    # Creates a list of all the startDefense and endDefense actions in
+    # the timeline.
+    defense_items = []
+    for action in timd.get('timeline', []):
+        if action['type'] in ['startDefense', 'endDefense']:
+            defense_items.append(action)
+    if len(defense_items) > 0:
+        paired_defense_list = make_paired_cycle_list(defense_items)
+
+        # 'timeDefending' is the total amount of time the robot spent
+        # defending during the match.
+        calculated_data['timeDefending'] = calculate_total_action_duration(
+            paired_defense_list)
+    else:
+        # Otherwise, the time that the robot spent defending is naturally 0.
+        calculated_data['timeDefending'] = 0.0
     return calculated_data
 
 # Check to ensure TIMD name is being passed as an argument
@@ -329,7 +415,7 @@ TEMP_TIMDS = {}
 # key and their decompressed tempTIMD as a value. Does this in order to
 # have a proper input to the consolidation function.
 for temp_timd in os.listdir(utils.create_file_path('data/cache/temp_timds')):
-    if TIMD_NAME in temp_timd:
+    if temp_timd.split('-')[0] == TIMD_NAME:
         file_path = utils.create_file_path(
             f'data/cache/temp_timds/{temp_timd}')
         with open(file_path, 'r') as file:
@@ -342,6 +428,10 @@ for temp_timd in os.listdir(utils.create_file_path('data/cache/temp_timds')):
 # After the TEMP_TIMDS are decompressed, they are fed into the
 # consolidation script where they are returned as one final TIMD.
 FINAL_TIMD = consolidation.consolidate_temp_timds(TEMP_TIMDS)
+
+# Adds the matchNumber and teamNumber necessary for later team calcs.
+FINAL_TIMD['matchNumber'] = int(TIMD_NAME.split('Q')[1])
+FINAL_TIMD['teamNumber'] = int(TIMD_NAME.split('Q')[0])
 
 # Adds calculatedData to the FINAL_TIMD using the
 # add_calculated_data_to_timd function at the top of the file.
@@ -356,3 +446,10 @@ with open(utils.create_file_path(f'data/cache/timds/{TIMD_NAME}.json'),
 with open(utils.create_file_path(
         f'data/upload_queue/timds/{TIMD_NAME}.json'), 'w') as file:
     json.dump(FINAL_TIMD, file)
+
+# TODO: Make 'forward_temp_super' more efficient (call it less often)
+subprocess.call(f'python3 forward_temp_super.py', shell=True)
+
+# After the timd is calculated, the team is calculated.
+TEAM = TIMD_NAME.split('Q')[0]
+subprocess.call(f'python3 calculate_team.py {TEAM}', shell=True)

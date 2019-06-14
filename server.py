@@ -6,6 +6,7 @@ startup and has automatic restart.  This script runs all the database
 listeners and the while loop that checks if calculations need to be
 made."""
 # External imports
+import json
 import os
 import shutil
 import signal
@@ -14,6 +15,7 @@ import sys
 import time
 # Internal imports
 import firebase_communicator
+import tba_communicator
 import utils
 
 # Uses default firebase URL
@@ -41,7 +43,7 @@ def register_modified_temp_timd(temp_timd_name):
     timd_name = temp_timd_name.split('-')[0]
     if LATEST_CALCULATIONS_BY_TIMD.get(timd_name) is not None:
         LATEST_CALCULATIONS_BY_TIMD[timd_name] = (
-            LATEST_CALCULATIONS_BY_TIMD[timd_name].pop(
+            LATEST_CALCULATIONS_BY_TIMD[timd_name].remove(
                 temp_timd_name))
         # TODO: If there is only one tempTIMD in the list, and it is
         # removed, the TIMD data will not be recalculated or deleted.
@@ -54,65 +56,48 @@ def match_num_stream_handler(snapshot):
     # Validates that data was correctly received and is in its expected format
     if (snapshot['event'] == 'put' and snapshot['path'] == '/' and
             isinstance(snapshot['data'], int)):
-        #TODO
-        print(snapshot['data'])
+        # Forwards TBA data to Teams, TIMDs, and Matches.
+        subprocess.call('python3 forward_tba_data.py', shell=True)
+        # Calculates SPRs (Scout Precision Rankings)
+        subprocess.call('python3 calculate_sprs.py', shell=True)
+        print('Did SPRs calculations')
 
 def cycle_num_stream_handler(snapshot):
     """Runs when 'cycleNumber' is updated on firebase"""
     # Validates that data was correctly received and is in its expected format
     if (snapshot['event'] == 'put' and snapshot['path'] == '/'):
         cycle_number = snapshot['data']
+        previous_qr = DB.child('scoutManagement/QRcode').get().val()
         if cycle_number is None:
             cycle_number = 0
-        subprocess.call('python3 update_assignments.py ' +
-                        str(cycle_number), shell=True)
+        # Prevents different QRs from being created with the same cycle number.
+        if previous_qr.split('_')[0] != str(cycle_number):
+            subprocess.call(f'python3 update_assignments.py {cycle_number}',
+                            shell=True)
 
-def temp_timd_stream_handler(snapshot):
+def temp_timd_stream_handler(temp_timd_name, temp_timd_value):
     """Runs when any new tempTIMDs are uploaded"""
-    data = snapshot['data']
-    path = snapshot['path']
-
-    # This occurs when the entirety of tempTIMDs are updated
-    # (stream initialization, all tempTIMDs deleted, or first tempTIMD created)
-    if path == '/':
-        # This means that all tempTIMDs have been wiped and we should
-        # wipe our local copy.
-        if data is None:
-            delete_cache_data_folder('temp_timds')
-            return
-    elif path.count('/') == 1:
-        # This is moving the path into the data so it is in the same
-        # format as data at the path '/'.  This allows us to use the
-        # same code to save the data in our local cache later on.
-        # The '[1:]' removes the slash at the beginning of the path
-        data = {path[1:] : data}
-    # If there is more than 1 slash in the path, the data is multiple
-    # children deep.  tempTIMDs are only one child deep and this will
-    # only trigger if invalid data is sent to Firebase.
+    # HACK: Remove trailing '\n' (newlines) in compressed tempTIMD
+    # data.  This is a bug in the Scout app.
+    temp_timd_value = temp_timd_value.rstrip('\n')
+    # This means that this tempTIMD has been deleted from Firebase
+    # and we should delete it from our local copy.
+    if temp_timd_value is None:
+        os.remove(utils.create_file_path(
+            f'data/cache/temp_timds/{temp_timd_name}.txt'))
+        # Causes the corresponding TIMD to be recalculated
+        register_modified_temp_timd(temp_timd_name)
     else:
-        print('Error: Invalid tempTIMD data received')
-        return
-
-    # This saves each tempTIMD in a separate text file.
-    for temp_timd_name, temp_timd_value in data.items():
-        # This means that this tempTIMD has been deleted from Firebase
-        # and we should delete it from our local copy.
-        if temp_timd_value is None:
-            os.remove(utils.create_file_path(
-                f'data/cache/temp_timds/{temp_timd_name}.txt'))
-            # Causes the corresponding TIMD to be recalculated
+        with open(utils.create_file_path(
+                f'data/cache/temp_timds/{temp_timd_name}.txt'),
+                  'w') as file:
+            file.write(temp_timd_value)
+        timd_name = temp_timd_name.split('-')[0]
+        # This means an already existing tempTIMD has been modified
+        # and needs to be recalculated.
+        if temp_timd_name in LATEST_CALCULATIONS_BY_TIMD.get(
+                timd_name, []):
             register_modified_temp_timd(temp_timd_name)
-        else:
-            with open(utils.create_file_path(
-                    f'data/cache/temp_timds/{temp_timd_name}.txt'),
-                      'w') as file:
-                file.write(temp_timd_value)
-            timd_name = temp_timd_name.split('-')[0]
-            # This means an already existing tempTIMD has been modified
-            # and needs to be recalculated.
-            if temp_timd_name in LATEST_CALCULATIONS_BY_TIMD.get(
-                    timd_name, []):
-                register_modified_temp_timd(temp_timd_name)
 
 def temp_super_stream_handler(snapshot):
     """Runs when any new tempSuper datas are uploaded"""
@@ -133,7 +118,7 @@ def temp_super_stream_handler(snapshot):
         # format as data at the path '/'.  This allows us to use the
         # same code to save the data in our local cache later on.
         # The '[1:]' removes the slash at the beginning of the path
-        data = {path[1:] : data}
+        data = {path[1:]: data}
     # If there is more than 1 slash in the path, the data is multiple
     # children deep.  tempSupers are only one child deep and this will
     # only trigger if invalid data is sent to Firebase.
@@ -159,11 +144,11 @@ def create_streams(stream_names=None):
     """Creates firebase streams given a list of possible streams.
 
     These possible streams include: MATCH_NUM_STREAM, CYCLE_NUM_STREAM,
-                                    TEMP_TIMD_STREAM, TEMP_SUPER_STREAM"""
+                                    TEMP_SUPER_STREAM"""
     # If specific streams are not given, create all of the possible streams
     if stream_names is None:
         stream_names = ['MATCH_NUM_STREAM', 'CYCLE_NUM_STREAM',
-                        'TEMP_TIMD_STREAM', 'TEMP_SUPER_STREAM']
+                        'TEMP_SUPER_STREAM']
     streams = {}
     # Creates each of the streams specified and stores them in the
     # streams dict.
@@ -175,11 +160,6 @@ def create_streams(stream_names=None):
         elif name == 'CYCLE_NUM_STREAM':
             streams[name] = DB.child('scoutManagement/cycleNumber'
                                     ).stream(cycle_num_stream_handler)
-        elif name == 'TEMP_TIMD_STREAM':
-            # Used to remove any outdated data
-            delete_cache_data_folder('temp_timds')
-            streams[name] = DB.child('tempTIMDs').stream(
-                temp_timd_stream_handler)
         elif name == 'TEMP_SUPER_STREAM':
             # Used to remove any outdated data
             delete_cache_data_folder('temp_super')
@@ -205,16 +185,62 @@ def handle_ctrl_c(*args):
     print('All streams closed.')
     sys.exit(0)
 
+def cache_match_schedule():
+    """Requests the match schedule from TBA and adds it to the cache."""
+    # HACK: Only pulls the match schedule once since the caching built
+    # into tba_communicator.py is not complete.
+    matches = tba_communicator.request_matches()
+    for match_data in matches:
+        # 'qm' stands for qualification match
+        if match_data['comp_level'] == 'qm':
+            red_teams = match_data['alliances']['red']['team_keys']
+            blue_teams = match_data['alliances']['blue']['team_keys']
+            match_number = match_data['match_number']
+            # Remove 'frc' from team number
+            # (e.g. 'frc1678' -> '1678')
+            red_teams = [team[3:] for team in red_teams]
+            blue_teams = [team[3:] for team in blue_teams]
+            final_match_data = {
+                'matchNumber': match_number,
+                'redTeams': red_teams,
+                'blueTeams': blue_teams,
+            }
+        with open(utils.create_file_path(
+                f'data/cache/match_schedule/{match_number}.json'), 'w') as file:
+            json.dump(final_match_data, file)
+
+# Deletes the entire 'cache' directory to remove any old data.
+# Checks if the directory exists before trying to delete it to avoid
+# causing an error.
+if os.path.isdir(utils.create_file_path('data/cache', False)):
+    shutil.rmtree(utils.create_file_path('data/cache', False))
+
 # Detects when CTRL+C is pressed, then runs handle_ctrl_c
 signal.signal(signal.SIGINT, handle_ctrl_c)
 
 # Creates all the database streams and stores them in global dict.
 STREAMS = create_streams()
 
+# In order to make match calculations, the match schedule must be taken
+# from TBA and put into the cache.
+cache_match_schedule()
+
+# Wipes 'temp_timds' cache folder
+delete_cache_data_folder('temp_timds')
+# Stores the keys of cached 'tempTIMDs'
+CACHED_TEMP_TIMD_KEYS = []
+
 # Stores the tempTIMDs that have already been calculated in order to
 # prevent them from being recalculated if the data has not changed.
 LATEST_CALCULATIONS_BY_TIMD = {}
 
+# Pulls all tempTIMDs in a single request
+# (Improves efficiency on server restart)
+INITIAL_TEMP_TIMDS = DB.child('tempTIMDs').get().val()
+if INITIAL_TEMP_TIMDS is not None:
+    for temp_timd, temp_timd_value in INITIAL_TEMP_TIMDS.items():
+        temp_timd_stream_handler(temp_timd, temp_timd_value)
+    CACHED_TEMP_TIMD_KEYS += INITIAL_TEMP_TIMDS.keys()
 while True:
     # Goes through each of the streams to check if it is still active
     for stream_name, stream in STREAMS.items():
@@ -224,6 +250,16 @@ while True:
             # dict to contain the new stream. 'create_streams' returns
             # a dict, which is why '.update' is called.
             STREAMS.update(create_streams([stream_name]))
+
+    # HACK: Pulls tempTIMDs in a custom stream
+    TEMP_TIMD_SHALLOW = DB.child('tempTIMDs').shallow().get().val()
+    if TEMP_TIMD_SHALLOW is not None:
+        for temp_timd in TEMP_TIMD_SHALLOW:
+            if temp_timd not in CACHED_TEMP_TIMD_KEYS:
+                temp_timd_value = DB.child('tempTIMDs').child(temp_timd).get().val()
+                temp_timd_stream_handler(temp_timd, temp_timd_value)
+                CACHED_TEMP_TIMD_KEYS.append(temp_timd)
+
 
     # Checks list of tempTIMDs from files to determine what calculations
     # are needed.
@@ -250,15 +286,25 @@ while True:
     # data to be recalculated. #TODO: Update this comment w/future development
     for timd in FILES_BY_TIMD:
         if LATEST_CALCULATIONS_BY_TIMD.get(timd) != FILES_BY_TIMD[timd]:
-            # TODO: add call for calculation process for a single TIMD
-            print(f"Did calculations for {timd}") # TODO: remove me
+            subprocess.call(f'python3 calculate_timd.py {timd}', shell=True)
+            print(f"Did calculations for {timd}")
             LATEST_CALCULATIONS_BY_TIMD[timd] = FILES_BY_TIMD[timd]
 
-    # Forwards data from Cloud Firestore to Realtime Database.
-    subprocess.call('python3 forward_firestore_data.py', shell=True)
+    # Calculates pushing ELO rankings for teams.
+    subprocess.call('python3 calculate_pushing_ability.py', shell=True)
 
     # Forwards tempSuper data to Matches and TIMDs.
     subprocess.call('python3 forward_temp_super.py', shell=True)
+
+    # Calculates 'pointsPrevented'
+    subprocess.call('python3 calculate_defense.py', shell=True)
+
+    if TEMP_TIMD_FILES != []:
+        # Makes predictions about match results.
+        subprocess.call('python3 calculate_predictions.py', shell=True)
+
+        # Runs advanced calculations for every team in the competition.
+        subprocess.call('python3 make_advanced_calculations.py', shell=True)
 
     # Uploads data in data queue.
     subprocess.call('python3 upload_data.py', shell=True)

@@ -1,21 +1,18 @@
 #!/usr/bin/python3.6
 """Prepares Firebase for competition.
 
-Sends blank 'Teams' and 'Matches' to Realtime Database.
-Sends blank 'Teams' to Cloud Firestore."""
+Sends blank 'Teams' and 'Matches' to Realtime Database."""
 # External imports
 import json
 import sys
+import shutil
 # Internal imports
 import firebase_communicator
-import firestore_communicator
 import tba_communicator
 import utils
 
 # 'FIREBASE' is a Realtime Database instance
 FIREBASE = firebase_communicator.configure_firebase()
-# 'FIRESTORE' is a Cloud Firestore database instance
-FIRESTORE = firestore_communicator.configure_cloud_firestore()
 
 def request_input(message, true_values, false_values):
     """Requests user input and returns a boolean.
@@ -62,6 +59,7 @@ else:
         sys.exit(0)
 
 # User confirmation
+print(f'\nURL: {firebase_communicator.URL}')
 print(f'\nWarning: {MESSAGE} will be wiped from Firebase!')
 CONFIRMATION = request_input("Type 'wipe' to continue: ", ['wipe'], [])
 
@@ -121,26 +119,9 @@ if FULL_WIPE is True:
         },
     })
 
+    # Removes 'cache' and 'upload_queue' folders to remove outdated data
+    shutil.rmtree(utils.create_file_path('data/cache/'))
+    shutil.rmtree(utils.create_file_path('data/upload_queue/'))
+
 # Sends data to Firebase
 FIREBASE.update(FIREBASE_UPLOAD)
-
-# Sends data to Cloud Firestore
-if PREPARE_TEAMS is True:
-    print('Retriving data from Firestore...')
-    TEAMS = FIRESTORE.collection('Teams').get()
-    print('Data successfully retrieved from Firestore.')
-
-    # Combine requests into a single batch
-    BATCH = FIRESTORE.batch()
-
-    # Removes teams that already exist on Cloud Firestore
-    for team in TEAMS:
-        BATCH.delete(FIRESTORE.collection('Teams').document(team.id))
-
-    # Adds data in 'FINAL_TEAM_DATA'
-    for team_number, team_value in FINAL_TEAM_DATA.items():
-        BATCH.set(FIRESTORE.collection('Teams').document(str(team_number)),
-                  team_value)
-
-    # Sends batch request
-    BATCH.commit()

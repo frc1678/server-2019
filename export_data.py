@@ -63,6 +63,13 @@ while True:
         break
     time.sleep(3)
 
+# Removes empty TIMDs
+# Uses 'list()' instead of '.keys()' because it errors if you are
+# removing data from a dictionary whose keys you are iterating through.
+for timd in list(TIMD_DATA):
+    if TIMD_DATA[timd].get('calculatedData') is None:
+        TIMD_DATA.pop(timd)
+
 if TIMD_DATA is None:
     print('Warning: TIMD data does not exist on Firebase')
 else:

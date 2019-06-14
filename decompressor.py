@@ -38,6 +38,7 @@ TEMP_TIMD_COMPRESSION_KEYS = {
     'D': 'self',
     'E': 'robot1',
     'F': 'robot2',
+    'J': 'failedCyclesCaused',
 }
 # Compressed tempTIMD value to uncompressed tempTIMD value
 TEMP_TIMD_COMPRESSION_VALUES = {
@@ -56,7 +57,7 @@ TEMP_TIMD_COMPRESSION_VALUES = {
     'M': 'intake',
     'N': 'placement',
     'P': 'drop',
-    'Q': 'spill',
+    'Q': 'pinningFoul',
     'R': 'climb',
     'S': 'incap',
     'U': 'unincap',
@@ -78,7 +79,7 @@ TEMP_TIMD_COMPRESSION_VALUES = {
     'j': 'tippedOver',
     'k': 'brokenMechanism',
     'm': 'stuckOnObject',
-    'n': 'stuchOnHab',
+    'n': 'stuckOnHab',
     'p': 'emergencyStop',
     'q': 'noControl',
     'r': 'twoGamePieces',
@@ -251,34 +252,20 @@ def decompress_temp_timd(compressed_temp_timd):
 
 # Compressed tempSuper key to uncompressed tempSuper key
 TEMP_SUPER_COMPRESSION_KEYS = {
-    'a': 'cargoShipPreloads',
-    'b': 'leftNear',
-    'c': 'leftMid',
-    'd': 'leftFar',
-    'e': 'rightNear',
-    'f': 'rightMid',
-    'g': 'rightFar',
-    'h': 'noShowTeams',
-    'k': 'redScore',
-    'm': 'blueScore',
-    'n': 'redFoulPoints',
-    'p': 'blueFoulPoints',
-    'q': 'blueDidRocketRP',
-    'r': 'redDidRocketRP',
-    's': 'blueDidClimbRP',
-    't': 'redDidClimbRP',
     'u': 'teamNumber',
     'v': 'rankAgility',
     'w': 'rankSpeed',
     'x': 'rankDefense',
+    'E': 'opponents',
     'y': 'rankCounterDefense',
-    'z': 'notes',
-    '1': 'team1',
-    '2': 'team2',
-    '3': 'team3',
-    'A': 'numGoodDecisions',
-    'B': 'numBadDecisions',
-    'j': 'wasHitDuringSandstorm',
+    'z': 'rankResistance',
+    'F': 'timeline',
+    'G': 'type',
+    'H': 'time',
+    'J': 'pushingBattles',
+    'K': 'winner',
+    'M': 'loser',
+    'N': 'winMarginIsLarge',
 }
 # Compressed tempSuper value to uncompressed tempSuper value
 TEMP_SUPER_COMPRESSION_VALUES = {
@@ -286,12 +273,12 @@ TEMP_SUPER_COMPRESSION_VALUES = {
     'F': False,
     'B': 'blue',
     'R': 'red',
-    'G': 'orange',
-    'L': 'lemon',
+    'a': 'startDefense',
+    'b': 'endDefense',
 }
 
-def decompress_temp_super_headers(compressed_temp_super_headers):
-    """Decompresses headers for a single tempSuper.
+def decompress_temp_super_pushing_battles(compressed_temp_super):
+    """HACK: Decompresses pushing_battles for a single tempSuper.
 
     Headers contain the data that is not specific to a team."""
     compressed_temp_super_headers = compressed_temp_super_headers.split(',')
@@ -391,24 +378,89 @@ def decompress_temp_super_teams(compressed_temp_super_teams):
         team_items = team[2:-1].split(';')
         for team_item in team_items:
             # The first character in the team data will always be the key.
-            compressed_key = team_item[0]
+            compressed_key = compressed_item[0]
             decompressed_key = TEMP_SUPER_COMPRESSION_KEYS[compressed_key]
             # Every character after the key is the value.
-            compressed_value = team_item[1:]
-            # Checks if the value is a letter that can be decompressed.
+            compressed_value = compressed_item[1:]
             if compressed_value in TEMP_SUPER_COMPRESSION_VALUES:
-                # Decompresses the key and the value.
                 decompressed_value = TEMP_SUPER_COMPRESSION_VALUES[compressed_value]
             # Checks if the value only contains characters 0-9
             elif compressed_value.isdigit():
                 decompressed_value = int(compressed_value)
             else:
-                # The value is a super note and should be left as a string.
-                decompressed_value = compressed_value
-            decompressed_team_value[decompressed_key] = decompressed_value
-        # Adds the team data in a dictionary as the value for a team.
-        decompressed_teams[decompressed_team_key] = decompressed_team_value
-    return decompressed_teams
+                print('Error: Unable to decompress tempSuper value.')
+                return
+            decompressed_pushing_battle[decompressed_key] = decompressed_value
+        decompressed_pushing_battles.append(decompressed_pushing_battle)
+    return decompressed_pushing_battles
+
+def decompress_temp_super_team(compressed_temp_super_team):
+    """Decompresses a single tempSuper team.
+
+    Returns a dictionary.
+
+    compressed_temp_super is a string."""
+
+    compressed_items = compressed_temp_super_team.rstrip(';').split(';')
+
+    # 'decompressed_team_value' contains
+    # 'decompressed_key':'decompressed_value' pairs
+    decompressed_team_value = {}
+
+    for compressed_item in compressed_items:
+        # The first character in the team data will always be the key.
+        compressed_key = compressed_item[0]
+        decompressed_key = TEMP_SUPER_COMPRESSION_KEYS[compressed_key]
+        # Every character after the key is the value.
+        compressed_value = compressed_item[1:]
+        if decompressed_key in ['opponents', 'timeline']:
+            # Removes brackets
+            compressed_value = compressed_value[1:-1]
+            # Checks if 'opponents' or 'timeline' is empty
+            if compressed_value == '':
+                compressed_teams = []
+            else:
+                compressed_teams = compressed_value.rstrip(',').split(',')
+            decompressed_value = []
+            for compressed_team in compressed_teams:
+                compressed_items2 = compressed_team.rstrip('?').split('?')
+                decompressed_team = {}
+                for compressed_item2 in compressed_items2:
+                    # The first character in will always be the key.
+                    compressed_key2 = compressed_item2[0]
+                    decompressed_key2 = TEMP_SUPER_COMPRESSION_KEYS[compressed_key2]
+                    # Every character after the key is the value.
+                    compressed_value2 = compressed_item2[1:]
+                    if compressed_value2 in TEMP_SUPER_COMPRESSION_VALUES:
+                        decompressed_value2 = TEMP_SUPER_COMPRESSION_VALUES[compressed_value2]
+                    # Checks if the value only contains characters 0-9
+                    elif compressed_value2.isdigit():
+                        decompressed_value2 = int(compressed_value2)
+                    else:
+                        # 'compressed_value' is a float
+                        decompressed_value2 = float(compressed_value2)
+                    # HACK: Super scout sends incorrectly
+                    if decompressed_key2 == 'rankResistance':
+                        fix_dict = {
+                            0: 0,
+                            1: 3,
+                            2: 2,
+                            3: 1,
+                        }
+                        decompressed_value2 = fix_dict[decompressed_value2]
+                    decompressed_team[decompressed_key2] = decompressed_value2
+                decompressed_value.append(decompressed_team)
+        # Checks if the value is a letter that can be decompressed.
+        elif compressed_value in TEMP_SUPER_COMPRESSION_VALUES:
+            decompressed_value = TEMP_SUPER_COMPRESSION_VALUES[compressed_value]
+        # Checks if the value only contains characters 0-9
+        elif compressed_value.isdigit():
+            decompressed_value = int(compressed_value)
+        else:
+            # The value is a super note and should be left as a string.
+            decompressed_value = compressed_value
+        decompressed_team_value[decompressed_key] = decompressed_value
+    return decompressed_team_value
 
 def decompress_temp_super(compressed_temp_super):
     """Decompresses a single tempSuper data.
@@ -418,14 +470,13 @@ def decompress_temp_super(compressed_temp_super):
 
     compressed_temp_super is a string."""
     temp_super_key = compressed_temp_super.split('|')[0]
-    compressed_header = compressed_temp_super.split('|')[1].split('_')[0]
-    compressed_team = compressed_temp_super.split('_')[1]
+    compressed_value = compressed_temp_super.split('|')[1]
+    compressed_teams = compressed_value.split('!')[1].rstrip('_').split('_')
 
-    decompressed_temp_super = {}
+    decompressed_temp_super = []
 
-    decompressed_temp_super.update(decompress_temp_super_headers(
-        compressed_header))
-    decompressed_temp_super.update(decompress_temp_super_teams(
-        compressed_team))
+    for compressed_team in compressed_teams:
+        decompressed_temp_super.append(decompress_temp_super_team(
+            compressed_team))
 
     return {temp_super_key: decompressed_temp_super}

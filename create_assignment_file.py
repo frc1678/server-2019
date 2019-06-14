@@ -5,6 +5,7 @@ import json
 import string
 import time
 # Internal imports
+import firebase_communicator
 import tba_communicator
 import utils
 
@@ -39,12 +40,25 @@ def create_assignment_file(matches, scout_names):
         'matches': teams_by_match,
         'letters': scout_name_compression_letters,
         'timestamp': time.time(),
+        'databaseURL': firebase_communicator.URL,
     }
 
 
 SCOUT_NAMES = [
-    'Sam C', 'Sam S', 'Carl', 'Ethan', 'John', 'Jack', 'Bob', 'Joe',
-    'Example', 'Running', 'Out', 'Of', 'Names', 'To', 'Use',
+    # Scouting Developer
+    'Carl', 'Ethan', 'Emily', 'Teo',
+    # Strategist/Super Scout
+    'Justin', 'Hanson',
+    # Citrus Service/Scout
+    'David', 'Louise', 'Lasthenia', 'Noemi',
+    # Super Scout
+    'Erik', 'Connor', 'Freddy',
+    # Scout
+    'Nick', 'Mohamed', 'Gabi', 'Zachary', 'Kate', 'Aidan', 'Walsh',
+    'Nathan', 'Jack S', 'Jude', 'Henry', 'Sofia', 'Ellie', 'Eithne',
+    'Asha',
+    # Other
+    'Sam', 'Gemma', 'Jack D',
     # '.zfill(2)' adds leading zeroes to 2 digits
     # (e.g. '7' becomes '07')
     # Used by the Scout app to alphabetize scout names

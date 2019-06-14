@@ -1,5 +1,6 @@
 """Holds variables + functions that are shared across server files."""
 # External imports
+import json
 import os
 # No internal imports
 
@@ -32,3 +33,36 @@ def create_file_path(path_after_main, create_directories=True):
         # 'os.makedirs' will create multiple directories, if needed)
         os.makedirs(os.path.join(MAIN_DIRECTORY, directories), exist_ok=True)
     return os.path.join(MAIN_DIRECTORY, path_after_main)
+
+def avg(lis, exception=0.0):
+    """Calculates the average of a list.
+
+    lis is the list that is averaged.
+    exception is returned if there is a divide by zero error. The
+    default is 0.0 because the main usage in in percentage calculations.
+    """
+    lis = [item for item in lis if item is not None]
+    if len(lis) == 0:
+        return exception
+    else:
+        return sum(lis) / len(lis)
+
+def update_json_file(file_path, updated_data):
+    """Updates data in a JSON file.  (Preserves old data)
+
+    file_path is the absolute path of the file to be updated (string)
+    updated_data is the data to add to the JSON file (dict)"""
+    try:
+        with open(file_path, 'r') as file:
+            file_data = json.load(file)
+    except FileNotFoundError:
+        file_data = {}
+    # Used for nested dictionaries (i.e. 'calculatedData')
+    for key, value in updated_data.items():
+        if isinstance(value, dict):
+            file_data[key] = file_data.get(key, {})
+            file_data[key].update(value)
+        else:
+            file_data[key] = value
+    with open(file_path, 'w') as file:
+        json.dump(file_data, file)
