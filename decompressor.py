@@ -98,7 +98,7 @@ def decompress_temp_timd_value(compressed_value):
         # 'compressed_value' is an integer
         return int(compressed_value)
     # Otherwise, 'compressed_value' should be left as a string, since it
-    # is a timestamp (which can contain '*' characters), an app version,
+    # is a time stamp (which can contain '*' characters), an app version,
     # or a climb dictionary (which is handled later).
     else:
         return compressed_value
@@ -295,7 +295,9 @@ def decompress_temp_super_headers(compressed_temp_super_headers):
 
     Headers contain the data that is not specific to a team."""
     compressed_temp_super_headers = compressed_temp_super_headers.split(',')
+
     decompressed_super = {}
+
     for header in compressed_temp_super_headers:
         compressed_key = header[0]
         compressed_value = header[1:]
@@ -306,6 +308,7 @@ def decompress_temp_super_headers(compressed_temp_super_headers):
             compressed_value = header[2:-1]
 
             decompressed_value = {}
+
             for compressed_preload in compressed_value.split(';'):
                 compressed_preload_key = compressed_preload[0]
                 compressed_preload_value = compressed_preload[1:]
@@ -348,6 +351,7 @@ def decompress_temp_super_teams(compressed_temp_super_teams):
     # Splits the list of teams at each comma, ignoring commas inside of
     # super notes.  'compressed_teams' is the split list.
     compressed_teams = []
+
     inside_curly_brackets = False
     last_comma_index = None
     for index, character in enumerate(compressed_temp_super_teams):
@@ -374,6 +378,7 @@ def decompress_temp_super_teams(compressed_temp_super_teams):
             last_comma_index = index
 
     decompressed_teams = {}
+
     for team in compressed_teams:
         compressed_team_key = team[0]
         decompressed_team_key = TEMP_SUPER_COMPRESSION_KEYS[compressed_team_key]
@@ -382,7 +387,6 @@ def decompress_temp_super_teams(compressed_temp_super_teams):
         decompressed_team_value = {}
         # Separates each team data item (key:value pair).
         # [2:-1] removes the 'compressed_key' and the curly brackets
-        #
         # 'team_items' are compressed key:value pairs for a single team
         team_items = team[2:-1].split(';')
         for team_item in team_items:
