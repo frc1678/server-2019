@@ -38,9 +38,9 @@ def percent_success(actions):
     return round(100 * utils.avg(successes))
 
 def filter_cycles(cycle_list, **filters):
-    """Puts cycles through filters to meet specific requirements
+    """Puts cycles through filters to meet specific requirements.
 
-    cycle_list is a list of tuples where the first item is an intake and
+    cycle_list is a list of tuples where the first item is the intake and
     the second action is the placement or drop.
     filters are the specifications that certain data points inside the
     cycles must fit to be included in the returned cycles.
@@ -48,8 +48,8 @@ def filter_cycles(cycle_list, **filters):
     the function."""
     filtered_cycles = []
     # For each cycle, if any of the specifications are not met, the
-    # loop breaks and it moves on to the next cycle, but if all the
-    # specifications are met, it adds it to the filtered cycles.
+    # loop breaks and moves on to the next cycle, but if all the
+    # specifications are met, it adds the cycle to the filtered cycles.
     for cycle in cycle_list:
         for data_field, requirement in filters.items():
             # If the data_field requirement is level 1, it instead
@@ -71,7 +71,7 @@ def filter_cycles(cycle_list, **filters):
 def calculate_avg_cycle_time(cycles):
     """Calculates the average time for an action based on start and end times.
 
-    Finds the time difference between each action pair passed and
+    Finds the time difference between each action pair passed then
     returns the average of the differences.
     cycles is a list of tuples where the first action in the tuple is
     the intake, and the second item is the placement or drop."""
@@ -84,7 +84,7 @@ def calculate_avg_cycle_time(cycles):
     return utils.avg(cycle_times, None)
 
 def calculate_total_action_duration(cycles):
-    """Calculates the total duration for an action based on start and end times.
+    """Calculates the total duration of an action based on start and end times.
 
     Finds the time difference between each action pair passed and
     returns the sum of the differences.  Used for both defense and incap
@@ -106,13 +106,14 @@ def filter_timeline_actions(timd, **filters):
 
     timd is the TIMD that needs calculated data.
     filters are the specifications that certain data points inside the
-    timeline must fit to be included in the returned timeline.
+    timeline must fit in order to be included in the returned timeline.
     example for filter - 'level=1' as an argument, '{'level': 1}' inside
     the function."""
     filtered_timeline = []
     # For each action, if any of the specifications are not met, the
-    # loop breaks and it moves on to the next action, but if all the
-    # specifications are met, it adds it to the filtered timeline.
+    # loop breaks and moves on to the next action, but if all the
+    # specifications are met, it adds the action to the filtered
+    # timeline.
     for action in timd.get('timeline', []):
         for data_field, requirement in filters.items():
             # If the data_field requirement is level 1, it instead
@@ -305,7 +306,7 @@ def calculate_timd_data(timd):
                     action.get('didSucceed') is False):
                 cycle_list.append(action)
 
-    # There must be at least 2 actions to have a cycle
+    # There must be at least 2 actions to have a cycle.
     if len(cycle_list) > 1:
         # If the first action in the list is a placement, it is a
         # preload, which doesn't count when calculating cycle times.
@@ -387,7 +388,6 @@ def calculate_timd_data(timd):
             defense_items.append(action)
     if len(defense_items) > 0:
         paired_defense_list = make_paired_cycle_list(defense_items)
-
         # 'timeDefending' is the total amount of time the robot spent
         # defending during the match.
         calculated_data['timeDefending'] = calculate_total_action_duration(
