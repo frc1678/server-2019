@@ -249,7 +249,6 @@ if TEAMS != {}:
         for team_ in alliance_members:
             driver_ability = \
                 TEAMS[team_]['calculatedData']['driverAbility']
-
             # Scales driver ability so that the lowest driver ability is
             # counted as 0, and the highest is counted as 1. All other
             # values in between are scaled linearly.
