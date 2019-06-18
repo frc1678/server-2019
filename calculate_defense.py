@@ -18,6 +18,7 @@ for timd in os.listdir(utils.create_file_path('data/cache/timds')):
         # .split() removes '.json' file ending
         timd_name = timd.split('.')[0]
         match_number = timd_name.split('Q')[1]
+        # Creates a blank dictionary for a match if it doesn't exist yet.
         if TIMDS_BY_MATCH.get(match_number) is None:
             TIMDS_BY_MATCH[match_number] = {}
         TIMDS_BY_MATCH[match_number][timd_name] = timd_data
@@ -61,6 +62,7 @@ for match_number, timds in TIMDS_BY_MATCH.items():
             defending_timds_by_alliance[alliance][timd_name] = timd_data
 
     for alliance, timds_ in defending_timds_by_alliance.items():
+        # TIMD to its timeline
         timelines = {timd_name: timd_data['timeline'] for timd_name,
                      timd_data in timds_.items()}
 
@@ -109,6 +111,8 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                 intake_time = None
                 if timd_data.get('timeline') is None:
                     continue
+                # Removes the first item in the timeline if it is a
+                # placement or drop because it is not a full cycle.
                 if timd_data['timeline'][0]['type'] in ['placement', 'drop']:
                     timd_data['timeline'] = timd_data['timeline'][1:]
                 for action in timd_data['timeline']:
@@ -131,7 +135,11 @@ for match_number, timds in TIMDS_BY_MATCH.items():
 
             alliance_points_prevented = {}
             alliance_failed_cycles_caused = {}
+            # Uses all the defended cycles to calculate how many points
+            # of each type were defended.
             for team, defended_cycles in defended_cycles_by_team.items():
+                # Counters of how many drops, fails, and cycles there
+                # are for each game element.
                 drops = {'orange': 0, 'lemon': 0}
                 fails = {'orange': 0, 'lemon': 0}
                 cycles = {'orange': 0, 'lemon': 0}
@@ -144,16 +152,22 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                             fails[piece] += 1
                         else:
                             time = action['time']
-                            cycle_times[piece].append(action['intakeTime'] - time)
+                            cycle_times[piece].append(
+                                action['intakeTime'] - time)
                     elif action['type'] == 'drop':
                         drops[piece] += 1
+                # Calculates the drop and fail rate of the team under defense
                 defended_drop_rate = {
-                    'orange': None if cycles['orange'] == 0 else drops['orange']/cycles['orange'],
-                    'lemon': None if cycles['lemon'] == 0 else drops['lemon']/cycles['lemon']
+                    'orange': None if cycles['orange'] == 0 else \
+                        drops['orange']/cycles['orange'],
+                    'lemon': None if cycles['lemon'] == 0 else \
+                        drops['lemon']/cycles['lemon']
                 }
                 defended_fail_rate = {
-                    'orange': None if cycles['orange'] == 0 else fails['orange']/cycles['orange'],
-                    'lemon': None if cycles['lemon'] == 0 else fails['lemon']/cycles['lemon']
+                    'orange': None if cycles['orange'] == 0 else \
+                        fails['orange']/cycles['orange'],
+                    'lemon': None if cycles['lemon'] == 0 else \
+                        fails['lemon']/cycles['lemon']
                 }
                 # Pulls calculated data
                 with open(utils.create_file_path(
@@ -165,6 +179,9 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                 for piece in ['orange', 'lemon']:
                     if cycles[piece] == 0:
                         continue
+                    # Uses a team's calculated data to find their
+                    # average drop and fail rate to compare with the
+                    # defended rate.
                     avg_drops = calculated_data[f'avg{piece.capitalize()}Drops']
                     avg_fails = calculated_data[f'avg{piece.capitalize()}Fails']
                     avg_cycles = calculated_data[f'avg{piece.capitalize()}Cycles']
@@ -208,6 +225,8 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                 'superFailedCyclesCaused': orange_failed_cycles_caused + \
                     lemon_failed_cycles_caused,
             }
+            # Updates the timd calculated data from cache and upload
+            # queue with defense data points
             for folder in ['cache', 'upload_queue']:
                 try:
                     with open(f'data/{folder}/timds/{timd}.json',
@@ -221,7 +240,10 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                 with open(f'data/{folder}/timds/{timd}.json',
                           'w') as file:
                     json.dump(file_data, file)
+            # Keeps track of all the teams who defended, as to only run
+            # 'calculate_team.py' on them
             DEFENDER_TEAMS.add(team_number)
 
+# Calls 'calculate_team' after running to calculate team defense data points.
 for team in DEFENDER_TEAMS:
     subprocess.call(f'python3 calculate_team.py {team}', shell=True)
