@@ -1,5 +1,5 @@
 #!/usr/bin/python3.6
-"""Forwards tempSuper data to Matches and TIMD.
+"""Forwards tempSuper data to Matches and TIMDs.
 
 Sends to 'matches' and 'timds' in the local cache, and to 'Matches' and
 'TIMDs' on Firebase.
@@ -14,7 +14,7 @@ import firebase_communicator
 import utils
 
 def avg_without_zeroes(lis):
-    """Removes 0 values from a list and returns the average.
+    """Removes zeroes from a list, then returns the average of the list.
 
     lis is the list that is averaged"""
     lis = [item for item in lis if item != 0]
