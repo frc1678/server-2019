@@ -39,10 +39,14 @@ def collect_file_data(file_path_, firebase_collection):
     # "/<firebase-collection>/<document-name>/<data-field>": <data-value>
     # (e.g. /TIMDs/1678Q3/startingLocation": "left")
     for data_field, data_value in file_data.items():
+        # NOTE: This code re-defines variables outside of its scope and
+        # its behavior may differ from its appearance.
         # TODO: Clean up variable names
         if isinstance(data_value, dict):
             for key, value_ in data_value.items():
                 if isinstance(key, dict):
+                    # NOTE: This if-block probably doesn't trigger,
+                    # since a key cannot be a dict.
                     for key2, value2 in value_.items():
                         path = os.path.join(data_field, key2)
                         value = value2
@@ -58,7 +62,6 @@ def collect_file_data(file_path_, firebase_collection):
             value = data_value
             multi_location_data[os.path.join(firebase_collection, \
                 document_name, path)] = value
-
     return multi_location_data
 
 FINAL_DATA = {}
@@ -77,7 +80,6 @@ for firebase_key, cache_key in FIREBASE_TO_CACHE_KEY.items():
             f'data/upload_queue/{cache_key}')):
         file_path = utils.create_file_path(
             f'data/upload_queue/{cache_key}/{file}')
-
         # Collects and adds the data from a single file to 'FINAL_DATA'
         FINAL_DATA.update(collect_file_data(file_path, firebase_key))
 
@@ -85,13 +87,14 @@ for firebase_key, cache_key in FIREBASE_TO_CACHE_KEY.items():
 
 # Before sending the data, iterates through all of it and removes any
 # NaNs (Not a Number) in the data.  (Relies on NaN != NaN)
+# HACK: NaNs should be handled during calculation.
 for path, value in FINAL_DATA.items():
     if path.split('/')[-1] == 'timeline':
         for action in value:
             for key, value_ in action.items():
                 if isinstance(value_, float) and value_ != value_:
                     action[key] = None
-    if isinstance(value_, float) and value != value:
+    if isinstance(value, float) and value != value:
         FINAL_DATA[path] = None
 
 # Sends the data to firebase.
