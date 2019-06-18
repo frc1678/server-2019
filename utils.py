@@ -48,7 +48,7 @@ def avg(lis, exception=0.0):
         return sum(lis) / len(lis)
 
 def update_json_file(file_path, updated_data):
-    """Updates data in a JSON file.  (Preserves old data)
+    """Updates data in a JSON file. (Preserves old data)
 
     file_path is the absolute path of the file to be updated (string)
     updated_data is the data to add to the JSON file (dict)"""
