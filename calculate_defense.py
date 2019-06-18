@@ -181,7 +181,7 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                         continue
                     # Uses a team's calculated data to find their
                     # average drop and fail rate to compare with the
-                    # defended rate.
+                    # defended drop/fail rate.
                     avg_drops = calculated_data[f'avg{piece.capitalize()}Drops']
                     avg_fails = calculated_data[f'avg{piece.capitalize()}Fails']
                     avg_cycles = calculated_data[f'avg{piece.capitalize()}Cycles']
