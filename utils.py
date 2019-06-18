@@ -68,7 +68,7 @@ def update_json_file(file_path, updated_data):
         json.dump(file_data, file)
 
 def no_none_get(dictionary, key, alternative):
-    """Gets the value for a key in a dictionary if it exists.
+    """Gets the value for a key in a dictionary if it exists and is not None.
 
     dictionary is where the value is taken from.
     key is the key that is attempted to be retrieved from the dictionary.
