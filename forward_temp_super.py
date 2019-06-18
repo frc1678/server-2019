@@ -45,7 +45,6 @@ for match_number, files in FILES_BY_MATCH.items():
         with open(utils.create_file_path(
                 f'data/cache/temp_super/{temp_super_file}'), 'r') as file:
             compressed_data[alliance] = file.read()
-
     decompressed_data = {}
     for alliance, alliance_data in compressed_data.items():
         # Removes trailing newline (if it exists) from file data.
@@ -64,9 +63,7 @@ for match_number, files in FILES_BY_MATCH.items():
             temp_super_teams[team_number] = {}
             for key in ['rankAgility', 'rankDefense', 'rankSpeed']:
                 temp_super_teams[team_number][key] = team[key]
-
             temp_super_teams[team_number]['superTimeline'] = team['timeline']
-
             opponent_data = decompressed_data.get(opponent_alliance, [])
             team_data_from_opponents = {
                 'rankCounterDefense': [],
@@ -76,7 +73,6 @@ for match_number, files in FILES_BY_MATCH.items():
                 team_data = opponent_team['opponents']
                 team_data = [team2 for team2 in team_data if \
                     team2['teamNumber'] == team_number][0]
-
                 for key, value_list in team_data_from_opponents.items():
                     value_list.append(team_data[key])
             for key, value_list_ in team_data_from_opponents.items():
@@ -84,7 +80,6 @@ for match_number, files in FILES_BY_MATCH.items():
 
     for team_number, data in temp_super_teams.items():
         timd_name = f'{team_number}Q{match_number}'
-
         for folder in ['cache', 'upload_queue']:
             try:
                 with open(f'data/{folder}/timds/{timd_name}.json', 'r') as file:
