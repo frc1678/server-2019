@@ -79,8 +79,8 @@ for match_number, files in FILES_BY_MATCH.items():
 
                 for key, value_list in team_data_from_opponents.items():
                     value_list.append(team_data[key])
-            for key, values in team_data_from_opponents.items():
-                temp_super_teams[team_number][key] = avg_without_zeroes(values)
+            for key, value_list_ in team_data_from_opponents.items():
+                temp_super_teams[team_number][key] = avg_without_zeroes(value_list_)
 
     for team_number, data in temp_super_teams.items():
         timd_name = f'{team_number}Q{match_number}'
