@@ -1,5 +1,7 @@
 #!/usr/bin/python3.6
-"""Calculates pushing ability ELOs."""
+"""Calculates pushing ability Elos.
+FOr more info, about how Elo works, see:
+https://en.wikipedia.org/wiki/Elo_rating_system"""
 # External imports
 import json
 import os
