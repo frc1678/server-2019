@@ -13,12 +13,12 @@ def create_assignment_file(matches, scout_names):
     """Creates scout assignment file."""
     teams_by_match = {}
     for match_data in matches:
-        # 'qm' stands for qualification match
+        # 'qm' stands for qualification match.
         if match_data['comp_level'] == 'qm':
             red_teams = match_data['alliances']['red']['team_keys']
             blue_teams = match_data['alliances']['blue']['team_keys']
             match_number = match_data['match_number']
-            # Remove 'frc' from team number and convert to integer
+            # Remove 'frc' from team number and convert to integer.
             # (e.g. 'frc1678' -> 1678)
             red_teams = [int(team[3:]) for team in red_teams]
             blue_teams = [int(team[3:]) for team in blue_teams]
@@ -45,13 +45,13 @@ def create_assignment_file(matches, scout_names):
 
 
 SCOUT_NAMES = [
-    # for each competition, replace these fake names with the first names
+    # For each competition, replace these fake names with the first names
     # of anyone who might scout. If two scouts have the same first name, add
-    # their last initial
+    # their last initial.
     'Harry', 'Hermione', 'Ron', 'Albus D', 'Albus P',
-    # '.zfill(2)' adds leading zeroes to 2 digits
+    # '.zfill(2)' adds leading zeroes to 2 digits.
     # (e.g. '7' becomes '07')
-    # Used by the Scout app to alphabetize scout names
+    # Used by the Scout app to alphabetize scout names.
 ] + [f'Backup {str(n).zfill(2)}' for n in range(1, 10+1)]
 
 MATCHES = tba_communicator.request_matches()
@@ -59,8 +59,8 @@ ASSIGNMENT_FILE = create_assignment_file(MATCHES, SCOUT_NAMES)
 
 with open(utils.create_file_path('data/assignments/assignments.json', True), 'w') as file:
     json.dump(ASSIGNMENT_FILE, file)
-# the server loads assignments.txt onto tablets using send_assignment_file.py
-# but uses assignments.json (instead of assignments.txt) for everything else
+# The server loads assignments.txt onto tablets using send_assignment_file.py
+# but uses assignments.json (instead of assignments.txt) for everything else.
 with open(utils.create_file_path('data/assignments/assignments.txt', True), 'w') as file:
     # 'json.dumps()' returns a JSON string
     file.write(json.dumps(ASSIGNMENT_FILE))
