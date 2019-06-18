@@ -23,15 +23,19 @@ def avg_without_zeroes(lis):
     else:
         return sum(lis)/len(lis)
 
-# Uses default firebase URL
+# Uses default Firebase URL
 # DB stands for database
 DB = firebase_communicator.configure_firebase()
 
 # List of files (tempSuper datas) in the 'temp_super' cache directory.
 TEMP_SUPER_FILES = os.listdir(utils.create_file_path('data/cache/temp_super'))
 
+# Match number (string) to list of tempSuper files for that match
 FILES_BY_MATCH = {}
 for file_name in TEMP_SUPER_FILES:
+    # tempSuper naming format:
+    # S!Q{match_number}-{alliance_color}
+    # (e.g. S!Q3-B is the blue alliance in match 3)
     match_number = file_name.split('-')[0].split('Q')[1]
     if FILES_BY_MATCH.get(match_number) is None:
         FILES_BY_MATCH[match_number] = []
@@ -50,7 +54,8 @@ for match_number, files in FILES_BY_MATCH.items():
         # Removes trailing newline (if it exists) from file data.
         # Many file editors will automatically add a newline at the end of files.
         alliance_data = alliance_data.rstrip('\n')
-        decompressed_data[alliance] = list(decompressor.decompress_temp_super(alliance_data).values())[0]
+        decompressed_data[alliance] = list(
+            decompressor.decompress_temp_super(alliance_data).values())[0]
 
     temp_super_teams = {}
     for alliance, alliance_data in decompressed_data.items():
@@ -64,6 +69,8 @@ for match_number, files in FILES_BY_MATCH.items():
             for key in ['rankAgility', 'rankDefense', 'rankSpeed']:
                 temp_super_teams[team_number][key] = team[key]
             temp_super_teams[team_number]['superTimeline'] = team['timeline']
+            # Extracts defensive information for the 'team' from the
+            # tempSuper data for the opposing alliance.
             opponent_data = decompressed_data.get(opponent_alliance, [])
             team_data_from_opponents = {
                 'rankCounterDefense': [],
