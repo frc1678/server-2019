@@ -23,11 +23,14 @@ else:
 with open(utils.create_file_path('data/assignments/assignments.json'), 'r') as file:
     LETTERS = json.load(file)['letters']
 
+# Retrieves scout availability from firebase and creates a list of
+# available scouts
 AVAILABILITY = DB.child('scoutManagement/availability').get().val()
-
 AVAILABLE_SCOUTS = [scout for scout, availability in AVAILABILITY.items()
                     if availability == 1]
 
+# Creates the base of the compressed assignment string using the cycle
+# number and firebase url.
 ASSIGNMENT_STRING = f'{CYCLE_NUMBER}_{firebase_communicator.URL}|'
 
 with open(utils.create_file_path('data/sprs/sprs.json'), 'r') as file:
