@@ -52,16 +52,21 @@ def calculate_predicted_climb_points(team_numbers):
         # Only one team can climb to level 3, so if a team is the most
         # successful level 3 climber, no other teams can reach level 3.
         if team_calculated_data.get('climbSuccessL3', 0) == max([
-                calculated_data_by_team[team_number].get('climbSuccessL3', 0) for
-                team_number in team_numbers]):
-            total_points += max([3 * float(team_calculated_data.get('climbSuccessL1', 0)) / 100,
-                                 6 * float(team_calculated_data.get('climbSuccessL2', 0)) / 100,
-                                 12 * float(team_calculated_data.get('climbSuccessL3', 0)) / 100])
+                calculated_data_by_team[team_number].get( \
+                'climbSuccessL3', 0) for team_number in team_numbers]):
+            total_points += max([3 * float(team_calculated_data.get( \
+                                 'climbSuccessL1', 0)) / 100,
+                                 6 * float(team_calculated_data.get( \
+                                 'climbSuccessL2', 0)) / 100,
+                                 12 * float(team_calculated_data.get( \
+                                 'climbSuccessL3', 0)) / 100])
         # If the team is not the most successful at level 3, it only
         # considers the team's level 1 and 2 successes.
         else:
-            total_points += max([3 * float(team_calculated_data.get('climbSuccessL1', 0)) / 100,
-                                 6 * float(team_calculated_data.get('climbSuccessL2', 0)) / 100])
+            total_points += max([3 * float(team_calculated_data.get( \
+                                 'climbSuccessL1', 0)) / 100,
+                                 6 * float(team_calculated_data.get( \
+                                 'climbSuccessL2', 0)) / 100])
     return total_points
 
 def calculate_chance_climb_rp(team_numbers):
@@ -140,6 +145,7 @@ def calculate_chance_rocket_rp(team_numbers):
     team_numbers are the team_numbers on the alliance."""
     calculated_data_by_team = [TEAMS[team]['calculatedData'] for team in
                              team_numbers]
+
     # Calculates the chances that the alliance places 6 lemons, then
     # multiplies it by the chance the alliance places 6 oranges.
     # [-2:] splices the list to only include the two highest lemon scorers.
@@ -190,7 +196,8 @@ for team in os.listdir(utils.create_file_path('data/cache/teams')):
 # the tba match schedule when the server first runs.
 MATCH_SCHEDULE = {}
 for match in os.listdir(utils.create_file_path('data/cache/match_schedule')):
-    with open(utils.create_file_path(f'data/cache/match_schedule/{match}')) as file:
+    with open(utils.create_file_path(
+            f'data/cache/match_schedule/{match}')) as file:
         match_data = json.load(file)
     # '.split()' removes '.txt' file ending
     MATCH_SCHEDULE[match.split('.')[0]] = match_data
@@ -220,10 +227,13 @@ for match in MATCH_SCHEDULE.keys():
     for alliance_color in ['red', 'blue']:
         alliance = MATCH_SCHEDULE[match][f'{alliance_color}Teams']
 
+        # Removes teams in the alliance that are not part of the 'TEAMS'
+        # dictionary.
         alliance = [team for team in alliance if \
             TEAMS.get(team) is not None]
         if len(alliance) == 0:
             continue
+
         calculated_data[f'{alliance_color}PredictedClimbPoints'] = \
             calculate_predicted_climb_points(alliance)
         calculated_data[f'{alliance_color}PredictedScore'] = \
@@ -261,7 +271,8 @@ for match in MATCH_SCHEDULE.keys():
 # All the teams in order of their average predictedRPs from highest to lowest.
 PREDICTED_RP_LIST = {team: sum(predicted_rps) / len(predicted_rps) for \
     team, predicted_rps in PREDICTED_RPS_BY_TEAM.items()}
-SEED_ORDER = sorted(PREDICTED_RP_LIST.keys(), key=PREDICTED_RP_LIST.get, reverse=True)
+SEED_ORDER = sorted(PREDICTED_RP_LIST.keys(),
+                    key=PREDICTED_RP_LIST.get, reverse=True)
 
 # 'enumerate(, 1)' starts seeding at 1
 for seed, team in enumerate(SEED_ORDER, 1):
@@ -272,14 +283,18 @@ for seed, team in enumerate(SEED_ORDER, 1):
 
 # Sends data to 'cache' and 'upload_queue'
 for team, data in TEAMS.items():
-    with open(utils.create_file_path(f'data/cache/teams/{team}.json'), 'w') as file:
+    with open(utils.create_file_path(
+            f'data/cache/teams/{team}.json'), 'w') as file:
         json.dump(data, file)
-    with open(utils.create_file_path(f'data/upload_queue/teams/{team}.json'), 'w') as file:
+    with open(utils.create_file_path(
+            f'data/upload_queue/teams/{team}.json'), 'w') as file:
         json.dump(data, file)
 
 # Sends data to 'cache' and 'upload_queue'
 for match, data in MATCHES.items():
-    with open(utils.create_file_path(f'data/cache/matches/{match}.json'), 'w') as file:
+    with open(utils.create_file_path(
+            f'data/cache/matches/{match}.json'), 'w') as file:
         json.dump(data, file)
-    with open(utils.create_file_path(f'data/upload_queue/matches/{match}.json'), 'w') as file:
+    with open(utils.create_file_path(
+            f'data/upload_queue/matches/{match}.json'), 'w') as file:
         json.dump(data, file)
