@@ -38,9 +38,9 @@ DEVICE_NAMES = {
     'G000H404610600EK': 'Backup 4',
     'G0K0KH02623400GT': 'Backup 5',
     # Super scout tablets
-    'HA0XCRB2': 'Red Super',
-    'HA0XCUFX': 'Blue Super',
-    'HA0XC9A4': 'Purple Super',
+    'redacted': 'Red Super',
+    'redacted': 'Blue Super',
+    'redacted': 'Purple Super',
 }
 
 ASSIGNMENT_FILE_PATH = utils.create_file_path(
@@ -56,11 +56,11 @@ def validate_file(device_id):
     assignments.txt file.
 
     device_id is the serial number of the device"""
-    # Reads the local version of assignments.txt
+    # Reads the server version of assignments.txt
     with open(ASSIGNMENT_FILE_PATH, 'r') as file:
         computer_data = file.read()
     # Reads the assignments.txt file on the tablet
-    # The -s flag tells adb the serial number of which device to use
+    # The ADB -s flag specifies a device using its serial number
     tablet_data = subprocess.check_output(
         f'adb -s {device_id} shell cat /mnt/sdcard/bluetooth/assignments.txt',
         shell=True)
@@ -68,7 +68,6 @@ def validate_file(device_id):
     tablet_data = tablet_data.decode('utf-8')
     # Replaces '\r\n' with '\n' to match the UNIX format for newlines
     tablet_data = tablet_data.replace('\r\n', '\n')
-
     return tablet_data == computer_data
 
 while True:
