@@ -397,7 +397,7 @@ def consolidate_temp_timds(temp_timds):
             # tempTIMD to compare against each other. (Code note - This
             # code is using .get and not simply referencing the key out
             # of the dictionary because .get doesn't error out when the
-            # key doesn't exist. Instead, it returns NoneType).
+            # key doesn't exist. Instead, .get returns NoneType).
             data_field_comparison_list = {}
             for scout, temp_timd in temp_timds.items():
                 temp_data_field = temp_timd.get(data_field)
