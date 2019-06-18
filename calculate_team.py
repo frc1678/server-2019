@@ -373,8 +373,9 @@ def calculate_predicted_solo_points(calculated_data):
     calculated_data is the data for a team that is calculated in the
     'team_calculations()' function. Used to calculate the team's ability
     to complete each of the scoring objectives."""
-    sandstorm_score = max([float(calculated_data.get('habLineSuccessL1', 0)) * 3 / 100,
-                           float(calculated_data.get('habLineSuccessL2', 0)) * 6 / 100])
+    sandstorm_score = max([ \
+        float(calculated_data.get('habLineSuccessL1', 0)) * 3 / 100,
+        float(calculated_data.get('habLineSuccessL2', 0)) * 6 / 100])
     # Lemons in sandstorm are worth 5 because they also score the cargo
     # they are trapping.
     lemon_score = calculated_data['avgLemonsScoredSandstorm'] * 5
@@ -933,7 +934,8 @@ def team_calculations(timds, team_number):
     # 'lastMatch' is the team's last match when team data is calculated.
     # Used in the viewer to display when a team's data was last updated.
     if timds != []:
-        calculated_data['lastMatch'] = max([timd['matchNumber'] for timd in timds])
+        calculated_data['lastMatch'] = max([timd['matchNumber'] for timd
+                                            in timds])
 
     # Calculates predicted solo points based on the team's proficiency
     # in all the scoring objectives in the game.
