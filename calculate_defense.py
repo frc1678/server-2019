@@ -102,6 +102,8 @@ for match_number, timds in TIMDS_BY_MATCH.items():
             else:
                 opposite_alliance_timds = timds_by_alliance['red']
 
+            # Each opposing team that the team defended to the cycles they
+            # were defended in
             defended_cycles_by_team = {}
             for timd_name, timd_data in opposite_alliance_timds.items():
                 # Extracts 'team_number' from 'timd_name'.
@@ -135,8 +137,6 @@ for match_number, timds in TIMDS_BY_MATCH.items():
 
             alliance_points_prevented = {}
             alliance_failed_cycles_caused = {}
-            # Uses all the defended cycles to calculate how many points
-            # of each type were defended.
             for team, defended_cycles in defended_cycles_by_team.items():
                 # Counters of how many drops, fails, and cycles there
                 # are for each game element.
