@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python3.6
 """Collects and exports all Super Scout pushing battles to a CSV file."""
 # External imports
 import csv
