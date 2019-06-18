@@ -68,7 +68,7 @@ for match_number, files in FILES_BY_MATCH.items():
             temp_super_teams[team_number]['superTimeline'] = team['timeline']
 
             opponent_data = decompressed_data.get(opponent_alliance, [])
-            team_data_from_opponent = {
+            team_data_from_opponents = {
                 'rankCounterDefense': [],
                 'rankResistance': [],
             }
@@ -76,10 +76,10 @@ for match_number, files in FILES_BY_MATCH.items():
                 team_data = opponent_team['opponents']
                 team_data = [team2 for team2 in team_data if \
                     team2['teamNumber'] == team_number][0]
-                for key, value_lis in team_data_from_opponent.items():
+                for key, value_lis in team_data_from_opponents.items():
                     value_lis.append(team_data[key])
 
-            for key, values in team_data_from_opponent.items():
+            for key, values in team_data_from_opponents.items():
                 temp_super_teams[team_number][key] = avg_without_zeroes(values)
 
     for team_number, data in temp_super_teams.items():
