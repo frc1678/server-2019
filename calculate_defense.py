@@ -102,8 +102,8 @@ for match_number, timds in TIMDS_BY_MATCH.items():
             else:
                 opposite_alliance_timds = timds_by_alliance['red']
 
-            # Each opposing team that the team defended to the cycles they
-            # were defended in
+            # Each opposing team that the team defended to the cycles the
+            # opposing team was defended in
             defended_cycles_by_team = {}
             for timd_name, timd_data in opposite_alliance_timds.items():
                 # Extracts 'team_number' from 'timd_name'.
