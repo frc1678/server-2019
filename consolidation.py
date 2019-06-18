@@ -270,7 +270,7 @@ def climb_consolidation(input_timelines, sprking):
     input_timelines is the dictionary of the scouts to their specific
     timelines.
     sprking is the scout with the best spr out of the scouts, used when
-    max_occurrences is called. More info in the doc-string for
+    max_occurrences is called. More info in the docstring for
     max_occurrences.
     """
 
