@@ -15,7 +15,7 @@ def create_file_path(path_after_main, create_directories=True):
     example, the path_after_main for server.py would be 'server.py'
     because it is located directly in the main directory.
     create_directories will create the directories in the path if they
-    do not exist. Assumes that all files names include a period.
+    do not exist.  Assumes that all files names include a period.
     Defaults to false."""
     # Removes trailing slash in 'path_after_main' (if it exists)
     if path_after_main[-1] == '/':
@@ -48,7 +48,7 @@ def avg(lis, exception=0.0):
         return sum(lis) / len(lis)
 
 def update_json_file(file_path, updated_data):
-    """Updates data in a JSON file. (Preserves old data)
+    """Updates data in a JSON file.  (Preserves old data)
 
     file_path is the absolute path of the file to be updated (string)
     updated_data is the data to add to the JSON file (dict)"""
