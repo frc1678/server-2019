@@ -1,6 +1,8 @@
-"""Sends web requests to The Blue Alliance (TBA) API.
+"""Sends web requests to The Blue Alliance (TBA) APIv3
 
-Caches data to prevent duplicate data retrieval from the TBA API."""
+Caches data to prevent duplicate data retrieval from the TBA API.
+
+API documentation: https://www.thebluealliance.com/apidocs/v3"""
 # External imports
 import json
 import requests
@@ -21,9 +23,10 @@ def make_request(api_url, show_output=True, acceptable_cache_age=0):
 
     api_url is the url of the API request (the path after '/api/v3')
     show_output shows print statements about the status of the
-    request.  Defaults to True
+    request.  Defaults to True.
     acceptable_cache_age is the maximum age (in seconds) of data that
-    can be pulled from the cache."""
+    can be pulled from the cache.  Pulling from the cache is disabled by
+    default."""
     base_url = 'https://www.thebluealliance.com/api/v3/'
     full_url = base_url + api_url
     request_headers = {'X-TBA-Auth-Key': API_KEY}
@@ -81,26 +84,29 @@ def make_request(api_url, show_output=True, acceptable_cache_age=0):
         }
         with open(utils.create_file_path('data/cache/tba/tba.json'), 'w') as file_:
             json.dump(cached_requests, file_)
-
         return request.json()
     else:
         # Errors will always be shown, even if 'show_output' is False.
         print(f'Request failed with status code {request.status_code}')
         return {}
 
+# TODO: Research better methods to pass optional arguments through functions
 def request_match(match_key, show_output=True, acceptable_cache_age=0):
     """Requests data for a single match from the TBA API.
 
     match_key is a string.  (e.g. '2019caoc_qm29', '2019caoc_qf3m1')"""
-    return make_request(f'match/{match_key}', show_output, acceptable_cache_age)
+    return make_request(f'match/{match_key}', show_output,
+                        acceptable_cache_age)
 
 def request_rankings(show_output=True, acceptable_cache_age=0):
     """Requests the team rankings for an event from the TBA API."""
-    return make_request(f'event/{EVENT_CODE}/rankings', show_output, acceptable_cache_age)
+    return make_request(f'event/{EVENT_CODE}/rankings', show_output,
+                        acceptable_cache_age)
 
 def request_matches(show_output=True, acceptable_cache_age=0):
     """Requests the match schedule from the TBA API."""
-    return make_request(f'event/{EVENT_CODE}/matches/simple', show_output, acceptable_cache_age)
+    return make_request(f'event/{EVENT_CODE}/matches/simple',
+                        show_output, acceptable_cache_age)
 
 def request_match_keys(show_output=True, acceptable_cache_age=0):
     """Requests match keys (names) from the TBA API.
@@ -108,8 +114,10 @@ def request_match_keys(show_output=True, acceptable_cache_age=0):
     Match key format: {event_code}_{match_number}
     (e.g. '2019caoc_qm29' [qualification match 29],
     '2019caoc_qf3m1' [quarter finals 3-1])"""
-    return make_request(f'event/{EVENT_CODE}/matches/keys', show_output, acceptable_cache_age)
+    return make_request(f'event/{EVENT_CODE}/matches/keys', show_output,
+                        acceptable_cache_age)
 
 def request_teams(show_output=True, acceptable_cache_age=0):
     """Requests the team list from the TBA API."""
-    return make_request(f'event/{EVENT_CODE}/teams/simple', show_output, acceptable_cache_age)
+    return make_request(f'event/{EVENT_CODE}/teams/simple', show_output,
+                        acceptable_cache_age)
