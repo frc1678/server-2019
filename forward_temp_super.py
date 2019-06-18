@@ -32,10 +32,10 @@ TEMP_SUPER_FILES = os.listdir(utils.create_file_path('data/cache/temp_super'))
 
 FILES_BY_MATCH = {}
 for file_name in TEMP_SUPER_FILES:
-    match = file_name.split('-')[0].split('Q')[1]
-    if FILES_BY_MATCH.get(match) is None:
-        FILES_BY_MATCH[match] = []
-    FILES_BY_MATCH[match].append(file_name)
+    match_number = file_name.split('-')[0].split('Q')[1]
+    if FILES_BY_MATCH.get(match_number) is None:
+        FILES_BY_MATCH[match_number] = []
+    FILES_BY_MATCH[match_number].append(file_name)
 
 for match, files in FILES_BY_MATCH.items():
     compressed_data = {}
