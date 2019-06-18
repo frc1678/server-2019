@@ -222,8 +222,8 @@ for match in MATCH_SCHEDULE.keys():
     for alliance_color in ['red', 'blue']:
         alliance = MATCH_SCHEDULE[match][f'{alliance_color}Teams']
 
-        # Removes teams in the alliance that are not part of the 'TEAMS'
-        # dictionary.
+        # At the beginning of competition, some teams don't have data,
+        # meaning they shouldn't be included in prediction calculation.
         alliance = [team for team in alliance if \
             TEAMS.get(team) is not None]
         if len(alliance) == 0:
