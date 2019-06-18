@@ -8,18 +8,18 @@ import json
 import tba_communicator
 import utils
 
-def update_json_file(file_path, updated_data):
+def update_json_file(file_path, update_data):
     """Updates data in a JSON file.  (Preserves old data)
 
     file_path is the absolute path of the file to be updated (string)
-    updated_data is the data to add to the JSON file (dict)"""
+    update_data is the data to add to the JSON file (dict)"""
     try:
         with open(file_path, 'r') as file:
             file_data = json.load(file)
     except FileNotFoundError:
         file_data = {}
-    # Used for nested dictionaries (i.e. 'calculatedData')
-    for key, value in updated_data.items():
+    for key, value in update_data.items():
+        # Used for nested dictionaries (i.e. 'calculatedData')
         if isinstance(value, dict):
             file_data[key] = file_data.get(key, {})
             file_data[key].update(value)
@@ -37,9 +37,9 @@ def save_data(file_path, data):
     # Removes preceding slash
     if file_path[0] == '/':
         file_path = file_path[1:]
-    update_json_file(utils.create_file_path(f'data/cache/{file_path}'), data)
-    update_json_file(utils.create_file_path(
-        f'data/upload_queue/{file_path}'), data)
+    for directory in ['cache', 'upload_queue']:
+        absolute_path = utils.create_file_path(f'data/{directory}/{file_path}')
+        update_json_file(absolute_path, data)
 
 
 # Team data
@@ -60,11 +60,13 @@ MATCH_KEYS = tba_communicator.request_match_keys()
 # Match key to match data
 MATCH_DATA = {}
 print('Retrieving all match data from TBA...')
+# Retrieves each match in a separate request to enable more efficient caching.
 for match_key in MATCH_KEYS:
     # 'qm' stands for qualification match
     # Example 'match_key' formats: '2019caoc_qm29', '2019caoc_qf3m1'
     if match_key.split('_')[1][:2] == 'qm':
-        match = tba_communicator.request_match(match_key, show_output=False, acceptable_cache_age=30)
+        match = tba_communicator.request_match(match_key, \
+            show_output=False, acceptable_cache_age=30)
         MATCH_DATA[match_key] = match
 print('All TBA match data successfully retrieved.')
 
@@ -92,7 +94,7 @@ for match_key, match in MATCH_DATA.items():
         for driver_station, team_number in enumerate(teams, 1):
             starting_level = alliance_score_breakdown[
                 f'preMatchLevelRobot{driver_station}']
-            # Decompresses 'starting_level'
+            # Converts format of 'starting_level'
             decompression = {
                 'HabLevel1': 1,
                 'HabLevel2': 2,
