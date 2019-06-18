@@ -111,11 +111,11 @@ for scout_name, scout_breakdown in SPRS.items():
             total += breakdown['total']
     SPRS[scout_name]['overall'] = correct / total
 
-# Saves SPRS in a json file
+# Saves SPRS to JSON file
 with open(utils.create_file_path('data/sprs/sprs.json'), 'w') as file:
     json.dump(SPRS, file)
 
-# Exports SPRS to a CSV file
+# Exports SPRS to CSV file
 SPR_KEYS = ['scoutName', 'overall', 'matchesScouted']
 with open(utils.create_file_path(f'data/sprs/sprs.csv'),
           'w') as file:
