@@ -225,8 +225,6 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                 'superFailedCyclesCaused': orange_failed_cycles_caused + \
                     lemon_failed_cycles_caused,
             }
-            # Updates the timd calculated data from cache and upload
-            # queue with defense data points
             for folder in ['cache', 'upload_queue']:
                 try:
                     with open(f'data/{folder}/timds/{timd}.json',
