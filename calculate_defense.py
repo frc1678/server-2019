@@ -238,10 +238,8 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                 with open(f'data/{folder}/timds/{timd}.json',
                           'w') as file:
                     json.dump(file_data, file)
-            # Keeps track of all the teams who defended, as to only run
-            # 'calculate_team.py' on them
             DEFENDER_TEAMS.add(team_number)
 
-# Calls 'calculate_team' after running to calculate team defense data points.
+# Calls 'calculate_team' to calculate team defense data points.
 for team in DEFENDER_TEAMS:
     subprocess.call(f'python3 calculate_team.py {team}', shell=True)
