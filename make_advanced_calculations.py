@@ -189,7 +189,8 @@ for team in os.listdir(utils.create_file_path('data/cache/teams')):
         # '.split()' removes '.json' file ending
         TEAMS[team.split('.')[0]] = team_data
 
-# Each Z-Score data field to their respective average data field.
+# Each Z-Score data field to their respective average data field it is
+# calculated from.
 SUPER_ZSCORE_DATA_FIELDS = {
     'agilityZScore': 'avgAgility',
     'speedZScore': 'avgSpeed',
