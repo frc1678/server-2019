@@ -304,7 +304,7 @@ while True:
         subprocess.call('python3 calculate_predictions.py', shell=True)
 
         # Runs advanced calculations for every team in the competition.
-        subprocess.call('python3 make_advanced_calculations.py', shell=True)
+        subprocess.call('python3 calculate_abilities.py', shell=True)
 
     # Uploads data in data queue.
     subprocess.call('python3 upload_data.py', shell=True)
