@@ -15,7 +15,7 @@ def create_file_path(path_after_main, create_directories=True):
     example, the path_after_main for server.py would be 'server.py'
     because it is located directly in the main directory.
     create_directories will create the directories in the path if they
-    do not exist.  Assumes that all files names include a period.
+    do not exist. Assumes that all files names include a period.
     Defaults to false."""
     # Removes trailing slash in 'path_after_main' (if it exists)
     if path_after_main[-1] == '/':
@@ -29,8 +29,8 @@ def create_file_path(path_after_main, create_directories=True):
         # The last item is a directory
         else:
             directories = path_after_main
-        # 'os.makedirs' recursively creates directories (i.e.
-        # 'os.makedirs' will create multiple directories, if needed)
+        # 'os.makedirs' recursively creates directories (i.e. it will 
+        # create multiple directories, if needed)
         os.makedirs(os.path.join(MAIN_DIRECTORY, directories), exist_ok=True)
     return os.path.join(MAIN_DIRECTORY, path_after_main)
 
