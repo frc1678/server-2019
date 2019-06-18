@@ -37,7 +37,7 @@ for file_name in TEMP_SUPER_FILES:
         FILES_BY_MATCH[match_number] = []
     FILES_BY_MATCH[match_number].append(file_name)
 
-for match, files in FILES_BY_MATCH.items():
+for match_number, files in FILES_BY_MATCH.items():
     compressed_data = {}
     for temp_super_file in files:
         # Possible values of 'alliance': 'R' (red) or 'B' (blue)
@@ -83,7 +83,7 @@ for match, files in FILES_BY_MATCH.items():
                 temp_super_teams[team_number][key] = avg_without_zeroes(values)
 
     for team_number, data in temp_super_teams.items():
-        timd_name = f'{team_number}Q{match}'
+        timd_name = f'{team_number}Q{match_number}'
 
         for folder in ['cache', 'upload_queue']:
             try:
