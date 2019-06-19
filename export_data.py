@@ -12,7 +12,7 @@ import time
 import firebase_communicator
 import utils
 
-# Uses default firebase URL
+# Uses default Firebase URL
 # DB stands for database
 DB = firebase_communicator.configure_firebase()
 
