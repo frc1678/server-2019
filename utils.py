@@ -29,8 +29,8 @@ def create_file_path(path_after_main, create_directories=True):
         # The last item is a directory
         else:
             directories = path_after_main
-        # 'os.makedirs' recursively creates directories (i.e.
-        # 'os.makedirs' will create multiple directories, if needed)
+        # 'os.makedirs' recursively creates directories (i.e. it will 
+        # create multiple directories, if needed)
         os.makedirs(os.path.join(MAIN_DIRECTORY, directories), exist_ok=True)
     return os.path.join(MAIN_DIRECTORY, path_after_main)
 
@@ -66,3 +66,17 @@ def update_json_file(file_path, updated_data):
             file_data[key] = value
     with open(file_path, 'w') as file:
         json.dump(file_data, file)
+
+def no_none_get(dictionary, key, alternative):
+    """Gets the value for a key in a dictionary if it exists and is not None.
+
+    dictionary is where the value is taken from.
+    key is the key that is attempted to be retrieved from the dictionary.
+    alternative is what returns if the key doesn't exist."""
+    if key in list(dictionary.keys()):
+        if dictionary[key] is not None:
+            return dictionary[key]
+        else:
+            return alternative
+    else:
+        return alternative

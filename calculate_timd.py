@@ -38,32 +38,31 @@ def percent_success(actions):
     return round(100 * utils.avg(successes))
 
 def filter_cycles(cycle_list, **filters):
-    """Puts cycles through filters to meet specific requirements
+    """Puts cycles through filters to meet specific requirements.
 
     cycle_list is a list of tuples where the first item is an intake and
-    the second action is the placement or drop.
+    the second action is a placement or drop.
     filters are the specifications that certain data points inside the
     cycles must fit to be included in the returned cycles.
     example for filter - 'level=1' as an argument, '{'level': 1}' inside
     the function."""
     filtered_cycles = []
     # For each cycle, if any of the specifications are not met, the
-    # loop breaks and it moves on to the next cycle, but if all the
-    # specifications are met, it adds it to the filtered cycles.
+    # loop breaks and moves on to the next cycle, but if all the
+    # specifications are met, the cycle is added to the filtered cycles.
     for cycle in cycle_list:
         for data_field, requirement in filters.items():
-            # If the data_field requirement is level 1, it instead
-            # checks for it not being level 2 or 3, because level 1 can
-            # encompass all non-level 2 or 3 placement.
+            # Handling for the cargo ship in level 1 placements.
             if data_field == 'level' and requirement == 1:
+                # If no level is specified, it is a cargo ship placement.
                 if cycle[1].get('level', 1) != 1:
                     break
-            # Otherwise, it checks the requirement normally
+            # Otherwise, the requirement is checked normally
             else:
                 if cycle[1].get(data_field) != requirement:
                     break
-        # If all the requirements are met, it adds the cycle to the
-        # returned filtered cycles.
+        # If all the requirements are met, the cycle is added to the
+        # (returned) filtered cycles.
         else:
             filtered_cycles.append(cycle)
     return filtered_cycles
@@ -71,7 +70,7 @@ def filter_cycles(cycle_list, **filters):
 def calculate_avg_cycle_time(cycles):
     """Calculates the average time for an action based on start and end times.
 
-    Finds the time difference between each action pair passed and
+    Finds the time difference between each action pair passed, then
     returns the average of the differences.
     cycles is a list of tuples where the first action in the tuple is
     the intake, and the second item is the placement or drop."""
@@ -84,7 +83,7 @@ def calculate_avg_cycle_time(cycles):
     return utils.avg(cycle_times, None)
 
 def calculate_total_action_duration(cycles):
-    """Calculates the total duration for an action based on start and end times.
+    """Calculates the total duration of an action based on start and end times.
 
     Finds the time difference between each action pair passed and
     returns the sum of the differences.  Used for both defense and incap
@@ -106,25 +105,21 @@ def filter_timeline_actions(timd, **filters):
 
     timd is the TIMD that needs calculated data.
     filters are the specifications that certain data points inside the
-    timeline must fit to be included in the returned timeline.
+    timeline must fit in order to be included in the returned timeline.
     example for filter - 'level=1' as an argument, '{'level': 1}' inside
     the function."""
     filtered_timeline = []
     # For each action, if any of the specifications are not met, the
-    # loop breaks and it moves on to the next action, but if all the
-    # specifications are met, it adds it to the filtered timeline.
+    # loop breaks and moves on to the next action, but if all the
+    # specifications are met, the action is added to the filtered
+    # timeline.
     for action in timd.get('timeline', []):
         for data_field, requirement in filters.items():
-            # If the data_field requirement is level 1, it instead
-            # checks for it not being level 2 or 3, because level 1 can
-            # encompass all non-level 2 or 3 placement.
+            # Handling for the cargo ship in level 1 placements.
             if data_field == 'level' and requirement == 1:
+                # If no level is specified, it is a cargo ship placement.
                 if action.get('level', 1) != 1:
                     break
-            # If the filter specifies that the zone must be
-            # loadingStation, it means either loading station, so it
-            # only breaks if the zone is not leftLoadingStation or
-            # rightLoadingStation.
             elif data_field == 'zone' and requirement == 'loadingStation':
                 if action['zone'] not in ['leftLoadingStation',
                                           'rightLoadingStation']:
@@ -142,8 +137,8 @@ def filter_timeline_actions(timd, **filters):
             else:
                 if action.get(data_field) != requirement:
                     break
-        # If all the requirements are met, it adds the action to the
-        # returned filtered timeline.
+        # If all the requirements are met, the action is added to the
+        # (returned) filtered timeline.
         else:
             filtered_timeline.append(action)
     return filtered_timeline
@@ -305,7 +300,7 @@ def calculate_timd_data(timd):
                     action.get('didSucceed') is False):
                 cycle_list.append(action)
 
-    # There must be at least 2 actions to have a cycle
+    # There must be at least 2 actions to have a cycle.
     if len(cycle_list) > 1:
         # If the first action in the list is a placement, it is a
         # preload, which doesn't count when calculating cycle times.
@@ -387,7 +382,6 @@ def calculate_timd_data(timd):
             defense_items.append(action)
     if len(defense_items) > 0:
         paired_defense_list = make_paired_cycle_list(defense_items)
-
         # 'timeDefending' is the total amount of time the robot spent
         # defending during the match.
         calculated_data['timeDefending'] = calculate_total_action_duration(
@@ -410,10 +404,10 @@ COMPRESSED_TIMDS = []
 TEMP_TIMDS = {}
 
 # Goes into the temp_timds folder to get the names of all the tempTIMDs
-# that correspond to the given TIMD. Afterwards, it decompresses them
-# and adds them to the TEMP_TIMDS dictionary with the scout name as the
-# key and their decompressed tempTIMD as a value. Does this in order to
-# have a proper input to the consolidation function.
+# that correspond to the given TIMD. Afterwards, the tempTIMDs are
+# decompressed and addded them to the TEMP_TIMDS dictionary with the
+# scout name as the key and the decompressed tempTIMD as the value.
+# This is needed for the consolidation function
 for temp_timd in os.listdir(utils.create_file_path('data/cache/temp_timds')):
     if temp_timd.split('-')[0] == TIMD_NAME:
         file_path = utils.create_file_path(

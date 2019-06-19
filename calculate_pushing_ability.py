@@ -1,5 +1,7 @@
-#!/usr/bin/python3
-"""Calculates pushing ability ELOs."""
+#!/usr/bin/python3.6
+"""Calculates pushing ability Elos.
+For more info, about how Elo works, see:
+https://en.wikipedia.org/wiki/Elo_rating_system"""
 # External imports
 import json
 import os
@@ -21,8 +23,11 @@ for temp_super_file in TEMP_SUPER_FILES:
             compressed_temp_super)
     PUSHING_BATTLES += decompressed_pushing_battles
 
-# Constants
+# Constants:
+# C is used for calculating win probability. When team A has CONSTANT_C
+# more Elo than team B, team A is predicted to win 10 out of 11 battles
 CONSTANT_C = 160
+# K is proportional to how much a single match affects Elo ratings
 CONSTANT_K = 100
 CONSTANT_VALUE = {
     'largeWin': 1.0,
@@ -41,9 +46,13 @@ for pushing_battle in PUSHING_BATTLES:
     winner_weighted_ranking = 10 ** (winner_old_elo / CONSTANT_C)
     loser_weighted_ranking = 10 ** (loser_old_elo / CONSTANT_C)
 
-    # Expected win percentage for the robot that ended up winning.
-    winner_expected_win_percentage = winner_weighted_ranking / (
+    # Expected win rate for the robot that ended up winning.
+    winner_expected_win_rate = winner_weighted_ranking / (
         winner_weighted_ranking + loser_weighted_ranking)
+    # If f(x) = winner_expected_win_rate
+    # and x = winner_old_elo - loser_old_elo
+    # then the graph of f(x) is a logistic curve.
+    # f(x) = 1/(1+10**(-x/CONSTANT_C))
 
     if pushing_battle['winMarginIsLarge'] is True:
         win_value = CONSTANT_VALUE['largeWin']
@@ -51,9 +60,9 @@ for pushing_battle in PUSHING_BATTLES:
         win_value = CONSTANT_VALUE['smallWin']
 
     winner_new_elo = winner_old_elo + CONSTANT_K * (win_value - \
-        winner_expected_win_percentage)
+        winner_expected_win_rate)
     loser_new_elo = loser_old_elo - CONSTANT_K * (win_value - \
-        winner_expected_win_percentage)
+        winner_expected_win_rate)
 
     ELOS[pushing_battle['winner']] = winner_new_elo
     ELOS[pushing_battle['loser']] = loser_new_elo

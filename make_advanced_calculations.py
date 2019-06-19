@@ -41,8 +41,8 @@ def calculate_first_pick_ability(calculated_data):
 
     # Scores for points gained during sandstorm.
     sand_score = max([
-        float(calculated_data.get('habLineSuccessL1', 0)) * 3 / 100,
-        float(calculated_data.get('habLineSuccessL2', 0)) * 6 / 100])
+        float(utils.no_none_get(calculated_data, 'habLineSuccessL1', 0)) * 3 / 100,
+        float(utils.no_none_get(calculated_data, 'habLineSuccessL2', 0)) * 6 / 100])
     sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
     sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
     sand_score *= sandstorm_weight
@@ -77,8 +77,8 @@ def calculate_second_pick_ability(calculated_data, max_da, min_da):
 
     # Scores for points gained during sandstorm.
     sand_score = max([
-        float(calculated_data.get('habLineSuccessL1', 0)) * 3 / 100,
-        float(calculated_data.get('habLineSuccessL2', 0)) * 6 / 100])
+        float(utils.no_none_get(calculated_data, 'habLineSuccessL1', 0)) * 3 / 100,
+        float(utils.no_none_get(calculated_data, 'habLineSuccessL2', 0)) * 6 / 100])
     sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
     sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
     sand_score *= sandstorm_weight
@@ -140,8 +140,8 @@ def calculate_third_pick_ability(calculated_data):
 
     # Scores for points gained during sandstorm.
     sand_score = max([
-        float(calculated_data.get('habLineSuccessL1', 0)) * 3 / 100,
-        float(calculated_data.get('habLineSuccessL2', 0)) * 6 / 100])
+        float(utils.no_none_get(calculated_data, 'habLineSuccessL1', 0)) * 3 / 100,
+        float(utils.no_none_get(calculated_data, 'habLineSuccessL2', 0)) * 6 / 100])
     sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
     sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
     sand_score *= sandstorm_weight
@@ -252,9 +252,9 @@ if TEAMS != {}:
 
         # Scaled driver ability of the team's alliance partners
         scaled_driver_abilities = []
-        for team in alliance_members:
+        for team_ in alliance_members:
             driver_ability = \
-                TEAMS[team]['calculatedData']['driverAbility']
+                TEAMS[team_]['calculatedData']['driverAbility']
             # Scales driver ability so that the lowest driver ability is
             # counted as 0, and the highest is counted as 1. All other
             # values in between are scaled linearly.
