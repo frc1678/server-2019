@@ -40,16 +40,18 @@ def calculate_first_pick_ability(calculated_data):
         + 3 * calculated_data['avgOrangesScoredTeleL3']) * level_3_weight
 
     # Scores for points gained during sandstorm.
-    sand_score = max([float(calculated_data.get('habLineSuccessL1', 0)) * 3 / 100,
-                      float(calculated_data.get('habLineSuccessL2', 0)) * 6 / 100])
+    sand_score = max([
+        float(utils.no_none_get(calculated_data, 'habLineSuccessL1', 0)) * 3 / 100,
+        float(utils.no_none_get(calculated_data, 'habLineSuccessL2', 0)) * 6 / 100])
     sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
     sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
     sand_score *= sandstorm_weight
 
     # Scores for points scored in the endgame.
-    end_game_score = max([3 * float(calculated_data.get('climbSuccessL1', 0)) / 100,
-                          6 * float(calculated_data.get('climbSuccessL2', 0)) / 100,
-                          12 * float(calculated_data.get('climbSuccessL3', 0)) / 100])
+    end_game_score = max([
+        3 * float(calculated_data.get('climbSuccessL1', 0)) / 100,
+        6 * float(calculated_data.get('climbSuccessL2', 0)) / 100,
+        12 * float(calculated_data.get('climbSuccessL3', 0)) / 100])
     end_game_score *= climbing_weight
 
     # Adds all the previous scores together to get a full first pick score.
@@ -74,8 +76,9 @@ def calculate_second_pick_ability(calculated_data, max_da, min_da):
     defense_weight = 3.5
 
     # Scores for points gained during sandstorm.
-    sand_score = max([float(calculated_data.get('habLineSuccessL1', 0)) * 3 / 100,
-                      float(calculated_data.get('habLineSuccessL2', 0)) * 6 / 100])
+    sand_score = max([
+        float(utils.no_none_get(calculated_data, 'habLineSuccessL1', 0)) * 3 / 100,
+        float(utils.no_none_get(calculated_data, 'habLineSuccessL2', 0)) * 6 / 100])
     sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
     sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
     sand_score *= sandstorm_weight
@@ -136,16 +139,18 @@ def calculate_third_pick_ability(calculated_data):
         + 3 * calculated_data['avgOrangesScoredTeleL3']) * level_3_weight
 
     # Scores for points gained during sandstorm.
-    sand_score = max([float(calculated_data.get('habLineSuccessL1', 0)) * 3 / 100,
-                      float(calculated_data.get('habLineSuccessL2', 0)) * 6 / 100])
+    sand_score = max([
+        float(utils.no_none_get(calculated_data, 'habLineSuccessL1', 0)) * 3 / 100,
+        float(utils.no_none_get(calculated_data, 'habLineSuccessL2', 0)) * 6 / 100])
     sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
     sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
     sand_score *= sandstorm_weight
 
     # Scores for points scored in the endgame.
-    end_game_score = max([3 * float(calculated_data.get('climbSuccessL1', 0)) / 100,
-                          6 * float(calculated_data.get('climbSuccessL2', 0)) / 100,
-                          12 * float(calculated_data.get('climbSuccessL3', 0)) / 100])
+    end_game_score = max([
+        3 * float(calculated_data.get('climbSuccessL1', 0)) / 100,
+        6 * float(calculated_data.get('climbSuccessL2', 0)) / 100,
+        12 * float(calculated_data.get('climbSuccessL3', 0)) / 100])
     end_game_score *= climbing_weight
 
     # A third pick robot must have a driver ability greater than 0
@@ -164,8 +169,8 @@ def calculate_zscores(team_average_field, team_zscore_field):
     the zscore is taken from.
     team_zscore_field is the name of the team zscore data field in which
     the calculated zscore is put into."""
-    averages = {team: data['calculatedData'].get(team_average_field, 0.0) for
-                team, data in TEAMS.items()}
+    averages = {team: data['calculatedData'].get(
+        team_average_field, 0.0) for team, data in TEAMS.items()}
 
     mean = numpy.mean(list(averages.values()))
     sd = numpy.std(list(averages.values()))
@@ -184,6 +189,7 @@ for team in os.listdir(utils.create_file_path('data/cache/teams')):
         # '.split()' removes '.json' file ending
         TEAMS[team.split('.')[0]] = team_data
 
+# Each Z-Score data field to the average data field it is calculated from.
 SUPER_ZSCORE_DATA_FIELDS = {
     'agilityZScore': 'avgAgility',
     'speedZScore': 'avgSpeed',
@@ -246,9 +252,9 @@ if TEAMS != {}:
 
         # Scaled driver ability of the team's alliance partners
         scaled_driver_abilities = []
-        for team in alliance_members:
+        for team_ in alliance_members:
             driver_ability = \
-                TEAMS[team]['calculatedData']['driverAbility']
+                TEAMS[team_]['calculatedData']['driverAbility']
             # Scales driver ability so that the lowest driver ability is
             # counted as 0, and the highest is counted as 1. All other
             # values in between are scaled linearly.
@@ -263,10 +269,12 @@ if TEAMS != {}:
         TEAMS[team]['calculatedData']['normalizedDriverAbility'] = \
             normalized_driver_ability
 
-    MAX_NORM_DA = max([team_data['calculatedData']['normalizedDriverAbility'] for team_data
-                  in TEAMS.values()])
-    MIN_NORM_DA = min([team_data['calculatedData']['normalizedDriverAbility'] for team_data
-                  in TEAMS.values()])
+    MAX_NORM_DA = max([
+        team_data['calculatedData']['normalizedDriverAbility'] for
+        team_data in TEAMS.values()])
+    MIN_NORM_DA = min([
+        team_data['calculatedData']['normalizedDriverAbility'] for
+        team_data in TEAMS.values()])
     for team in TEAMS.keys():
         if TEAMS[team].get('calculatedData') is not None:
             TEAMS[team]['calculatedData']['firstPickAbility'] = \
@@ -279,7 +287,9 @@ if TEAMS != {}:
 
     # Sends data to 'cache' and 'upload_queue'
     for team, data in TEAMS.items():
-        with open(utils.create_file_path(f'data/cache/teams/{team}.json'), 'w') as file:
+        with open(utils.create_file_path(
+                f'data/cache/teams/{team}.json'), 'w') as file:
             json.dump(data, file)
-        with open(utils.create_file_path(f'data/upload_queue/teams/{team}.json'), 'w') as file:
+        with open(utils.create_file_path(
+                f'data/upload_queue/teams/{team}.json'), 'w') as file:
             json.dump(data, file)
