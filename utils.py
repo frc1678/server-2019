@@ -29,8 +29,8 @@ def create_file_path(path_after_main, create_directories=True):
         # The last item is a directory
         else:
             directories = path_after_main
-        # 'os.makedirs' recursively creates directories (i.e.
-        # 'os.makedirs' will create multiple directories, if needed)
+        # 'os.makedirs' recursively creates directories (i.e. it will 
+        # create multiple directories, if needed)
         os.makedirs(os.path.join(MAIN_DIRECTORY, directories), exist_ok=True)
     return os.path.join(MAIN_DIRECTORY, path_after_main)
 
