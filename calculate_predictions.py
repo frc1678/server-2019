@@ -12,10 +12,10 @@ def probability_density(x, mu, sigma):
     """Finds the probability density in order to make predictive chances.
 
     x is the goal constant, or the point that the involved teams are
-    trying to reach. (e.g. The amount of lemons
+    trying to reach. (e.g. The amount of panels
     that need to be scored in order to fill a rocket).
     mu is the predicted output from the involved teams. (e.g. The amount
-    of lemons that a team actually scored).
+    of panels that a team actually scored).
     sigma is the distribution of the possible outcomes for mu.
 
     The returned chance is the chance that mu lies on x through the
@@ -141,22 +141,22 @@ def calculate_chance_rocket_rp(team_numbers):
     calculated_data_by_team = [TEAMS[team]['calculatedData'] for team in
                              team_numbers]
 
-    # Calculates the chances that the alliance places 6 lemons, then
-    # multiplies it by the chance the alliance places 6 oranges.
-    # [-2:] splices the list to only include the two highest lemon scorers.
-    lemons_scored = sum(sorted([team_calculated_data['avgLemonsScored'] \
+    # Calculates the chances that the alliance places 6 panels, then
+    # multiplies it by the chance the alliance places 6 cargo.
+    # [-2:] splices the list to only include the two highest panel scorers.
+    panels_scored = sum(sorted([team_calculated_data['avgPanelsScored'] \
         for team_calculated_data in calculated_data_by_team])[-2:])
-    lemon_sd = max([team_calculated_data['sdAvgLemonsScored'] for \
+    panel_sd = max([team_calculated_data['sdAvgPanelsScored'] for \
         team_calculated_data in calculated_data_by_team])
-    lemon_chance = probability_density(6.0, lemons_scored, lemon_sd)
+    panel_chance = probability_density(6.0, panels_scored, panel_sd)
 
-    oranges_scored = sum(sorted([team_calculated_data['avgOrangesScored'] \
+    cargo_scored = sum(sorted([team_calculated_data['avgCargoScored'] \
         for team_calculated_data in calculated_data_by_team])[-2:])
-    orange_sd = max([team_calculated_data['sdAvgOrangesScored'] for \
+    cargo_sd = max([team_calculated_data['sdAvgCargoScored'] for \
         team_calculated_data in calculated_data_by_team])
-    orange_chance = probability_density(6.0, oranges_scored, orange_sd)
+    cargo_chance = probability_density(6.0, cargo_scored, cargo_sd)
 
-    return lemon_chance * orange_chance
+    return panel_chance * cargo_chance
 
 def calculate_predicted_rps(calculated_data, color):
     """Calculates the predicted number of rps for an alliance.

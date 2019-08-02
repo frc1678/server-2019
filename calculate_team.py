@@ -17,43 +17,43 @@ import utils
 # Name of team calculated average data field to the respective timd data
 # field.
 AVERAGE_DATA_FIELDS = {
-    'avgOrangesScored': 'orangesScored',
-    'avgLemonsScored': 'lemonsScored',
-    'avgOrangesFouls': 'orangeFouls',
+    'avgCargoScored': 'cargoScored',
+    'avgPanelsScored': 'panelsScored',
+    'avgCargoFouls': 'cargoFouls',
     'avgPinningFouls': 'pinningFouls',
-    'avgOrangesScoredSandstorm': 'orangesScoredSandstorm',
-    'avgLemonsScoredSandstorm': 'lemonsScoredSandstorm',
-    'avgOrangesScoredTeleL1': 'orangesScoredTeleL1',
-    'avgOrangesScoredTeleL2': 'orangesScoredTeleL2',
-    'avgOrangesScoredTeleL3': 'orangesScoredTeleL3',
-    'avgLemonsScoredTeleL1': 'lemonsScoredTeleL1',
-    'avgLemonsScoredTeleL2': 'lemonsScoredTeleL2',
-    'avgLemonsScoredTeleL3': 'lemonsScoredTeleL3',
-    'avgOrangesScoredL1': 'orangesScoredL1',
-    'avgOrangesScoredL2': 'orangesScoredL2',
-    'avgOrangesScoredL3': 'orangesScoredL3',
-    'avgLemonsScoredL1': 'lemonsScoredL1',
-    'avgLemonsScoredL2': 'lemonsScoredL2',
-    'avgLemonsScoredL3': 'lemonsScoredL3',
-    'avgOrangeCycles': 'orangeCycles',
-    'avgLemonCycles': 'lemonCycles',
-    'avgOrangeDrops': 'orangeDrops',
-    'avgLemonDrops': 'lemonDrops',
-    'avgOrangeFails': 'orangeFails',
-    'avgLemonFails': 'lemonFails',
+    'avgCargoScoredSandstorm': 'cargoScoredSandstorm',
+    'avgPanelsScoredSandstorm': 'panelsScoredSandstorm',
+    'avgCargoScoredTeleL1': 'cargoScoredTeleL1',
+    'avgCargoScoredTeleL2': 'cargoScoredTeleL2',
+    'avgCargoScoredTeleL3': 'cargoScoredTeleL3',
+    'avgPanelsScoredTeleL1': 'panelsScoredTeleL1',
+    'avgPanelsScoredTeleL2': 'panelsScoredTeleL2',
+    'avgPanelsScoredTeleL3': 'panelsScoredTeleL3',
+    'avgCargoScoredL1': 'cargoScoredL1',
+    'avgCargoScoredL2': 'cargoScoredL2',
+    'avgCargoScoredL3': 'cargoScoredL3',
+    'avgPanelsScoredL1': 'panelsScoredL1',
+    'avgPanelsScoredL2': 'panelsScoredL2',
+    'avgPanelsScoredL3': 'panelsScoredL3',
+    'avgCargoCycles': 'cargoCycles',
+    'avgPanelCycles': 'panelCycles',
+    'avgCargoDrops': 'cargoDrops',
+    'avgPanelDrops': 'panelDrops',
+    'avgCargoFails': 'cargoFails',
+    'avgPanelFails': 'panelFails',
     'avgTimeIncap': 'timeIncap',
     'avgTimeClimbing': 'timeClimbing',
-    'avgOrangePointsPrevented': 'orangePointsPrevented',
-    'avgLemonPointsPrevented': 'lemonPointsPrevented',
+    'avgCargoPointsPrevented': 'cargoPointsPrevented',
+    'avgPanelPointsPrevented': 'panelPointsPrevented',
     'avgPointsPrevented': 'pointsPrevented',
 }
 
 # Name of team calculated average data field of the last four matches to
 # the respective timd data field.
 LFM_AVERAGE_DATA_FIELDS = {
-    'lfmAvgOrangesScored': 'orangesScored',
-    'lfmAvgLemonsScored': 'lemonsScored',
-    'lfmAvgOrangesFouls': 'orangeFouls',
+    'lfmAvgCargoScored': 'cargoScored',
+    'lfmAvgPanelsScored': 'panelsScored',
+    'lfmAvgCargoFouls': 'cargoFouls',
     'lfmAvgPinningFouls': 'pinningFouls',
     'lfmAvgTimeIncap': 'timeIncap',
     'lfmAvgTimeClimbing': 'timeClimbing',
@@ -62,9 +62,9 @@ LFM_AVERAGE_DATA_FIELDS = {
 # Name of team calculated standard deviation data field to the
 # respective timd data field.
 SD_DATA_FIELDS = {
-    'sdAvgOrangesScored': 'orangesScored',
-    'sdAvgLemonsScored': 'lemonsScored',
-    'sdAvgOrangesFouls': 'orangeFouls',
+    'sdAvgCargoScored': 'cargoScored',
+    'sdAvgPanelsScored': 'panelsScored',
+    'sdAvgCargoFouls': 'cargoFouls',
     'sdAvgPinningFouls': 'pinningFouls',
     'sdAvgTimeIncap': 'timeIncap',
     'sdAvgTimeClimbing': 'timeClimbing',
@@ -73,9 +73,9 @@ SD_DATA_FIELDS = {
 # Name of team calculated upper half average data field to the
 # respective timd data field.
 P75_DATA_FIELDS = {
-    'p75AvgOrangesScored': 'orangesScored',
-    'p75AvgLemonsScored': 'lemonsScored',
-    'p75AvgOrangesFouls': 'orangeFouls',
+    'p75AvgCargoScored': 'cargoScored',
+    'p75AvgPanelsScored': 'panelsScored',
+    'p75AvgCargoFouls': 'cargoFouls',
     'p75AvgPinningFouls': 'pinningFouls',
     'p75AvgTimeIncap': 'timeIncap',
     'p75AvgTimeClimbing': 'timeClimbing',
@@ -84,72 +84,72 @@ P75_DATA_FIELDS = {
 # Name of the team calculated success data field to the respective timd
 # data field.
 SUCCESS_DATA_FIELDS = {
-    'lemonLoadSuccess': {
+    'panelLoadSuccess': {
         'type': 'intake',
-        'piece': 'lemon',
+        'piece': 'panel',
         'zone': 'loadingStation',
     },
-    'orangeSuccessAll': {
+    'cargoSuccessAll': {
         'type': 'placement',
-        'piece': 'orange',
+        'piece': 'cargo',
     },
-    'orangeSuccessDefended': {
+    'cargoSuccessDefended': {
         'type': 'placement',
-        'piece': 'orange',
+        'piece': 'cargo',
         'wasDefended': True,
     },
-    'orangeSuccessUndefended': {
+    'cargoSuccessUndefended': {
         'type': 'placement',
-        'piece': 'orange',
+        'piece': 'cargo',
         'wasDefended': False,
     },
-    'orangeSuccessL1': {
+    'cargoSuccessL1': {
         'type': 'placement',
-        'piece': 'orange',
+        'piece': 'cargo',
         'level': 1,
     },
-    'orangeSuccessL2': {
+    'cargoSuccessL2': {
         'type': 'placement',
-        'piece': 'orange',
+        'piece': 'cargo',
         'level': 2,
     },
-    'orangeSuccessL3': {
+    'cargoSuccessL3': {
         'type': 'placement',
-        'piece': 'orange',
+        'piece': 'cargo',
         'level': 3,
     },
-    'lemonSuccessAll': {
+    'panelSuccessAll': {
         'type': 'placement',
-        'piece': 'lemon',
+        'piece': 'panel',
     },
-    'lemonSuccessDefended': {
+    'panelSuccessDefended': {
         'type': 'placement',
-        'piece': 'lemon',
+        'piece': 'panel',
         'wasDefended': True,
     },
-    'lemonSuccessUndefended': {
+    'panelSuccessUndefended': {
         'type': 'placement',
-        'piece': 'lemon',
+        'piece': 'panel',
         'wasDefended': False,
     },
-    'lemonSuccessL1': {
+    'panelSuccessL1': {
         'type': 'placement',
-        'piece': 'lemon',
+        'piece': 'panel',
         'level': 1,
     },
-    'lemonSuccessL2': {
+    'panelSuccessL2': {
         'type': 'placement',
-        'piece': 'lemon',
+        'piece': 'panel',
         'level': 2,
     },
-    'lemonSuccessL3': {
+    'panelSuccessL3': {
         'type': 'placement',
-        'piece': 'lemon',
+        'piece': 'panel',
         'level': 3,
     },
-    'lemonSuccessFromSide': {
+    'panelSuccessFromSide': {
         'type': 'placement',
-        'piece': 'lemon',
+        'piece': 'panel',
         'side': ('near', True),
     },
 }
@@ -157,72 +157,72 @@ SUCCESS_DATA_FIELDS = {
 # Name of the team calculated success data field of the last four
 # matches to the respective timd data field.
 LFM_SUCCESS_DATA_FIELDS = {
-    'lfmLemonLoadSuccess': {
+    'lfmPanelLoadSuccess': {
         'type': 'intake',
-        'piece': 'lemon',
+        'piece': 'panel',
         'zone': 'loadingStation',
     },
-    'lfmOrangeSuccessAll': {
+    'lfmCargoSuccessAll': {
         'type': 'placement',
-        'piece': 'orange',
+        'piece': 'cargo',
     },
-    'lfmOrangeSuccessDefended': {
+    'lfmCargoSuccessDefended': {
         'type': 'placement',
-        'piece': 'orange',
+        'piece': 'cargo',
         'wasDefended': True,
     },
-    'lfmOrangeSuccessUndefended': {
+    'lfmCargoSuccessUndefended': {
         'type': 'placement',
-        'piece': 'orange',
+        'piece': 'cargo',
         'wasDefended': False,
     },
-    'lfmOrangeSuccessL1': {
+    'lfmCargoSuccessL1': {
         'type': 'placement',
-        'piece': 'orange',
+        'piece': 'cargo',
         'level': 1,
     },
-    'lfmOrangeSuccessL2': {
+    'lfmCargoSuccessL2': {
         'type': 'placement',
-        'piece': 'orange',
+        'piece': 'cargo',
         'level': 2,
     },
-    'lfmOrangeSuccessL3': {
+    'lfmCargoSuccessL3': {
         'type': 'placement',
-        'piece': 'orange',
+        'piece': 'cargo',
         'level': 3,
     },
-    'lfmLemonSuccessAll': {
+    'lfmPanelSuccessAll': {
         'type': 'placement',
-        'piece': 'lemon',
+        'piece': 'panel',
     },
-    'lfmLemonSuccessDefended': {
+    'lfmPanelSuccessDefended': {
         'type': 'placement',
-        'piece': 'lemon',
+        'piece': 'panel',
         'wasDefended': True,
     },
-    'lfmLemonSuccessUndefended': {
+    'lfmPanelSuccessUndefended': {
         'type': 'placement',
-        'piece': 'lemon',
+        'piece': 'panel',
         'wasDefended': False,
     },
-    'lfmLemonSuccessL1': {
+    'lfmPanelSuccessL1': {
         'type': 'placement',
-        'piece': 'lemon',
+        'piece': 'panel',
         'level': 1,
     },
-    'lfmLemonSuccessL2': {
+    'lfmPanelSuccessL2': {
         'type': 'placement',
-        'piece': 'lemon',
+        'piece': 'panel',
         'level': 2,
     },
-    'lfmLemonSuccessL3': {
+    'lfmPanelSuccessL3': {
         'type': 'placement',
-        'piece': 'lemon',
+        'piece': 'panel',
         'level': 3,
     },
-    'lfmLemonSuccessFromSide': {
+    'lfmPanelSuccessFromSide': {
         'type': 'placement',
-        'piece': 'lemon',
+        'piece': 'panel',
         'side': ('near', True),
     },
 }
@@ -230,34 +230,34 @@ LFM_SUCCESS_DATA_FIELDS = {
 # Name of the team calculated average cycle time data field to the
 # timeline filters specified.
 CYCLE_DATA_FIELDS = {
-    'orangeCycleAll': {
-        'piece': 'orange',
+    'cargoCycleAll': {
+        'piece': 'cargo',
     },
-    'orangeCycleL1': {
-        'piece': 'orange',
+    'cargoCycleL1': {
+        'piece': 'cargo',
         'level': 1,
     },
-    'orangeCycleL2': {
-        'piece': 'orange',
+    'cargoCycleL2': {
+        'piece': 'cargo',
         'level': 2,
     },
-    'orangeCycleL3': {
-        'piece': 'orange',
+    'cargoCycleL3': {
+        'piece': 'cargo',
         'level': 3,
     },
-    'lemonCycleAll': {
-        'piece': 'lemon',
+    'panelCycleAll': {
+        'piece': 'panel',
     },
-    'lemonCycleL1': {
-        'piece': 'lemon',
+    'panelCycleL1': {
+        'piece': 'panel',
         'level': 1,
     },
-    'lemonCycleL2': {
-        'piece': 'lemon',
+    'panelCycleL2': {
+        'piece': 'panel',
         'level': 2,
     },
-    'lemonCycleL3': {
-        'piece': 'lemon',
+    'panelCycleL3': {
+        'piece': 'panel',
         'level': 3,
     },
 }
@@ -265,34 +265,34 @@ CYCLE_DATA_FIELDS = {
 # Name of the team calculated standard deviation cycle time data field
 # to the timeline filters specified.
 SD_CYCLE_DATA_FIELDS = {
-    'sdOrangeCycleAll': {
-        'piece': 'orange',
+    'sdCargoCycleAll': {
+        'piece': 'cargo',
     },
-    'sdOrangeCycleL1': {
-        'piece': 'orange',
+    'sdCargoCycleL1': {
+        'piece': 'cargo',
         'level': 1,
     },
-    'sdOrangeCycleL2': {
-        'piece': 'orange',
+    'sdCargoCycleL2': {
+        'piece': 'cargo',
         'level': 2,
     },
-    'sdOrangeCycleL3': {
-        'piece': 'orange',
+    'sdCargoCycleL3': {
+        'piece': 'cargo',
         'level': 3,
     },
-    'sdLemonCycleAll': {
-        'piece': 'lemon',
+    'sdPanelCycleAll': {
+        'piece': 'panel',
     },
-    'sdLemonCycleL1': {
-        'piece': 'lemon',
+    'sdPanelCycleL1': {
+        'piece': 'panel',
         'level': 1,
     },
-    'sdLemonCycleL2': {
-        'piece': 'lemon',
+    'sdPanelCycleL2': {
+        'piece': 'panel',
         'level': 2,
     },
-    'sdLemonCycleL3': {
-        'piece': 'lemon',
+    'sdPanelCycleL3': {
+        'piece': 'panel',
         'level': 3,
     },
 }
@@ -300,34 +300,34 @@ SD_CYCLE_DATA_FIELDS = {
 # Name of the team calculated upper half average cycle time data field
 # to the timeline filters specified.
 P75_CYCLE_DATA_FIELDS = {
-    'p75OrangeCycleAll': {
-        'piece': 'orange',
+    'p75CargoCycleAll': {
+        'piece': 'cargo',
     },
-    'p75OrangeCycleL1': {
-        'piece': 'orange',
+    'p75CargoCycleL1': {
+        'piece': 'cargo',
         'level': 1,
     },
-    'p75OrangeCycleL2': {
-        'piece': 'orange',
+    'p75CargoCycleL2': {
+        'piece': 'cargo',
         'level': 2,
     },
-    'p75OrangeCycleL3': {
-        'piece': 'orange',
+    'p75CargoCycleL3': {
+        'piece': 'cargo',
         'level': 3,
     },
-    'p75LemonCycleAll': {
-        'piece': 'lemon',
+    'p75PanelCycleAll': {
+        'piece': 'panel',
     },
-    'p75LemonCycleL1': {
-        'piece': 'lemon',
+    'p75PanelCycleL1': {
+        'piece': 'panel',
         'level': 1,
     },
-    'p75LemonCycleL2': {
-        'piece': 'lemon',
+    'p75PanelCycleL2': {
+        'piece': 'panel',
         'level': 2,
     },
-    'p75LemonCycleL3': {
-        'piece': 'lemon',
+    'p75PanelCycleL3': {
+        'piece': 'panel',
         'level': 3,
     },
 }
@@ -335,34 +335,34 @@ P75_CYCLE_DATA_FIELDS = {
 # Name of the team calculated average cycle time data field of the last
 # four matches to the timeline filters specified.
 LFM_CYCLE_DATA_FIELDS = {
-    'lfmOrangeCycleAll': {
-        'piece': 'orange',
+    'lfmCargoCycleAll': {
+        'piece': 'cargo',
     },
-    'lfmOrangeCycleL1': {
-        'piece': 'orange',
+    'lfmCargoCycleL1': {
+        'piece': 'cargo',
         'level': 1,
     },
-    'lfmOrangeCycleL2': {
-        'piece': 'orange',
+    'lfmCargoCycleL2': {
+        'piece': 'cargo',
         'level': 2,
     },
-    'lfmOrangeCycleL3': {
-        'piece': 'orange',
+    'lfmCargoCycleL3': {
+        'piece': 'cargo',
         'level': 3,
     },
-    'lfmLemonCycleAll': {
-        'piece': 'lemon',
+    'lfmPanelCycleAll': {
+        'piece': 'panel',
     },
-    'lfmLemonCycleL1': {
-        'piece': 'lemon',
+    'lfmPanelCycleL1': {
+        'piece': 'panel',
         'level': 1,
     },
-    'lfmLemonCycleL2': {
-        'piece': 'lemon',
+    'lfmPanelCycleL2': {
+        'piece': 'panel',
         'level': 2,
     },
-    'lfmLemonCycleL3': {
-        'piece': 'lemon',
+    'lfmPanelCycleL3': {
+        'piece': 'panel',
         'level': 3,
     },
 }
@@ -375,15 +375,15 @@ def calculate_predicted_solo_points(calculated_data):
     to complete each of the scoring objectives."""
     sandstorm_score = max([float(calculated_data.get('habLineSuccessL1', 0)) * 3 / 100,
                            float(calculated_data.get('habLineSuccessL2', 0)) * 6 / 100])
-    # Lemons in sandstorm are worth 5 because they also score the cargo
+    # Panels in sandstorm are worth 5 because they also score the cargo
     # they are trapping.
-    lemon_score = calculated_data['avgLemonsScoredSandstorm'] * 5
-    # Subtracts the lemons scored in sandstorm from the average lemons
-    # scored to get the average lemons scored in teleop.
-    lemon_score += (calculated_data['avgLemonsScored'] - \
-        calculated_data['avgLemonsScoredSandstorm']) * 2
-    orange_score = calculated_data['avgOrangesScored'] * 3
-    return sandstorm_score + lemon_score + orange_score
+    panel_score = calculated_data['avgPanelsScoredSandstorm'] * 5
+    # Subtracts the panels scored in sandstorm from the average panels
+    # scored to get the average panels scored in teleop.
+    panel_score += (calculated_data['avgPanelsScored'] - \
+        calculated_data['avgPanelsScoredSandstorm']) * 2
+    cargo_score = calculated_data['avgCargoScored'] * 3
+    return sandstorm_score + panel_score + cargo_score
 
 def calculate_avg_cycle_time(cycles):
     """Calculates the average time for an action based on start and end times.
@@ -639,19 +639,19 @@ def team_calculations(timds, team_number):
 
     # If the robot has ground intaked a piece at any point in the
     # competition, the respective hasGroundIntake data point is true.
-    calculated_data['hasOrangeGroundIntake'] = True if \
+    calculated_data['hasCargoGroundIntake'] = True if \
         len(filter_timeline_actions(timds, {'type': 'intake', 'piece': \
-        'orange', 'zone': ('loadingStation', True)})) > 0 else False
-    calculated_data['hasLemonGroundIntake'] = True if \
+        'cargo', 'zone': ('loadingStation', True)})) > 0 else False
+    calculated_data['hasPanelGroundIntake'] = True if \
         len(filter_timeline_actions(timds, {'type': 'intake', 'piece': \
-        'orange', 'zone': ('loadingStation', True)})) > 0 else False
+        'cargo', 'zone': ('loadingStation', True)})) > 0 else False
 
     # If the robot has ever preloaded the game piece type.
-    calculated_data['didPreloadOrange'] = True if [
-        timd for timd in timds if timd.get('preload') == 'orange'
+    calculated_data['didPreloadCargo'] = True if [
+        timd for timd in timds if timd.get('preload') == 'cargo'
         ] else False
-    calculated_data['didPreloadLemon'] = True if [
-        timd for timd in timds if timd.get('preload') == 'lemon'
+    calculated_data['didPreloadPanel'] = True if [
+        timd for timd in timds if timd.get('preload') == 'panel'
         ] else False
 
     # Find the average of different calculated timd data points using
@@ -696,11 +696,11 @@ def team_calculations(timds, team_number):
         if timd['calculatedData'].get('superFailedCyclesCaused', 0) > 0:
             super_defending_timds.append(timd)
 
-    calculated_data['avgSuperOrangeFailedCyclesCaused'] = utils.avg([timd[
-        'calculatedData'].get('superOrangeFailedCyclesCaused') for timd in \
+    calculated_data['avgSuperCargoFailedCyclesCaused'] = utils.avg([timd[
+        'calculatedData'].get('superCargoFailedCyclesCaused') for timd in \
         super_defending_timds], None)
-    calculated_data['avgSuperLemonFailedCyclesCaused'] = utils.avg([timd[
-        'calculatedData'].get('superLemonFailedCyclesCaused') for timd in \
+    calculated_data['avgSuperPanelFailedCyclesCaused'] = utils.avg([timd[
+        'calculatedData'].get('superPanelFailedCyclesCaused') for timd in \
         super_defending_timds], None)
     calculated_data['avgSuperFailedCyclesCaused'] = utils.avg([timd[
         'calculatedData'].get('superFailedCyclesCaused') for timd in \
@@ -771,10 +771,10 @@ def team_calculations(timds, team_number):
 
     calculated_data['avgPointsPrevented'] = utils.avg([
         timd['calculatedData'].get('pointsPrevented') for timd in points_prevented_matches], None)
-    calculated_data['avgOrangePointsPrevented'] = utils.avg([
-        timd['calculatedData'].get('orangePointsPrevented') for timd in points_prevented_matches], None)
-    calculated_data['avgLemonPointsPrevented'] = utils.avg([
-        timd['calculatedData'].get('lemonPointsPrevented') for timd in points_prevented_matches], None)
+    calculated_data['avgCargoPointsPrevented'] = utils.avg([
+        timd['calculatedData'].get('cargoPointsPrevented') for timd in points_prevented_matches], None)
+    calculated_data['avgPanelPointsPrevented'] = utils.avg([
+        timd['calculatedData'].get('panelPointsPrevented') for timd in points_prevented_matches], None)
 
     # If a team didn't play defense, they shouldn't have a 0 for their
     # counter defense rank, because it is undetermined.

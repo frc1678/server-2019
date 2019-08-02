@@ -162,19 +162,19 @@ def calculate_timd_data(timd):
     # the key to be the sum of a list of ones, one for each time the
     # given requirements are met. This creates the amount of times those
     # requirements were met in the timeline.
-    calculated_data['orangesScored'] = len(filter_timeline_actions(
-        timd, type='placement', didSucceed=True, piece='orange'))
-    calculated_data['lemonsScored'] = len(filter_timeline_actions(
-        timd, type='placement', didSucceed=True, piece='lemon'))
-    calculated_data['orangeFouls'] = len(filter_timeline_actions(
+    calculated_data['cargoScored'] = len(filter_timeline_actions(
+        timd, type='placement', didSucceed=True, piece='cargo'))
+    calculated_data['panelsScored'] = len(filter_timeline_actions(
+        timd, type='placement', didSucceed=True, piece='panel'))
+    calculated_data['cargoFouls'] = len(filter_timeline_actions(
         timd, shotOutOfField=True))
     calculated_data['pinningFouls'] = len(filter_timeline_actions(
         timd, type='pinningFoul'))
 
-    calculated_data['orangeCycles'] = len(filter_timeline_actions(
-        timd, type='intake', piece='orange'))
-    calculated_data['lemonCycles'] = len(filter_timeline_actions(
-        timd, type='intake', piece='lemon'))
+    calculated_data['cargoCycles'] = len(filter_timeline_actions(
+        timd, type='intake', piece='cargo'))
+    calculated_data['panelCycles'] = len(filter_timeline_actions(
+        timd, type='intake', piece='panel'))
 
     cycle_actions = [action for action in timd.get('timeline', []) if \
         action['type'] in ['placement', 'intake', 'drop']]
@@ -188,57 +188,57 @@ def calculate_timd_data(timd):
             # calculation.
             calculated_data[f'{piece}Cycles'] -= 1
 
-    calculated_data['orangeDrops'] = len(filter_timeline_actions(
-        timd, type='drop', piece='orange'))
-    calculated_data['lemonDrops'] = len(filter_timeline_actions(
-        timd, type='drop', piece='lemon'))
-    calculated_data['orangeFails'] = len(filter_timeline_actions(
-        timd, type='placement', didSucceed=False, piece='orange'))
-    calculated_data['lemonFails'] = len(filter_timeline_actions(
-        timd, type='placement', didSucceed=False, piece='lemon'))
+    calculated_data['cargoDrops'] = len(filter_timeline_actions(
+        timd, type='drop', piece='cargo'))
+    calculated_data['panelDrops'] = len(filter_timeline_actions(
+        timd, type='drop', piece='panel'))
+    calculated_data['cargoFails'] = len(filter_timeline_actions(
+        timd, type='placement', didSucceed=False, piece='cargo'))
+    calculated_data['panelFails'] = len(filter_timeline_actions(
+        timd, type='placement', didSucceed=False, piece='panel'))
 
-    calculated_data['orangesScoredSandstorm'] = len(
-        filter_timeline_actions(timd, type='placement', piece='orange', \
+    calculated_data['cargoScoredSandstorm'] = len(
+        filter_timeline_actions(timd, type='placement', piece='cargo', \
         didSucceed=True, time='sand'))
-    calculated_data['lemonsScoredSandstorm'] = len(
-        filter_timeline_actions(timd, type='placement', piece='lemon', \
+    calculated_data['panelsScoredSandstorm'] = len(
+        filter_timeline_actions(timd, type='placement', piece='panel', \
         didSucceed=True, time='sand'))
-    calculated_data['orangesScoredTeleL1'] = len(
-        filter_timeline_actions(timd, type='placement', piece='orange', \
+    calculated_data['cargoScoredTeleL1'] = len(
+        filter_timeline_actions(timd, type='placement', piece='cargo', \
         level=1, didSucceed=True, time='tele'))
-    calculated_data['orangesScoredTeleL2'] = len(
-        filter_timeline_actions(timd, type='placement', piece='orange', \
+    calculated_data['cargoScoredTeleL2'] = len(
+        filter_timeline_actions(timd, type='placement', piece='cargo', \
         level=2, didSucceed=True, time='tele'))
-    calculated_data['orangesScoredTeleL3'] = len(
-        filter_timeline_actions(timd, type='placement', piece='orange', \
+    calculated_data['cargoScoredTeleL3'] = len(
+        filter_timeline_actions(timd, type='placement', piece='cargo', \
         level=3, didSucceed=True, time='tele'))
-    calculated_data['lemonsScoredTeleL1'] = len(
-        filter_timeline_actions(timd, type='placement', piece='lemon', \
+    calculated_data['panelsScoredTeleL1'] = len(
+        filter_timeline_actions(timd, type='placement', piece='panel', \
         level=1, didSucceed=True, time='tele'))
-    calculated_data['lemonsScoredTeleL2'] = len(
-        filter_timeline_actions(timd, type='placement', piece='lemon', \
+    calculated_data['panelsScoredTeleL2'] = len(
+        filter_timeline_actions(timd, type='placement', piece='panel', \
         level=2, didSucceed=True, time='tele'))
-    calculated_data['lemonsScoredTeleL3'] = len(
-        filter_timeline_actions(timd, type='placement', piece='lemon', \
+    calculated_data['panelsScoredTeleL3'] = len(
+        filter_timeline_actions(timd, type='placement', piece='panel', \
         level=3, didSucceed=True, time='tele'))
 
-    calculated_data['orangesScoredL1'] = len(
-        filter_timeline_actions(timd, type='placement', piece='orange', \
+    calculated_data['cargoScoredL1'] = len(
+        filter_timeline_actions(timd, type='placement', piece='cargo', \
         level=1, didSucceed=True))
-    calculated_data['orangesScoredL2'] = len(
-        filter_timeline_actions(timd, type='placement', piece='orange', \
+    calculated_data['cargoScoredL2'] = len(
+        filter_timeline_actions(timd, type='placement', piece='cargo', \
         level=2, didSucceed=True))
-    calculated_data['orangesScoredL3'] = len(
-        filter_timeline_actions(timd, type='placement', piece='orange', \
+    calculated_data['cargoScoredL3'] = len(
+        filter_timeline_actions(timd, type='placement', piece='cargo', \
         level=3, didSucceed=True))
-    calculated_data['lemonsScoredL1'] = len(
-        filter_timeline_actions(timd, type='placement', piece='lemon', \
+    calculated_data['panelsScoredL1'] = len(
+        filter_timeline_actions(timd, type='placement', piece='panel', \
         level=1, didSucceed=True))
-    calculated_data['lemonsScoredL2'] = len(
-        filter_timeline_actions(timd, type='placement', piece='lemon', \
+    calculated_data['panelsScoredL2'] = len(
+        filter_timeline_actions(timd, type='placement', piece='panel', \
         level=2, didSucceed=True))
-    calculated_data['lemonsScoredL3'] = len(
-        filter_timeline_actions(timd, type='placement', piece='lemon', \
+    calculated_data['panelsScoredL3'] = len(
+        filter_timeline_actions(timd, type='placement', piece='panel', \
         level=3, didSucceed=True))
 
     calculated_data['totalFailedCyclesCaused'] = sum([
@@ -248,44 +248,44 @@ def calculate_timd_data(timd):
     # The next set of calculated data points are the success
     # percentages, these are the percentages (displayed as an integer)
     # of didSucceed for certain actions, such as the percentage of
-    # success a team has loading lemons.
-    calculated_data['lemonLoadSuccess'] = percent_success(
-        filter_timeline_actions(timd, type='intake', piece='lemon',
+    # success a team has loading panels.
+    calculated_data['panelLoadSuccess'] = percent_success(
+        filter_timeline_actions(timd, type='intake', piece='panel',
                                 zone='loadingStation'))
-    calculated_data['orangeSuccessAll'] = percent_success(
-        filter_timeline_actions(timd, type='placement', piece='orange'))
-    calculated_data['orangeSuccessDefended'] = percent_success(
-        filter_timeline_actions(timd, type='placement', piece='orange',
+    calculated_data['cargoSuccessAll'] = percent_success(
+        filter_timeline_actions(timd, type='placement', piece='cargo'))
+    calculated_data['cargoSuccessDefended'] = percent_success(
+        filter_timeline_actions(timd, type='placement', piece='cargo',
                                 wasDefended=True))
-    calculated_data['orangeSuccessUndefended'] = percent_success(
-        filter_timeline_actions(timd, type='placement', piece='orange',
+    calculated_data['cargoSuccessUndefended'] = percent_success(
+        filter_timeline_actions(timd, type='placement', piece='cargo',
                                 wasDefended=False))
-    calculated_data['orangeSuccessL1'] = percent_success(
-        filter_timeline_actions(timd, type='placement', piece='orange',
+    calculated_data['cargoSuccessL1'] = percent_success(
+        filter_timeline_actions(timd, type='placement', piece='cargo',
                                 level=1))
-    calculated_data['orangeSuccessL2'] = percent_success(
-        filter_timeline_actions(timd, type='placement', piece='orange',
+    calculated_data['cargoSuccessL2'] = percent_success(
+        filter_timeline_actions(timd, type='placement', piece='cargo',
                                 level=2))
-    calculated_data['orangeSuccessL3'] = percent_success(
-        filter_timeline_actions(timd, type='placement', piece='orange',
+    calculated_data['cargoSuccessL3'] = percent_success(
+        filter_timeline_actions(timd, type='placement', piece='cargo',
                                 level=3))
 
-    calculated_data['lemonSuccessAll'] = percent_success(
-        filter_timeline_actions(timd, type='placement', piece='lemon'))
-    calculated_data['lemonSuccessDefended'] = percent_success(
-        filter_timeline_actions(timd, type='placement', piece='lemon',
+    calculated_data['panelSuccessAll'] = percent_success(
+        filter_timeline_actions(timd, type='placement', piece='panel'))
+    calculated_data['panelSuccessDefended'] = percent_success(
+        filter_timeline_actions(timd, type='placement', piece='panel',
                                 wasDefended=True))
-    calculated_data['lemonSuccessUndefended'] = percent_success(
-        filter_timeline_actions(timd, type='placement', piece='lemon',
+    calculated_data['panelSuccessUndefended'] = percent_success(
+        filter_timeline_actions(timd, type='placement', piece='panel',
                                 wasDefended=False))
-    calculated_data['lemonSuccessL1'] = percent_success(
-        filter_timeline_actions(timd, type='placement', piece='lemon',
+    calculated_data['panelSuccessL1'] = percent_success(
+        filter_timeline_actions(timd, type='placement', piece='panel',
                                 level=1))
-    calculated_data['lemonSuccessL2'] = percent_success(
-        filter_timeline_actions(timd, type='placement', piece='lemon',
+    calculated_data['panelSuccessL2'] = percent_success(
+        filter_timeline_actions(timd, type='placement', piece='panel',
                                 level=2))
-    calculated_data['lemonSuccessL3'] = percent_success(
-        filter_timeline_actions(timd, type='placement', piece='lemon',
+    calculated_data['panelSuccessL3'] = percent_success(
+        filter_timeline_actions(timd, type='placement', piece='panel',
                                 level=3))
 
     # Creates the cycle_list, a list of tuples where the intake is the
@@ -313,23 +313,23 @@ def calculate_timd_data(timd):
             cycle_list.pop(-1)
         paired_cycle_list = make_paired_cycle_list(cycle_list)
 
-        calculated_data['orangeCycleAll'] = calculate_avg_cycle_time(
-            filter_cycles(paired_cycle_list, piece='orange'))
-        calculated_data['orangeCycleL1'] = calculate_avg_cycle_time(
-            filter_cycles(paired_cycle_list, piece='orange', level=1))
-        calculated_data['orangeCycleL2'] = calculate_avg_cycle_time(
-            filter_cycles(paired_cycle_list, piece='orange', level=2))
-        calculated_data['orangeCycleL3'] = calculate_avg_cycle_time(
-            filter_cycles(paired_cycle_list, piece='orange', level=3))
+        calculated_data['cargoCycleAll'] = calculate_avg_cycle_time(
+            filter_cycles(paired_cycle_list, piece='cargo'))
+        calculated_data['cargoCycleL1'] = calculate_avg_cycle_time(
+            filter_cycles(paired_cycle_list, piece='cargo', level=1))
+        calculated_data['cargoCycleL2'] = calculate_avg_cycle_time(
+            filter_cycles(paired_cycle_list, piece='cargo', level=2))
+        calculated_data['cargoCycleL3'] = calculate_avg_cycle_time(
+            filter_cycles(paired_cycle_list, piece='cargo', level=3))
 
-        calculated_data['lemonCycleAll'] = calculate_avg_cycle_time(
-            filter_cycles(paired_cycle_list, piece='lemon'))
-        calculated_data['lemonCycleL1'] = calculate_avg_cycle_time(
-            filter_cycles(paired_cycle_list, piece='lemon', level=1))
-        calculated_data['lemonCycleL2'] = calculate_avg_cycle_time(
-            filter_cycles(paired_cycle_list, piece='lemon', level=2))
-        calculated_data['lemonCycleL3'] = calculate_avg_cycle_time(
-            filter_cycles(paired_cycle_list, piece='lemon', level=3))
+        calculated_data['panelCycleAll'] = calculate_avg_cycle_time(
+            filter_cycles(paired_cycle_list, piece='panel'))
+        calculated_data['panelCycleL1'] = calculate_avg_cycle_time(
+            filter_cycles(paired_cycle_list, piece='panel', level=1))
+        calculated_data['panelCycleL2'] = calculate_avg_cycle_time(
+            filter_cycles(paired_cycle_list, piece='panel', level=2))
+        calculated_data['panelCycleL3'] = calculate_avg_cycle_time(
+            filter_cycles(paired_cycle_list, piece='panel', level=3))
 
     # Calculates if a team is incap throughout the entirety of the match
     # by checking if they have any actions in the match other than incap
