@@ -32,19 +32,19 @@ def calculate_first_pick_ability(calculated_data):
     climbing_weight = 0.2
 
     # Scores for points scored on level 1, 2, and 3.
-    level_1_teleop_score = (2 * calculated_data['avgLemonsScoredTeleL1']
-        + 3 * calculated_data['avgOrangesScoredTeleL1']) * level_1_weight
-    level_2_teleop_score = (2 * calculated_data['avgLemonsScoredTeleL2']
-        + 3 * calculated_data['avgOrangesScoredTeleL2']) * level_2_weight
-    level_3_teleop_score = (2 * calculated_data['avgLemonsScoredTeleL3']
-        + 3 * calculated_data['avgOrangesScoredTeleL3']) * level_3_weight
+    level_1_teleop_score = (2 * calculated_data['avgPanelsScoredTeleL1']
+        + 3 * calculated_data['avgCargoScoredTeleL1']) * level_1_weight
+    level_2_teleop_score = (2 * calculated_data['avgPanelsScoredTeleL2']
+        + 3 * calculated_data['avgCargoScoredTeleL2']) * level_2_weight
+    level_3_teleop_score = (2 * calculated_data['avgPanelsScoredTeleL3']
+        + 3 * calculated_data['avgCargoScoredTeleL3']) * level_3_weight
 
     # Scores for points gained during sandstorm.
     sand_score = max([
         float(utils.no_none_get(calculated_data, 'habLineSuccessL1', 0)) * 3 / 100,
         float(utils.no_none_get(calculated_data, 'habLineSuccessL2', 0)) * 6 / 100])
-    sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
-    sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
+    sand_score += calculated_data['avgPanelsScoredSandstorm'] * 5
+    sand_score += calculated_data['avgCargoScoredSandstorm'] * 3
     sand_score *= sandstorm_weight
 
     # Scores for points scored in the endgame.
@@ -69,8 +69,8 @@ def calculate_second_pick_ability(calculated_data, max_da, min_da):
     # Weights for how much each aspect of the robot is considered for a
     # second pick.
     climbing_weight = 0.25
-    oranges_weight = 0.5
-    lemons_weight = 1.0
+    cargo_weight = 0.5
+    panels_weight = 1.0
     sandstorm_weight = 1.0
     driving_weight = 18.0
     defense_weight = 3.5
@@ -79,13 +79,13 @@ def calculate_second_pick_ability(calculated_data, max_da, min_da):
     sand_score = max([
         float(utils.no_none_get(calculated_data, 'habLineSuccessL1', 0)) * 3 / 100,
         float(utils.no_none_get(calculated_data, 'habLineSuccessL2', 0)) * 6 / 100])
-    sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
-    sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
+    sand_score += calculated_data['avgPanelsScoredSandstorm'] * 5
+    sand_score += calculated_data['avgCargoScoredSandstorm'] * 3
     sand_score *= sandstorm_weight
 
     # Scores for points scored on level 1.
-    level_1_teleop_score = calculated_data['avgLemonsScoredTeleL1'] * 2 * lemons_weight
-    level_1_teleop_score += calculated_data['avgOrangesScoredTeleL1'] * 3 * oranges_weight
+    level_1_teleop_score = calculated_data['avgPanelsScoredTeleL1'] * 2 * panels_weight
+    level_1_teleop_score += calculated_data['avgCargoScoredTeleL1'] * 3 * cargo_weight
 
     # Scores for points scored in the endgame.
     end_game_score = max([3 * float(calculated_data.get('climbSuccessL1', 0)) / 100,
@@ -131,19 +131,19 @@ def calculate_third_pick_ability(calculated_data):
     climbing_weight = 0.2
 
     # Scores for points scored on level 1, 2, and 3.
-    level_1_teleop_score = (2 * calculated_data['avgLemonsScoredTeleL1']
-        + 3 * calculated_data['avgOrangesScoredTeleL1']) * level_1_weight
-    level_2_teleop_score = (2 * calculated_data['avgLemonsScoredTeleL2']
-        + 3 * calculated_data['avgOrangesScoredTeleL2']) * level_2_weight
-    level_3_teleop_score = (2 * calculated_data['avgLemonsScoredTeleL3']
-        + 3 * calculated_data['avgOrangesScoredTeleL3']) * level_3_weight
+    level_1_teleop_score = (2 * calculated_data['avgPanelsScoredTeleL1']
+        + 3 * calculated_data['avgCargoScoredTeleL1']) * level_1_weight
+    level_2_teleop_score = (2 * calculated_data['avgPanelsScoredTeleL2']
+        + 3 * calculated_data['avgCargoScoredTeleL2']) * level_2_weight
+    level_3_teleop_score = (2 * calculated_data['avgPanelsScoredTeleL3']
+        + 3 * calculated_data['avgCargoScoredTeleL3']) * level_3_weight
 
     # Scores for points gained during sandstorm.
     sand_score = max([
         float(utils.no_none_get(calculated_data, 'habLineSuccessL1', 0)) * 3 / 100,
         float(utils.no_none_get(calculated_data, 'habLineSuccessL2', 0)) * 6 / 100])
-    sand_score += calculated_data['avgLemonsScoredSandstorm'] * 5
-    sand_score += calculated_data['avgOrangesScoredSandstorm'] * 3
+    sand_score += calculated_data['avgPanelsScoredSandstorm'] * 5
+    sand_score += calculated_data['avgCargoScoredSandstorm'] * 3
     sand_score *= sandstorm_weight
 
     # Scores for points scored in the endgame.
@@ -156,7 +156,7 @@ def calculate_third_pick_ability(calculated_data):
     # A third pick robot must have a driver ability greater than 0
     # (average) and must score an average of more than 1 cargo per match.
     if (calculated_data['normalizedDriverAbility'] <= 0) or \
-        (calculated_data['avgOrangesScored'] <= 1):
+        (calculated_data['avgCargoScored'] <= 1):
         return 0
 
     # Adds all the previous scores together to get a full third pick score.

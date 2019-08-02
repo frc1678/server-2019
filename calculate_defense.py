@@ -140,10 +140,10 @@ for match_number, timds in TIMDS_BY_MATCH.items():
             for team, defended_cycles in defended_cycles_by_team.items():
                 # Counters of how many drops, fails, and cycles there
                 # are for each game element.
-                drops = {'orange': 0, 'lemon': 0}
-                fails = {'orange': 0, 'lemon': 0}
-                cycles = {'orange': 0, 'lemon': 0}
-                cycle_times = {'orange': [], 'lemon': []}
+                drops = {'cargo': 0, 'panel': 0}
+                fails = {'cargo': 0, 'panel': 0}
+                cycles = {'cargo': 0, 'panel': 0}
+                cycle_times = {'cargo': [], 'panel': []}
                 for action in defended_cycles:
                     piece = action['piece']
                     cycles[piece] += 1
@@ -158,16 +158,16 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                         drops[piece] += 1
                 # Calculates the drop and fail rate of the team under defense
                 defended_drop_rate = {
-                    'orange': None if cycles['orange'] == 0 else \
-                        drops['orange']/cycles['orange'],
-                    'lemon': None if cycles['lemon'] == 0 else \
-                        drops['lemon']/cycles['lemon']
+                    'cargo': None if cycles['cargo'] == 0 else \
+                        drops['cargo']/cycles['cargo'],
+                    'panel': None if cycles['panel'] == 0 else \
+                        drops['panel']/cycles['panel']
                 }
                 defended_fail_rate = {
-                    'orange': None if cycles['orange'] == 0 else \
-                        fails['orange']/cycles['orange'],
-                    'lemon': None if cycles['lemon'] == 0 else \
-                        fails['lemon']/cycles['lemon']
+                    'cargo': None if cycles['cargo'] == 0 else \
+                        fails['cargo']/cycles['cargo'],
+                    'panel': None if cycles['panel'] == 0 else \
+                        fails['panel']/cycles['panel']
                 }
                 # Pulls calculated data
                 with open(utils.create_file_path(
@@ -176,7 +176,7 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                 # Points prevented on a single team
                 points_prevented = {}
                 failed_cycles_caused = {}
-                for piece in ['orange', 'lemon']:
+                for piece in ['cargo', 'panel']:
                     if cycles[piece] == 0:
                         continue
                     # Uses a team's calculated data to find their
@@ -195,7 +195,7 @@ for match_number, timds in TIMDS_BY_MATCH.items():
 
                     # Cycles lost from slowed cycles
                     lost_cycles = lost_time/avg_cycle_time
-                    if piece == 'orange':
+                    if piece == 'cargo':
                         points = 3
                     else:
                         points = 2
@@ -205,25 +205,25 @@ for match_number, timds in TIMDS_BY_MATCH.items():
                 alliance_failed_cycles_caused[team] = failed_cycles_caused
 
             # Saves TIMD points prevented
-            orange_points_prevented = 0
-            lemon_points_prevented = 0
-            orange_failed_cycles_caused = 0
-            lemon_failed_cycles_caused = 0
+            cargo_points_prevented = 0
+            panel_points_prevented = 0
+            cargo_failed_cycles_caused = 0
+            panel_failed_cycles_caused = 0
             for team_data in alliance_points_prevented.values():
-                orange_points_prevented += team_data.get('orange', 0)
-                lemon_points_prevented += team_data.get('lemon', 0)
+                cargo_points_prevented += team_data.get('cargo', 0)
+                panel_points_prevented += team_data.get('panel', 0)
             for team_data in alliance_failed_cycles_caused.values():
-                orange_failed_cycles_caused += team_data.get('orange', 0)
-                lemon_failed_cycles_caused += team_data.get('lemon', 0)
+                cargo_failed_cycles_caused += team_data.get('cargo', 0)
+                panel_failed_cycles_caused += team_data.get('panel', 0)
             update_dict = {
-                'orangePointsPrevented': orange_points_prevented,
-                'lemonPointsPrevented': lemon_points_prevented,
-                'pointsPrevented': orange_points_prevented + \
-                    lemon_points_prevented,
-                'superOrangeFailedCyclesCaused': orange_failed_cycles_caused,
-                'superLemonFailedCyclesCaused': lemon_failed_cycles_caused,
-                'superFailedCyclesCaused': orange_failed_cycles_caused + \
-                    lemon_failed_cycles_caused,
+                'cargoPointsPrevented': cargo_points_prevented,
+                'panelPointsPrevented': panel_points_prevented,
+                'pointsPrevented': cargo_points_prevented + \
+                    panel_points_prevented,
+                'superCargoFailedCyclesCaused': cargo_failed_cycles_caused,
+                'superPanelFailedCyclesCaused': panel_failed_cycles_caused,
+                'superFailedCyclesCaused': cargo_failed_cycles_caused + \
+                    panel_failed_cycles_caused,
             }
             for folder in ['cache', 'upload_queue']:
                 try:
