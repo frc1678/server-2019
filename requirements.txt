@@ -1,4 +1,4 @@
 firebase-admin==2.15.1
-numpy==1.16.1
+numpy==1.22.0
 pylint==2.1.0
 Pyrebase==3.0.27
